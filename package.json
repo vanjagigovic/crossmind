@@ -1,0 +1,15 @@
+{
+  "name": "crossmind",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CrossMind is an AI-powered crossword puzzle app that combines interactive gameplay with AI-generated puzzles, built with React, Node.js, and Drizzle ORM.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  }
+}
