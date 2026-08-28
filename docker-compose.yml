@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: crossmind-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: crossmind
+      POSTGRES_PASSWORD: crossmind
+      POSTGRES_DB: crossmind
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
