@@ -1,4 +1,5 @@
-import { pgTable, serial, varchar, timestamp, integer, pgEnum, uuid, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, integer, pgEnum, uuid, jsonb } from "drizzle-orm/pg-core";
+import type { Grid } from "../../crossword/domain/grid.js";
 
 export const difficultyEnum = pgEnum("difficulty", [
   "easy",
@@ -27,7 +28,7 @@ export const puzzles = pgTable("puzzles", {
   status: puzzleStatusEnum("status").notNull(),
   rows: integer("rows").notNull(),
   columns: integer("columns").notNull(),
-  grid: jsonb("grid").notNull(),
+  grid: jsonb("grid").$type<Grid>().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
