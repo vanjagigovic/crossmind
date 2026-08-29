@@ -5,8 +5,10 @@ import {
   PUZZLE_REPOSITORY,
   PuzzleService,
 } from "./service/puzzle.service.js";
+import { PuzzleController } from "./controller/puzzle.controller.js";
 
 @Module({
+  controllers: [PuzzleController],
   providers: [
     PuzzleService,
     {
