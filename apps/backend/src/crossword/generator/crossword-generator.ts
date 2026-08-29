@@ -4,6 +4,7 @@ import { Direction, WordPlacement } from '../domain/word-placement.js';
 import { canPlaceWord } from '../helpers/can-place-word.js';
 import { createCrosswordGrid } from '../helpers/grid-helper.js';
 import { placeWord } from '../helpers/place-word.js';
+import { CrosswordGenerationResult } from './crossword-generation-result.js';
 
 export type CrosswordGeneratorOptions = {
   rows: number;
@@ -11,18 +12,24 @@ export type CrosswordGeneratorOptions = {
 };
 
 export class CrosswordGenerator {
-  constructor(private readonly options: CrosswordGeneratorOptions) {}
+  constructor(private readonly options: CrosswordGeneratorOptions) { }
 
-  generate(words: CrosswordWord[]): CrosswordGrid {
+  generate(words: CrosswordWord[]): CrosswordGenerationResult {
     const grid = createCrosswordGrid(
       this.options.rows,
       this.options.cols,
     );
 
-    if (words.length === 0) {
-      return grid;
-    }
+    const placedWords: CrosswordWord[] = [];
+    const unplacedWords: CrosswordWord[] = [];
 
+    if (words.length === 0) {
+      return {
+        grid,
+        placedWords,
+        unplacedWords,
+      };
+    }
     const sortedWords = [...words].sort(
       (first, second) => second.answer.length - first.answer.length,
     );
@@ -40,6 +47,7 @@ export class CrosswordGenerator {
 
     if (canPlaceWord(grid, firstPlacement)) {
       placeWord(grid, firstPlacement);
+      placedWords.push(firstWord);
     }
 
     for (const word of sortedWords.slice(1)) {
@@ -47,10 +55,17 @@ export class CrosswordGenerator {
 
       if (placement) {
         placeWord(grid, placement);
+        placedWords.push(word);
+      } else {
+        unplacedWords.push(word);
       }
     }
 
-    return grid;
+    return {
+      grid,
+      placedWords,
+      unplacedWords,
+    };
   }
 
   private findPlacement(
