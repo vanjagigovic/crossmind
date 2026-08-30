@@ -6,6 +6,7 @@ import { createCrosswordGrid } from '../helpers/grid-helper.js';
 import { placeWord } from '../helpers/place-word.js';
 import { CrosswordGenerationResult } from './crossword-generation-result.js';
 import { selectBestPlacement } from '../helpers/select-best-placement.js';
+import { findCrossingPlacements } from '../helpers/find-crossing-placements.js';
 
 export type CrosswordGeneratorOptions = {
   rows: number;
@@ -73,71 +74,8 @@ export class CrosswordGenerator {
     grid: CrosswordGrid,
     word: CrosswordWord,
   ): WordPlacement | null {
-    const crossingPlacements = this.findCrossingPlacements(grid, word);
+    const crossingPlacements = findCrossingPlacements(grid, word);
 
     return selectBestPlacement(grid, crossingPlacements);
-  }
-
-  private findCrossingPlacements(
-    grid: CrosswordGrid,
-    word: CrosswordWord,
-  ): WordPlacement[] {
-    const placements: WordPlacement[] = [];
-
-    for (const existingPlacement of grid.placements) {
-      const existingAnswer = existingPlacement.word.answer;
-
-      for (
-        let existingIndex = 0;
-        existingIndex < existingAnswer.length;
-        existingIndex++
-      ) {
-        for (
-          let wordIndex = 0;
-          wordIndex < word.answer.length;
-          wordIndex++
-        ) {
-          if (existingAnswer[existingIndex] !== word.answer[wordIndex]) {
-            continue;
-          }
-
-          const existingRow =
-            existingPlacement.direction === 'across'
-              ? existingPlacement.row
-              : existingPlacement.row + existingIndex;
-
-          const existingCol =
-            existingPlacement.direction === 'across'
-              ? existingPlacement.col + existingIndex
-              : existingPlacement.col;
-
-          const direction: Direction =
-            existingPlacement.direction === 'across' ? 'down' : 'across';
-
-          const row =
-            direction === 'across'
-              ? existingRow
-              : existingRow - wordIndex;
-
-          const col =
-            direction === 'across'
-              ? existingCol - wordIndex
-              : existingCol;
-
-          const placement: WordPlacement = {
-            word,
-            row,
-            col,
-            direction,
-          };
-
-          if (canPlaceWord(grid, placement)) {
-            placements.push(placement);
-          }
-        }
-      }
-    }
-
-    return placements;
   }
 }
