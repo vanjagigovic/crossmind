@@ -1,7 +1,7 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { WordPlacement } from "../domain/word-placement.js";
-import { hasCrossing } from "./has-crossing.js";
-
+import { CrosswordGrid } from '../domain/grid.js';
+import { WordPlacement } from '../domain/word-placement.js';
+import { hasAdjacentWord } from './has-adjacent-word.js';
+import { hasCrossing } from './has-crossing.js';
 
 export function canPlaceWord(
     grid: CrosswordGrid,
@@ -33,14 +33,22 @@ export function canPlaceWord(
             return false;
         }
     }
+
     const gridHasLetters = grid.cells.some((row) =>
         row.some((cell) => cell.letter !== null),
     );
 
-    if (gridHasLetters && !hasCrossing(grid, placement)) {
+    if (!gridHasLetters) {
+        return true;
+    }
+
+    if (!hasCrossing(grid, placement)) {
+        return false;
+    }
+
+    if (hasAdjacentWord(grid, placement)) {
         return false;
     }
 
     return true;
-
 }

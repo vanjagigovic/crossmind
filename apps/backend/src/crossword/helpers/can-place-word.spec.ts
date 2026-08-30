@@ -194,4 +194,39 @@ describe('canPlaceWord', () => {
 
         expect(canPlaceWord(grid, placement)).toBe(false);
     });
+    it('returns false when a crossing word also touches another word without crossing', () => {
+        const grid = createCrosswordGrid(7, 7);
+
+        placeWord(grid, {
+            word: {
+                answer: 'CAT',
+                clue: 'A small domesticated animal',
+            },
+            row: 3,
+            col: 2,
+            direction: 'across',
+        });
+
+        placeWord(grid, {
+            word: {
+                answer: 'DOG',
+                clue: 'A common pet',
+            },
+            row: 4,
+            col: 3,
+            direction: 'across',
+        });
+
+        const placement = {
+            word: {
+                answer: 'COW',
+                clue: 'A farm animal',
+            },
+            row: 3,
+            col: 2,
+            direction: 'down' as const,
+        };
+
+        expect(canPlaceWord(grid, placement)).toBe(false);
+    });
 });

@@ -184,4 +184,86 @@ describe('CrosswordGenerator', () => {
 
         expect(firstPlacement.direction).not.toBe(secondPlacement.direction);
     });
+
+    it('should generate a crossword with multiple crossings', () => {
+        const generator = new CrosswordGenerator({
+            rows: 15,
+            cols: 15,
+        });
+
+        const words = [
+            {
+                answer: 'HOUSE',
+                clue: 'A place where people live',
+            },
+            {
+                answer: 'HORSE',
+                clue: 'An animal used for riding',
+            },
+            {
+                answer: 'SHOE',
+                clue: 'Something worn on a foot',
+            },
+        ];
+
+        const result = generator.generate(words);
+
+        expect(result.placedWords).toHaveLength(3);
+        expect(result.unplacedWords).toHaveLength(0);
+
+        const crossingCells = result.grid.cells.flat().filter((cell) => {
+            const placements = result.grid.placements.filter((placement) => {
+                const { answer } = placement.word;
+
+                return Array.from(answer).some((_, index) => {
+                    const row =
+                        placement.direction === 'across'
+                            ? placement.row
+                            : placement.row + index;
+
+                    const col =
+                        placement.direction === 'across'
+                            ? placement.col + index
+                            : placement.col;
+
+                    return row === cell.row && col === cell.col;
+                });
+            });
+
+            return placements.length > 1;
+        });
+
+        expect(crossingCells.length).toBeGreaterThan(1);
+    });
+
+    it('should prefer a placement with more crossings', () => {
+        const generator = new CrosswordGenerator({
+            rows: 15,
+            cols: 15,
+        });
+
+        const words = [
+            {
+                answer: 'HOUSE',
+                clue: 'A place where people live',
+            },
+            {
+                answer: 'HORSE',
+                clue: 'An animal used for riding',
+            },
+            {
+                answer: 'SCORE',
+                clue: 'Points earned in a game',
+            },
+        ];
+
+        const result = generator.generate(words);
+
+        expect(result.placedWords).toHaveLength(3);
+        expect(result.unplacedWords).toHaveLength(0);
+
+        const thirdPlacement = result.grid.placements[2];
+
+        expect(thirdPlacement.word.answer).toBe('SCORE');
+    });
 });
