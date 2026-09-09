@@ -2,7 +2,11 @@ import { Module } from "@nestjs/common";
 
 import { CrosswordGenerator } from "../crossword/generator/crossword-generator.js";
 import { CROSSWORD_CONTENT_PROVIDER } from "../crossword/content/crossword-content-provider.js";
-import { StaticCrosswordContentProvider } from "../crossword/content/static-crossword-content-provider.js";
+import { OpenAiCrosswordContentProvider } from "../crossword/content/openai/openai-crossword-content-provider.js";
+import {
+  OPENAI_CLIENT_FACTORY,
+  defaultOpenAiClientFactory,
+} from "../crossword/content/openai/openai-client.js";
 import { DrizzlePuzzleRepository } from "./repository/drizzle-puzzle.repository.js";
 import {
   CROSSWORD_GENERATOR_FACTORY,
@@ -25,8 +29,12 @@ import { PuzzleController } from "./controller/puzzle.controller.js";
         new CrosswordGenerator(options),
     },
     {
+      provide: OPENAI_CLIENT_FACTORY,
+      useValue: defaultOpenAiClientFactory,
+    },
+    {
       provide: CROSSWORD_CONTENT_PROVIDER,
-      useClass: StaticCrosswordContentProvider,
+      useClass: OpenAiCrosswordContentProvider,
     },
   ],
   exports: [PuzzleService],
