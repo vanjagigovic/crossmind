@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 
 import { DatabaseService } from "../../db/database.service.js";
+import type { DatabaseTransaction } from "../../db/database.service.js";
 import { puzzles } from "../../db/schema/index.js";
 import type {
   CreatePuzzleData,
@@ -36,8 +37,8 @@ export class DrizzlePuzzleRepository implements PuzzleRepository {
     return result.map((puzzle) => this.toDomain(puzzle));
   }
 
-  async create(data: CreatePuzzleData): Promise<Puzzle> {
-    const result = await this.database.client
+  async create(data: CreatePuzzleData, tx?: DatabaseTransaction): Promise<Puzzle> {
+    const result = await (tx ?? this.database.client)
       .insert(puzzles)
       .values(data)
       .returning();

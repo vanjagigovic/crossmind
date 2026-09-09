@@ -1,3 +1,4 @@
+import type { DatabaseTransaction } from "../../db/database.service.js";
 import type {
   CreatePuzzleData,
   Puzzle,
@@ -9,7 +10,7 @@ export interface PuzzleRepository {
 
   findAll(): Promise<Puzzle[]>;
 
-  create(data: CreatePuzzleData): Promise<Puzzle>;
+  create(data: CreatePuzzleData, tx?: DatabaseTransaction): Promise<Puzzle>;
 
   update(id: string, data: UpdatePuzzleData): Promise<Puzzle | null>;
 

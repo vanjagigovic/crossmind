@@ -4,6 +4,10 @@ import {
   CrosswordGenerator,
   CrosswordGeneratorOptions,
 } from "../../crossword/generator/crossword-generator.js";
+import { CROSSWORD_CONTENT_PROVIDER } from "../../crossword/content/crossword-content-provider.js";
+import type { CrosswordContentProvider } from "../../crossword/content/crossword-content-provider.js";
+import { normalizeCrosswordWords } from "../../crossword/content/normalize-crossword-word.js";
+import { DatabaseService } from "../../db/database.service.js";
 import type {
   CreatePuzzleData,
   GeneratePuzzleData,
@@ -12,8 +16,11 @@ import type {
 } from "../domain/puzzle.js";
 
 import type { PuzzleRepository } from "../repository/puzzle.repository.js";
+import type { PuzzleEntryRepository } from "../repository/puzzle-entry.repository.js";
+import { buildPuzzleEntries } from "./build-puzzle-entries.js";
 
 export const PUZZLE_REPOSITORY = Symbol("PUZZLE_REPOSITORY");
+export const PUZZLE_ENTRY_REPOSITORY = Symbol("PUZZLE_ENTRY_REPOSITORY");
 export const CROSSWORD_GENERATOR_FACTORY = Symbol("CROSSWORD_GENERATOR_FACTORY");
 
 export type CrosswordGeneratorFactory = (
@@ -25,8 +32,13 @@ export class PuzzleService {
   constructor(
     @Inject(PUZZLE_REPOSITORY)
     private readonly puzzleRepository: PuzzleRepository,
+    @Inject(PUZZLE_ENTRY_REPOSITORY)
+    private readonly puzzleEntryRepository: PuzzleEntryRepository,
     @Inject(CROSSWORD_GENERATOR_FACTORY)
     private readonly crosswordGeneratorFactory: CrosswordGeneratorFactory,
+    @Inject(CROSSWORD_CONTENT_PROVIDER)
+    private readonly crosswordContentProvider: CrosswordContentProvider,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   async findById(id: string): Promise<Puzzle | null> {
@@ -42,20 +54,37 @@ export class PuzzleService {
   }
 
   async generate(data: GeneratePuzzleData): Promise<Puzzle> {
+    const words = await this.crosswordContentProvider.generateWords({
+      theme: data.theme,
+      difficulty: data.difficulty,
+      wordCount: data.wordCount,
+    });
+
     const generator = this.crosswordGeneratorFactory({
       rows: data.rows,
       cols: data.columns,
     });
-    const { grid } = generator.generate(data.words);
+    const { grid } = generator.generate(normalizeCrosswordWords(words));
 
-    return this.puzzleRepository.create({
-      title: data.title,
-      theme: data.theme,
-      difficulty: data.difficulty,
-      status: "ready",
-      rows: data.rows,
-      columns: data.columns,
-      grid,
+    return this.databaseService.transaction(async (tx) => {
+      const puzzle = await this.puzzleRepository.create(
+        {
+          title: data.title,
+          theme: data.theme,
+          difficulty: data.difficulty,
+          status: "ready",
+          rows: data.rows,
+          columns: data.columns,
+          grid,
+        },
+        tx,
+      );
+
+      const entries = buildPuzzleEntries(puzzle.id, grid.placements);
+
+      await this.puzzleEntryRepository.createMany(entries, tx);
+
+      return puzzle;
     });
   }
 

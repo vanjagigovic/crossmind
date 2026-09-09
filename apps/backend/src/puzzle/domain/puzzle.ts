@@ -1,7 +1,7 @@
 import type { CrosswordGrid } from "../../crossword/domain/grid.js";
-import type { CrosswordWord } from "../../crossword/domain/word.js";
+import type { CrosswordDifficulty } from "../../crossword/domain/difficulty.js";
 
-export type PuzzleDifficulty = "easy" | "medium" | "hard";
+export type PuzzleDifficulty = CrosswordDifficulty;
 
 export type PuzzleStatus =
   | "draft"
@@ -39,5 +39,5 @@ export type GeneratePuzzleData = {
   difficulty: PuzzleDifficulty;
   rows: number;
   columns: number;
-  words: CrosswordWord[];
+  wordCount: number;
 };

@@ -82,14 +82,17 @@ describe("DrizzlePuzzleRepository", () => {
 
         expect(result).toHaveLength(2);
 
-        expect(result[0]).toMatchObject({
+        const animals = result.find((puzzle) => puzzle.title === "Animals");
+        const space = result.find((puzzle) => puzzle.title === "Space");
+
+        expect(animals).toMatchObject({
             title: "Animals",
             theme: "Animals",
             difficulty: "easy",
             status: "ready",
         });
 
-        expect(result[1]).toMatchObject({
+        expect(space).toMatchObject({
             title: "Space",
             theme: "Space",
             difficulty: "hard",
