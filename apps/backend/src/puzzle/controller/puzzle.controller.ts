@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Patch, Post } from "@nestjs/common";
 import { PuzzleService } from "../service/puzzle.service.js";
-import type { CreatePuzzleData, UpdatePuzzleData } from "../domain/puzzle.js";
+import { CreatePuzzleDto } from "./dto/create-puzzle.dto.js";
+import { GeneratePuzzleDto } from "./dto/generate-puzzle.dto.js";
+import { UpdatePuzzleDto } from "./dto/update-puzzle.dto.js";
 
 @Controller("puzzles")
 export class PuzzleController {
@@ -9,6 +11,11 @@ export class PuzzleController {
     @Get()
     async findAll() {
         return this.puzzleService.findAll();
+    }
+
+    @Post("generate")
+    async generate(@Body() data: GeneratePuzzleDto) {
+        return this.puzzleService.generate(data);
     }
 
     @Get(":id")
@@ -20,13 +27,13 @@ export class PuzzleController {
         return puzzle;
     }
     @Post()
-    async create(@Body() data: CreatePuzzleData) {
+    async create(@Body() data: CreatePuzzleDto) {
         return this.puzzleService.create(data);
     }
 
     @Patch(":id")
     async update(@Param("id") id: string,
-        @Body() data: UpdatePuzzleData,) {
+        @Body() data: UpdatePuzzleDto,) {
         const puzzle = await this.puzzleService.update(id, data);
         if (!puzzle) {
             throw new NotFoundException(`Puzzle with id "${id}" not found`);
