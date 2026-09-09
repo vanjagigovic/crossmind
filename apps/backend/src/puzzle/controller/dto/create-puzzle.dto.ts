@@ -1,13 +1,31 @@
+import { Type } from "class-transformer";
 import {
+  IsArray,
+  IsBoolean,
   IsEnum,
   IsInt,
   IsNotEmpty,
   IsObject,
   IsString,
   Min,
+  ValidateIf,
+  ValidateNested,
 } from "class-validator";
 
-import type { Grid } from "../../../crossword/domain/grid.js";
+import type {
+  CrosswordGrid,
+  Grid,
+  GridCell,
+} from "../../../crossword/domain/grid.js";
+import type { CrosswordWord } from "../../../crossword/domain/word.js";
+import type {
+  Direction,
+  WordPlacement,
+} from "../../../crossword/domain/word-placement.js";
+import type {
+  PuzzleDifficulty,
+  PuzzleStatus,
+} from "../../domain/puzzle.js";
 
 export enum PuzzleDifficultyDto {
   EASY = "easy",
@@ -23,6 +41,71 @@ export enum PuzzleStatusDto {
   ARCHIVED = "archived",
 }
 
+class CrosswordWordDto implements CrosswordWord {
+  @IsString()
+  @IsNotEmpty()
+  answer!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  clue!: string;
+}
+
+class GridCellDto implements GridCell {
+  @IsInt()
+  @Min(0)
+  row!: number;
+
+  @IsInt()
+  @Min(0)
+  col!: number;
+
+  @ValidateIf((_object, value) => value !== null)
+  @IsString()
+  letter!: string | null;
+
+  @IsBoolean()
+  isBlocked!: boolean;
+}
+
+class WordPlacementDto implements WordPlacement {
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CrosswordWordDto)
+  word!: CrosswordWord;
+
+  @IsInt()
+  @Min(0)
+  row!: number;
+
+  @IsInt()
+  @Min(0)
+  col!: number;
+
+  @IsEnum(["across", "down"])
+  direction!: Direction;
+}
+
+class CrosswordGridDto implements CrosswordGrid {
+  @IsInt()
+  @Min(1)
+  rows!: number;
+
+  @IsInt()
+  @Min(1)
+  cols!: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => GridCellDto)
+  cells!: Grid;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => WordPlacementDto)
+  placements!: WordPlacement[];
+}
+
 export class CreatePuzzleDto {
   @IsString()
   @IsNotEmpty()
@@ -33,10 +116,10 @@ export class CreatePuzzleDto {
   theme!: string;
 
   @IsEnum(PuzzleDifficultyDto)
-  difficulty!: PuzzleDifficultyDto;
+  difficulty!: PuzzleDifficulty;
 
   @IsEnum(PuzzleStatusDto)
-  status!: PuzzleStatusDto;
+  status!: PuzzleStatus;
 
   @IsInt()
   @Min(1)
@@ -47,5 +130,7 @@ export class CreatePuzzleDto {
   columns!: number;
 
   @IsObject()
-  grid!: Grid;
+  @ValidateNested()
+  @Type(() => CrosswordGridDto)
+  grid!: CrosswordGrid;
 }
