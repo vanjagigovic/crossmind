@@ -8,8 +8,10 @@ import {
   defaultOpenAiClientFactory,
 } from "../crossword/content/openai/openai-client.js";
 import { DrizzlePuzzleRepository } from "./repository/drizzle-puzzle.repository.js";
+import { DrizzlePuzzleEntryRepository } from "./repository/drizzle-puzzle-entry.repository.js";
 import {
   CROSSWORD_GENERATOR_FACTORY,
+  PUZZLE_ENTRY_REPOSITORY,
   PUZZLE_REPOSITORY,
   PuzzleService,
 } from "./service/puzzle.service.js";
@@ -22,6 +24,10 @@ import { PuzzleController } from "./controller/puzzle.controller.js";
     {
       provide: PUZZLE_REPOSITORY,
       useClass: DrizzlePuzzleRepository,
+    },
+    {
+      provide: PUZZLE_ENTRY_REPOSITORY,
+      useClass: DrizzlePuzzleEntryRepository,
     },
     {
       provide: CROSSWORD_GENERATOR_FACTORY,

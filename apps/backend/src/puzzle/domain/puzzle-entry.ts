@@ -14,3 +14,5 @@ export type PuzzleEntry = {
   length: number;
   number: number;
 };
+
+export type CreatePuzzleEntryData = Omit<PuzzleEntry, "id">;
