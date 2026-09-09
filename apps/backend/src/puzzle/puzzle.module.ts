@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 
 import { CrosswordGenerator } from "../crossword/generator/crossword-generator.js";
+import { CROSSWORD_CONTENT_PROVIDER } from "../crossword/content/crossword-content-provider.js";
+import { StaticCrosswordContentProvider } from "../crossword/content/static-crossword-content-provider.js";
 import { DrizzlePuzzleRepository } from "./repository/drizzle-puzzle.repository.js";
 import {
   CROSSWORD_GENERATOR_FACTORY,
@@ -21,6 +23,10 @@ import { PuzzleController } from "./controller/puzzle.controller.js";
       provide: CROSSWORD_GENERATOR_FACTORY,
       useValue: (options: { rows: number; cols: number }) =>
         new CrosswordGenerator(options),
+    },
+    {
+      provide: CROSSWORD_CONTENT_PROVIDER,
+      useClass: StaticCrosswordContentProvider,
     },
   ],
   exports: [PuzzleService],

@@ -4,6 +4,9 @@ import {
   CrosswordGenerator,
   CrosswordGeneratorOptions,
 } from "../../crossword/generator/crossword-generator.js";
+import { CROSSWORD_CONTENT_PROVIDER } from "../../crossword/content/crossword-content-provider.js";
+import type { CrosswordContentProvider } from "../../crossword/content/crossword-content-provider.js";
+import { normalizeCrosswordWords } from "../../crossword/content/normalize-crossword-word.js";
 import type {
   CreatePuzzleData,
   GeneratePuzzleData,
@@ -27,6 +30,8 @@ export class PuzzleService {
     private readonly puzzleRepository: PuzzleRepository,
     @Inject(CROSSWORD_GENERATOR_FACTORY)
     private readonly crosswordGeneratorFactory: CrosswordGeneratorFactory,
+    @Inject(CROSSWORD_CONTENT_PROVIDER)
+    private readonly crosswordContentProvider: CrosswordContentProvider,
   ) {}
 
   async findById(id: string): Promise<Puzzle | null> {
@@ -42,11 +47,17 @@ export class PuzzleService {
   }
 
   async generate(data: GeneratePuzzleData): Promise<Puzzle> {
+    const words = await this.crosswordContentProvider.generateWords({
+      theme: data.theme,
+      difficulty: data.difficulty,
+      wordCount: data.wordCount,
+    });
+
     const generator = this.crosswordGeneratorFactory({
       rows: data.rows,
       cols: data.columns,
     });
-    const { grid } = generator.generate(data.words);
+    const { grid } = generator.generate(normalizeCrosswordWords(words));
 
     return this.puzzleRepository.create({
       title: data.title,

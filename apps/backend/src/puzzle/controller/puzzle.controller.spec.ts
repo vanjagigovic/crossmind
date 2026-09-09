@@ -158,7 +158,7 @@ describe("PuzzleController", () => {
       difficulty: "medium" as const,
       rows: 5,
       columns: 5,
-      words: [{ answer: "CAT", clue: "A small animal" }],
+      wordCount: 5,
     };
     const generatedPuzzle = { ...puzzle, ...data, status: "ready" as const };
 
@@ -194,9 +194,9 @@ describe("PuzzleController", () => {
     expect(errors).not.toEqual([]);
   });
 
-  it("rejects words without the required structure", async () => {
+  it("rejects a non-positive word count", async () => {
     const errors = await validate(
-      plainToInstance(GeneratePuzzleDto, validGeneratePuzzleData({ words: [{ answer: "CAT" }] })),
+      plainToInstance(GeneratePuzzleDto, validGeneratePuzzleData({ wordCount: 0 })),
     );
 
     expect(errors).not.toEqual([]);
@@ -252,7 +252,7 @@ function validGeneratePuzzleData(overrides: Record<string, unknown> = {}) {
     difficulty: "easy",
     rows: 5,
     columns: 5,
-    words: [{ answer: "CAT", clue: "A small animal" }],
+    wordCount: 5,
     ...overrides,
   };
 }

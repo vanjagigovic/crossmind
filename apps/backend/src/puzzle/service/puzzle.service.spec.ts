@@ -8,6 +8,7 @@ import type {
 } from "../domain/puzzle.js";
 
 import type { PuzzleRepository } from "../repository/puzzle.repository.js";
+import type { CrosswordContentProvider } from "../../crossword/content/crossword-content-provider.js";
 
 import {
   CrosswordGeneratorFactory,
@@ -26,10 +27,14 @@ describe("PuzzleService", () => {
   const crosswordGeneratorFactory = vi.fn(() => ({
     generate: generatorGenerate,
   })) as unknown as CrosswordGeneratorFactory;
+  const crosswordContentProvider: CrosswordContentProvider = {
+    generateWords: vi.fn(),
+  };
 
   const service = new PuzzleService(
     puzzleRepository,
     crosswordGeneratorFactory,
+    crosswordContentProvider,
   );
 
   it("should find a puzzle by id", async () => {
@@ -84,15 +89,16 @@ describe("PuzzleService", () => {
       difficulty: "medium",
       rows: 5,
       columns: 5,
-      words: [{ answer: "CAT", clue: "A small animal" }],
+      wordCount: 1,
     };
+    const words = [{ answer: "CAT", clue: "A small animal" }];
     const grid = {
       rows: 5,
       cols: 5,
       cells: [],
       placements: [
         {
-          word: data.words[0],
+          word: words[0],
           row: 2,
           col: 1,
           direction: "across" as const,
@@ -101,17 +107,23 @@ describe("PuzzleService", () => {
     };
     const persistedPuzzle = { id: "puzzle-1", ...data, status: "ready", grid } as Puzzle;
 
+    vi.mocked(crosswordContentProvider.generateWords).mockResolvedValue(words);
     generatorGenerate.mockReturnValue({
       grid,
-      placedWords: data.words,
+      placedWords: words,
       unplacedWords: [],
     });
     vi.mocked(puzzleRepository.create).mockResolvedValue(persistedPuzzle);
 
     const result = await service.generate(data);
 
+    expect(crosswordContentProvider.generateWords).toHaveBeenCalledWith({
+      theme: data.theme,
+      difficulty: data.difficulty,
+      wordCount: data.wordCount,
+    });
     expect(crosswordGeneratorFactory).toHaveBeenCalledWith({ rows: 5, cols: 5 });
-    expect(generatorGenerate).toHaveBeenCalledWith(data.words);
+    expect(generatorGenerate).toHaveBeenCalledWith(words);
     expect(puzzleRepository.create).toHaveBeenCalledWith({
       title: data.title,
       theme: data.theme,
@@ -122,6 +134,31 @@ describe("PuzzleService", () => {
       grid,
     });
     expect(result).toBe(persistedPuzzle);
+  });
+
+  it("normalizes provider words before passing them to the generator", async () => {
+    const data: GeneratePuzzleData = {
+      title: "Animal Puzzle",
+      theme: "Animals",
+      difficulty: "medium",
+      rows: 5,
+      columns: 5,
+      wordCount: 2,
+    };
+    const grid = { rows: 5, cols: 5, cells: [], placements: [] };
+
+    vi.mocked(crosswordContentProvider.generateWords).mockResolvedValue([
+      { answer: "  cat  ", clue: "  A small animal  " },
+      { answer: "INVALID-ANSWER", clue: "Should be dropped" },
+    ]);
+    generatorGenerate.mockReturnValue({ grid, placedWords: [], unplacedWords: [] });
+    vi.mocked(puzzleRepository.create).mockResolvedValue({ id: "puzzle-1" } as Puzzle);
+
+    await service.generate(data);
+
+    expect(generatorGenerate).toHaveBeenCalledWith([
+      { answer: "CAT", clue: "A small animal" },
+    ]);
   });
 
   it("should update a puzzle", async () => {
