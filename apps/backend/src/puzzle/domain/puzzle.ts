@@ -1,4 +1,5 @@
-import type { Grid } from "../../crossword/domain/grid.js";
+import type { CrosswordGrid } from "../../crossword/domain/grid.js";
+import type { CrosswordWord } from "../../crossword/domain/word.js";
 
 export type PuzzleDifficulty = "easy" | "medium" | "hard";
 
@@ -17,7 +18,7 @@ export type Puzzle = {
   status: PuzzleStatus;
   rows: number;
   columns: number;
-  grid: Grid;
+  grid: CrosswordGrid;
 };
 
 export type CreatePuzzleData = {
@@ -27,7 +28,16 @@ export type CreatePuzzleData = {
   status: PuzzleStatus;
   rows: number;
   columns: number;
-  grid: Grid;
+  grid: CrosswordGrid;
 };
 
 export type UpdatePuzzleData = Partial<CreatePuzzleData>;
+
+export type GeneratePuzzleData = {
+  title: string;
+  theme: string;
+  difficulty: PuzzleDifficulty;
+  rows: number;
+  columns: number;
+  words: CrosswordWord[];
+};

@@ -2,13 +2,17 @@ import { describe, expect, it, vi } from "vitest";
 
 import type {
   CreatePuzzleData,
+  GeneratePuzzleData,
   Puzzle,
   UpdatePuzzleData,
 } from "../domain/puzzle.js";
 
 import type { PuzzleRepository } from "../repository/puzzle.repository.js";
 
-import { PuzzleService } from "./puzzle.service.js";
+import {
+  CrosswordGeneratorFactory,
+  PuzzleService,
+} from "./puzzle.service.js";
 
 describe("PuzzleService", () => {
   const puzzleRepository: PuzzleRepository = {
@@ -18,8 +22,15 @@ describe("PuzzleService", () => {
     update: vi.fn(),
     delete: vi.fn(),
   };
+  const generatorGenerate = vi.fn();
+  const crosswordGeneratorFactory = vi.fn(() => ({
+    generate: generatorGenerate,
+  })) as unknown as CrosswordGeneratorFactory;
 
-  const service = new PuzzleService(puzzleRepository);
+  const service = new PuzzleService(
+    puzzleRepository,
+    crosswordGeneratorFactory,
+  );
 
   it("should find a puzzle by id", async () => {
     const puzzle = {
@@ -64,6 +75,53 @@ describe("PuzzleService", () => {
 
     expect(puzzleRepository.create).toHaveBeenCalledWith(data);
     expect(result).toEqual(puzzle);
+  });
+
+  it("generates and persists a ready puzzle", async () => {
+    const data: GeneratePuzzleData = {
+      title: "Animal Puzzle",
+      theme: "Animals",
+      difficulty: "medium",
+      rows: 5,
+      columns: 5,
+      words: [{ answer: "CAT", clue: "A small animal" }],
+    };
+    const grid = {
+      rows: 5,
+      cols: 5,
+      cells: [],
+      placements: [
+        {
+          word: data.words[0],
+          row: 2,
+          col: 1,
+          direction: "across" as const,
+        },
+      ],
+    };
+    const persistedPuzzle = { id: "puzzle-1", ...data, status: "ready", grid } as Puzzle;
+
+    generatorGenerate.mockReturnValue({
+      grid,
+      placedWords: data.words,
+      unplacedWords: [],
+    });
+    vi.mocked(puzzleRepository.create).mockResolvedValue(persistedPuzzle);
+
+    const result = await service.generate(data);
+
+    expect(crosswordGeneratorFactory).toHaveBeenCalledWith({ rows: 5, cols: 5 });
+    expect(generatorGenerate).toHaveBeenCalledWith(data.words);
+    expect(puzzleRepository.create).toHaveBeenCalledWith({
+      title: data.title,
+      theme: data.theme,
+      difficulty: data.difficulty,
+      status: "ready",
+      rows: data.rows,
+      columns: data.columns,
+      grid,
+    });
+    expect(result).toBe(persistedPuzzle);
   });
 
   it("should update a puzzle", async () => {

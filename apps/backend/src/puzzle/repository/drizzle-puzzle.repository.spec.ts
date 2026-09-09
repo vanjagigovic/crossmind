@@ -5,11 +5,13 @@ import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { DatabaseService } from "../../db/database.service.js";
 import { db, pool } from "../../db/db.js";
 import { puzzles } from "../../db/schema/index.js";
+import { createCrosswordGrid } from "../../crossword/helpers/grid-helper.js";
 import { DrizzlePuzzleRepository } from "./drizzle-puzzle.repository.js";
 
 describe("DrizzlePuzzleRepository", () => {
     const database = new DatabaseService();
     const repository = new DrizzlePuzzleRepository(database);
+    const createGrid = (rows: number, columns: number) => createCrosswordGrid(rows, columns);
 
     beforeEach(async () => {
         await db.delete(puzzles);
@@ -29,11 +31,7 @@ describe("DrizzlePuzzleRepository", () => {
                 status: "draft",
                 rows: 3,
                 columns: 3,
-                grid: [
-                    ["C", "A", "T"],
-                    [null, "R", null],
-                    ["D", "O", "G"],
-                ],
+                grid: createGrid(3, 3),
             })
             .returning();
 
@@ -47,11 +45,7 @@ describe("DrizzlePuzzleRepository", () => {
             status: "draft",
             rows: 3,
             columns: 3,
-            grid: [
-                ["C", "A", "T"],
-                [null, "R", null],
-                ["D", "O", "G"],
-            ],
+            grid: createGrid(3, 3),
         });
     });
 
@@ -71,11 +65,7 @@ describe("DrizzlePuzzleRepository", () => {
                 status: "ready",
                 rows: 3,
                 columns: 3,
-                grid: [
-                    ["C", "A", "T"],
-                    [null, "R", null],
-                    ["D", "O", "G"],
-                ],
+                grid: createGrid(3, 3),
             },
             {
                 title: "Space",
@@ -84,10 +74,7 @@ describe("DrizzlePuzzleRepository", () => {
                 status: "draft",
                 rows: 2,
                 columns: 2,
-                grid: [
-                    ["M", "O"],
-                    ["O", "N"],
-                ],
+                grid: createGrid(2, 2),
             },
         ]);
 
@@ -117,11 +104,7 @@ describe("DrizzlePuzzleRepository", () => {
             status: "draft" as const,
             rows: 3,
             columns: 3,
-            grid: [
-                ["T", "R", "E"],
-                [null, "E", null],
-                ["L", "E", "A"],
-            ],
+            grid: createGrid(3, 3),
         };
 
         const puzzle = await repository.create(data);
@@ -134,11 +117,7 @@ describe("DrizzlePuzzleRepository", () => {
             status: "draft",
             rows: 3,
             columns: 3,
-            grid: [
-                ["T", "R", "E"],
-                [null, "E", null],
-                ["L", "E", "A"],
-            ],
+            grid: createGrid(3, 3),
         });
     });
 
@@ -152,11 +131,7 @@ describe("DrizzlePuzzleRepository", () => {
                 status: "draft",
                 rows: 3,
                 columns: 3,
-                grid: [
-                    ["C", "A", "T"],
-                    [null, "R", null],
-                    ["D", "O", "G"],
-                ],
+                grid: createGrid(3, 3),
             })
             .returning();
 
@@ -196,11 +171,7 @@ describe("DrizzlePuzzleRepository", () => {
                 status: "draft",
                 rows: 3,
                 columns: 3,
-                grid: [
-                    ["C", "A", "T"],
-                    [null, "R", null],
-                    ["D", "O", "G"],
-                ],
+                grid: createGrid(3, 3),
             })
             .returning();
 
