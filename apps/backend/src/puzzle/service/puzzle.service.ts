@@ -12,6 +12,7 @@ import type {
   CreatePuzzleData,
   GeneratePuzzleData,
   Puzzle,
+  PuzzleWithEntries,
   UpdatePuzzleData,
 } from "../domain/puzzle.js";
 
@@ -41,8 +42,16 @@ export class PuzzleService {
     private readonly databaseService: DatabaseService,
   ) {}
 
-  async findById(id: string): Promise<Puzzle | null> {
-    return this.puzzleRepository.findById(id);
+  async findById(id: string): Promise<PuzzleWithEntries | null> {
+    const puzzle = await this.puzzleRepository.findById(id);
+
+    if (!puzzle) {
+      return null;
+    }
+
+    const entries = await this.puzzleEntryRepository.findByPuzzleId(id);
+
+    return { ...puzzle, entries };
   }
 
   async findAll(): Promise<Puzzle[]> {
