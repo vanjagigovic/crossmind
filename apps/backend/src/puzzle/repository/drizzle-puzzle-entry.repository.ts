@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { asc, eq } from "drizzle-orm";
 
 import { DatabaseService } from "../../db/database.service.js";
 import type { DatabaseTransaction } from "../../db/database.service.js";
@@ -22,6 +23,16 @@ export class DrizzlePuzzleEntryRepository implements PuzzleEntryRepository {
       .insert(puzzleEntries)
       .values(entries)
       .returning();
+
+    return result.map((entry) => this.toDomain(entry));
+  }
+
+  async findByPuzzleId(puzzleId: string): Promise<PuzzleEntry[]> {
+    const result = await this.database.client
+      .select()
+      .from(puzzleEntries)
+      .where(eq(puzzleEntries.puzzleId, puzzleId))
+      .orderBy(asc(puzzleEntries.number));
 
     return result.map((entry) => this.toDomain(entry));
   }

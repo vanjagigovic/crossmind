@@ -3,7 +3,6 @@ import { getPuzzle } from '../../../api/puzzles'
 import type { Puzzle } from '../../../types/puzzle'
 import { ClueList } from '../components/ClueList'
 import { CrosswordGrid, type PuzzleCompletion } from '../components/CrosswordGrid'
-import { getEntryNumbers } from '../components/entryNumbers'
 import { savePuzzleSessionResult } from '../utils/puzzleSessionResult'
 import { calculateScore } from '../utils/scoreUtils'
 
@@ -59,7 +58,6 @@ function LoadedPuzzlePage({ puzzleId }: LoadedPuzzlePageProps) {
   }
 
   const loadedPuzzle = puzzle
-  const entryNumbers = getEntryNumbers(loadedPuzzle.grid.placements)
 
   function handleComplete({ elapsedSeconds, mistakes }: PuzzleCompletion) {
     const result = {
@@ -88,7 +86,7 @@ function LoadedPuzzlePage({ puzzleId }: LoadedPuzzlePageProps) {
         </dl>
       </header>
       <CrosswordGrid grid={loadedPuzzle.grid} onComplete={handleComplete} />
-      <ClueList placements={loadedPuzzle.grid.placements} entryNumbers={entryNumbers} />
+      <ClueList entries={loadedPuzzle.entries} />
     </main>
   )
 }

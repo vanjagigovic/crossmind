@@ -27,6 +27,7 @@ describe("PuzzleService", () => {
   };
   const puzzleEntryRepository: PuzzleEntryRepository = {
     createMany: vi.fn().mockResolvedValue([]),
+    findByPuzzleId: vi.fn().mockResolvedValue([]),
   };
   const fakeTx = {} as DatabaseTransaction;
   const databaseService = {
@@ -52,13 +53,47 @@ describe("PuzzleService", () => {
     const puzzle = {
       id: "puzzle-1",
     } as Puzzle;
+    const entries = [
+      {
+        id: "entry-1",
+        puzzleId: "puzzle-1",
+        word: "CAT",
+        clue: "A small animal",
+        direction: "across" as const,
+        row: 0,
+        column: 0,
+        length: 3,
+        number: 1,
+      },
+    ];
 
     vi.mocked(puzzleRepository.findById).mockResolvedValue(puzzle);
+    vi.mocked(puzzleEntryRepository.findByPuzzleId).mockResolvedValue(entries);
 
     const result = await service.findById("puzzle-1");
 
     expect(puzzleRepository.findById).toHaveBeenCalledWith("puzzle-1");
-    expect(result).toEqual(puzzle);
+    expect(puzzleEntryRepository.findByPuzzleId).toHaveBeenCalledWith("puzzle-1");
+    expect(result).toEqual({ ...puzzle, entries });
+  });
+
+  it("returns null when the puzzle does not exist", async () => {
+    vi.mocked(puzzleRepository.findById).mockResolvedValue(null);
+
+    const result = await service.findById("missing-id");
+
+    expect(result).toBeNull();
+  });
+
+  it("returns an empty entries array when a puzzle has no entries", async () => {
+    const puzzle = { id: "puzzle-1" } as Puzzle;
+
+    vi.mocked(puzzleRepository.findById).mockResolvedValue(puzzle);
+    vi.mocked(puzzleEntryRepository.findByPuzzleId).mockResolvedValue([]);
+
+    const result = await service.findById("puzzle-1");
+
+    expect(result).toEqual({ ...puzzle, entries: [] });
   });
 
   it("should return all puzzles", async () => {

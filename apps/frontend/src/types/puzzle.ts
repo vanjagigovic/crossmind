@@ -44,4 +44,17 @@ export type Puzzle = {
   rows: number
   columns: number
   grid: CrosswordGrid
+  entries: PuzzleEntry[]
+}
+
+export type PuzzleEntry = {
+  id: string
+  puzzleId: string
+  word: string
+  clue: string
+  direction: Direction
+  row: number
+  column: number
+  length: number
+  number: number
 }

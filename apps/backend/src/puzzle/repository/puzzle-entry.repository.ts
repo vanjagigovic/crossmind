@@ -6,4 +6,6 @@ export interface PuzzleEntryRepository {
     entries: CreatePuzzleEntryData[],
     tx?: DatabaseTransaction,
   ): Promise<PuzzleEntry[]>;
+
+  findByPuzzleId(puzzleId: string): Promise<PuzzleEntry[]>;
 }

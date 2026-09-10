@@ -55,6 +55,40 @@ describe("PuzzleController", () => {
     expect(puzzleService.findById).toHaveBeenCalledWith("puzzle-1");
   });
 
+  it("should return a puzzle with its entries", async () => {
+    const puzzleWithEntries = {
+      ...puzzle,
+      entries: [
+        {
+          id: "entry-1",
+          puzzleId: "puzzle-1",
+          word: "CAT",
+          clue: "A small animal",
+          direction: "across" as const,
+          row: 0,
+          column: 0,
+          length: 3,
+          number: 1,
+        },
+      ],
+    };
+
+    puzzleService.findById.mockResolvedValue(puzzleWithEntries);
+
+    const result = await controller.findById("puzzle-1");
+
+    expect(result).toEqual(puzzleWithEntries);
+    expect(result.entries).toHaveLength(1);
+    expect(result.entries[0]).toMatchObject({
+      direction: "across",
+      clue: "A small animal",
+      row: 0,
+      column: 0,
+      length: 3,
+      number: 1,
+    });
+  });
+
   it("should throw NotFoundException when puzzle does not exist", async () => {
     puzzleService.findById.mockResolvedValue(null);
 

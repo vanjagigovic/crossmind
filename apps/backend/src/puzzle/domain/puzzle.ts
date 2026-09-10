@@ -1,5 +1,6 @@
 import type { CrosswordGrid } from "../../crossword/domain/grid.js";
 import type { CrosswordDifficulty } from "../../crossword/domain/difficulty.js";
+import type { PuzzleEntry } from "./puzzle-entry.js";
 
 export type PuzzleDifficulty = CrosswordDifficulty;
 
@@ -40,4 +41,8 @@ export type GeneratePuzzleData = {
   rows: number;
   columns: number;
   wordCount: number;
+};
+
+export type PuzzleWithEntries = Puzzle & {
+  entries: PuzzleEntry[];
 };
