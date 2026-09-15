@@ -55,16 +55,16 @@ export function CrosswordGrid({
   const completionHandledRef = useRef(false)
   const activePlacement = selectedCell
     ? getPlacementAtCell(
-        grid.placements,
-        selectedCell,
-        activeDirection,
-      )
+      grid.placements,
+      selectedCell,
+      activeDirection,
+    )
     : undefined
   const activeCellKeys = new Set(
     activePlacement
       ? getPlacementCells(activePlacement).map((cell) =>
-          getCellKey(cell.row, cell.col),
-        )
+        getCellKey(cell.row, cell.col),
+      )
       : [],
   )
   const playableCells = grid.cells.flat().filter(isPlayableCell)
@@ -118,9 +118,9 @@ export function CrosswordGrid({
       selectedCell.col === cell.col
     const alternatePlacement = isSameCell
       ? placements.find(
-          (placement) =>
-            placement.direction !== activeDirection,
-        )
+        (placement) =>
+          placement.direction !== activeDirection,
+      )
       : undefined
     const currentDirectionPlacement = placements.find(
       (placement) =>
@@ -293,7 +293,7 @@ export function CrosswordGrid({
 
     const nextCell =
       grid.cells[selectedCell.row + rowOffset]?.[
-        selectedCell.col + colOffset
+      selectedCell.col + colOffset
       ]
     if (!nextCell || !isPlayableCell(nextCell)) {
       return
@@ -318,6 +318,15 @@ export function CrosswordGrid({
   function handleKeyDown(
     event: KeyboardEvent<HTMLElement>,
   ) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+
+      if (selectedCell) {
+        selectCell(selectedCell)
+      }
+
+      return
+    }
     if (/^[a-z]$/i.test(event.key)) {
       event.preventDefault()
       enterLetter(event.key)
@@ -344,7 +353,7 @@ export function CrosswordGrid({
     } as const
     const arrowKey =
       arrowKeys[
-        event.key as keyof typeof arrowKeys
+      event.key as keyof typeof arrowKeys
       ]
 
     if (arrowKey) {
@@ -435,7 +444,7 @@ export function CrosswordGrid({
                 active={activeCellKeys.has(cellKey)}
                 incorrect={Boolean(
                   value &&
-                    value !== cell.letter,
+                  value !== cell.letter,
                 )}
                 completed={completed}
                 onSelect={() =>
@@ -495,10 +504,10 @@ function isSolved(
     playableCells.every(
       (cell) =>
         enteredLetters[
-          getCellKey(
-            cell.row,
-            cell.col,
-          )
+        getCellKey(
+          cell.row,
+          cell.col,
+        )
         ] === cell.letter,
     )
   )
@@ -526,25 +535,25 @@ function getWordStatus(
     placementCells.filter((cell) => {
       const value =
         enteredLetters[
-          getCellKey(
-            cell.row,
-            cell.col,
-          )
+        getCellKey(
+          cell.row,
+          cell.col,
+        )
         ]
 
       return (
         value &&
         value !==
-          cells[cell.row][cell.col].letter
+        cells[cell.row][cell.col].letter
       )
     }).length
   const correct = placementCells.every(
     (cell) =>
       enteredLetters[
-        getCellKey(
-          cell.row,
-          cell.col,
-        )
+      getCellKey(
+        cell.row,
+        cell.col,
+      )
       ] ===
       cells[cell.row][cell.col].letter,
   )
