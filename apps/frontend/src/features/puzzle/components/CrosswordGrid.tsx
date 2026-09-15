@@ -14,7 +14,10 @@ import {
   getPlacementsAtCell,
   type CellCoordinate,
 } from './placementUtils'
-import { countMistakes, trackMistake } from '../utils/mistakeTracking'
+import {
+  countMistakes,
+  trackMistake,
+} from '../utils/mistakeTracking'
 import { formatElapsedTime } from '../utils/timerUtils'
 
 type CrosswordGridProps = {
@@ -46,9 +49,8 @@ export function CrosswordGrid({
     Record<string, string>
   >({})
   const [elapsedTime, setElapsedTime] = useState(0)
-  const [mistakenCells, setMistakenCells] = useState<ReadonlySet<string>>(
-    new Set(),
-  )
+  const [mistakenCells, setMistakenCells] =
+    useState<ReadonlySet<string>>(new Set())
 
   const inputRef = useRef<HTMLInputElement>(null)
   const startedAtRef = useRef<number | null>(null)
@@ -67,13 +69,17 @@ export function CrosswordGrid({
       )
       : [],
   )
-  const playableCells = grid.cells.flat().filter(isPlayableCell)
+  const playableCells = grid.cells
+    .flat()
+    .filter(isPlayableCell)
+  const firstPlayableCell = playableCells[0]
   const completed =
     playableCells.length > 0 &&
     playableCells.every(
       (cell) =>
-        enteredLetters[getCellKey(cell.row, cell.col)] ===
-        cell.letter,
+        enteredLetters[
+        getCellKey(cell.row, cell.col)
+        ] === cell.letter,
     )
   useEffect(() => {
     if (!startedAtRef.current) {
@@ -122,10 +128,11 @@ export function CrosswordGrid({
           placement.direction !== activeDirection,
       )
       : undefined
-    const currentDirectionPlacement = placements.find(
-      (placement) =>
-        placement.direction === activeDirection,
-    )
+    const currentDirectionPlacement =
+      placements.find(
+        (placement) =>
+          placement.direction === activeDirection,
+      )
     const acrossPlacement = placements.find(
       (placement) =>
         placement.direction === 'across',
@@ -137,7 +144,10 @@ export function CrosswordGrid({
       acrossPlacement?.direction ??
       placements[0].direction
 
-    onSelectionChange(cell, nextDirection)
+    onSelectionChange(
+      cell,
+      nextDirection,
+    )
     inputRef.current?.focus()
   }
 
@@ -151,24 +161,27 @@ export function CrosswordGrid({
       selectedCell.col,
     )
 
-    const normalizedLetter = letter.toUpperCase()
+    const normalizedLetter =
+      letter.toUpperCase()
 
     const nextLetters = {
       ...enteredLetters,
       [key]: normalizedLetter,
     }
-    const cell = grid.cells[selectedCell.row][
+    const cell =
+      grid.cells[selectedCell.row][
       selectedCell.col
-    ]
+      ]
 
     const isIncorrect =
       cell.letter !== normalizedLetter
 
-    const nextMistakenCells = trackMistake(
-      mistakenCells,
-      key,
-      isIncorrect,
-    )
+    const nextMistakenCells =
+      trackMistake(
+        mistakenCells,
+        key,
+        isIncorrect,
+      )
 
     setEnteredLetters(nextLetters)
     setMistakenCells(nextMistakenCells)
@@ -176,9 +189,10 @@ export function CrosswordGrid({
       isSolved(grid.cells, nextLetters) &&
       startedAtRef.current !== null
     ) {
-      const finalElapsedTime = getElapsedSeconds(
-        startedAtRef.current,
-      )
+      const finalElapsedTime =
+        getElapsedSeconds(
+          startedAtRef.current,
+        )
 
       setElapsedTime(finalElapsedTime)
       if (!completionHandledRef.current) {
@@ -204,8 +218,9 @@ export function CrosswordGrid({
       selectedCell.row,
       selectedCell.col,
     )
-    setEnteredLetters((currentLetters) =>
-      removeLetter(currentLetters, key),
+    setEnteredLetters(
+      (currentLetters) =>
+        removeLetter(currentLetters, key),
     )
   }
 
@@ -216,15 +231,17 @@ export function CrosswordGrid({
       return
     }
 
-    const cells = getPlacementCells(
-      activePlacement,
-    )
+    const cells =
+      getPlacementCells(
+        activePlacement,
+      )
 
     const index = getCellIndex(
       activePlacement,
       selectedCell,
     )
-    const nextCell = cells[index + offset]
+    const nextCell =
+      cells[index + offset]
 
     if (nextCell) {
       onSelectionChange(
@@ -253,21 +270,24 @@ export function CrosswordGrid({
       return
     }
 
-    const cells = getPlacementCells(
-      activePlacement,
-    )
+    const cells =
+      getPlacementCells(
+        activePlacement,
+      )
 
     const index = getCellIndex(
       activePlacement,
       selectedCell,
     )
-    const previousCell = cells[index - 1]
+    const previousCell =
+      cells[index - 1]
 
     if (previousCell) {
-      const previousKey = getCellKey(
-        previousCell.row,
-        previousCell.col,
-      )
+      const previousKey =
+        getCellKey(
+          previousCell.row,
+          previousCell.col,
+        )
       onSelectionChange(
         previousCell,
         activeDirection,
@@ -292,20 +312,26 @@ export function CrosswordGrid({
     }
 
     const nextCell =
-      grid.cells[selectedCell.row + rowOffset]?.[
+      grid.cells[
+      selectedCell.row + rowOffset
+      ]?.[
       selectedCell.col + colOffset
       ]
-    if (!nextCell || !isPlayableCell(nextCell)) {
+    if (
+      !nextCell ||
+      !isPlayableCell(nextCell)
+    ) {
       return
     }
 
-    const nextDirection = getPlacementAtCell(
-      grid.placements,
-      nextCell,
-      direction,
-    )
-      ? direction
-      : activeDirection
+    const nextDirection =
+      getPlacementAtCell(
+        grid.placements,
+        nextCell,
+        direction,
+      )
+        ? direction
+        : activeDirection
     onSelectionChange(
       {
         row: nextCell.row,
@@ -318,7 +344,10 @@ export function CrosswordGrid({
   function handleKeyDown(
     event: KeyboardEvent<HTMLElement>,
   ) {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (
+      event.key === 'Enter' ||
+      event.key === ' '
+    ) {
       event.preventDefault()
 
       if (selectedCell) {
@@ -385,36 +414,42 @@ export function CrosswordGrid({
         )}`}
       >
         Time:{' '}
-        <time dateTime={`PT${elapsedTime}S`}>
+        <time
+          dateTime={`PT${elapsedTime}S`}
+        >
           {formatElapsedTime(elapsedTime)}
         </time>
       </p>
-      {activePlacement && selectedCell && (
-        <section
-          className="active-clue"
-          aria-live="polite"
-        >
-          <p className="active-clue__heading">
-            {activePlacement.direction === 'across'
-              ? 'Across'
-              : 'Down'}{' '}
-            {entryNumbers.get(
-              getCellKey(
-                activePlacement.row,
-                activePlacement.col,
-              ),
-            )}
-          </p>
-          <p>{activePlacement.word.clue}</p>
-          <p className="active-clue__status">
-            {getWordStatus(
-              activePlacement,
-              enteredLetters,
-              grid.cells,
-            )}
-          </p>
-        </section>
-      )}
+      {activePlacement &&
+        selectedCell && (
+          <section
+            className="active-clue"
+            aria-live="polite"
+          >
+            <p className="active-clue__heading">
+              {activePlacement.direction ===
+                'across'
+                ? 'Across'
+                : 'Down'}{' '}
+              {entryNumbers.get(
+                getCellKey(
+                  activePlacement.row,
+                  activePlacement.col,
+                ),
+              )}
+            </p>
+            <p>
+              {activePlacement.word.clue}
+            </p>
+            <p className="active-clue__status">
+              {getWordStatus(
+                activePlacement,
+                enteredLetters,
+                grid.cells,
+              )}
+            </p>
+          </section>
+        )}
       <div
         className="crossword-grid"
         role="grid"
@@ -429,28 +464,49 @@ export function CrosswordGrid({
               cell.row,
               cell.col,
             )
-            const value = enteredLetters[cellKey]
+            const value =
+              enteredLetters[cellKey]
+
+            const isTabbable =
+              selectedCell
+                ? selectedCell.row ===
+                cell.row &&
+                selectedCell.col ===
+                cell.col
+                : firstPlayableCell?.row ===
+                cell.row &&
+                firstPlayableCell?.col ===
+                cell.col
 
             return (
               <CrosswordCell
                 key={`${cell.row}-${cell.col}`}
                 cell={cell}
-                number={entryNumbers.get(cellKey)}
+                number={entryNumbers.get(
+                  cellKey,
+                )}
                 value={value}
                 selected={
-                  selectedCell?.row === cell.row &&
-                  selectedCell.col === cell.col
+                  selectedCell?.row ===
+                  cell.row &&
+                  selectedCell.col ===
+                  cell.col
                 }
-                active={activeCellKeys.has(cellKey)}
+                active={activeCellKeys.has(
+                  cellKey,
+                )}
                 incorrect={Boolean(
                   value &&
                   value !== cell.letter,
                 )}
                 completed={completed}
+                tabbable={isTabbable}
                 onSelect={() =>
                   selectCell(cell)
                 }
-                onKeyDown={handleKeyDown}
+                onKeyDown={
+                  handleKeyDown
+                }
               />
             )
           }),
@@ -477,7 +533,9 @@ export function CrosswordGrid({
   )
 }
 
-function isPlayableCell(cell: GridCell) {
+function isPlayableCell(
+  cell: GridCell,
+) {
   return (
     !cell.isBlocked &&
     cell.letter !== null
@@ -488,13 +546,17 @@ function getElapsedSeconds(
   startedAt: number,
 ) {
   return Math.floor(
-    (Date.now() - startedAt) / 1000,
+    (Date.now() - startedAt) /
+    1000,
   )
 }
 
 function isSolved(
   cells: GridCell[][],
-  enteredLetters: Record<string, string>,
+  enteredLetters: Record<
+    string,
+    string
+  >,
 ) {
   const playableCells = cells
     .flat()
@@ -514,7 +576,10 @@ function isSolved(
 }
 
 function removeLetter(
-  letters: Record<string, string>,
+  letters: Record<
+    string,
+    string
+  >,
   key: string,
 ) {
   const remainingLetters = {
@@ -526,37 +591,49 @@ function removeLetter(
 
 function getWordStatus(
   placement: WordPlacement,
-  enteredLetters: Record<string, string>,
+  enteredLetters: Record<
+    string,
+    string
+  >,
   cells: GridCell[][],
 ) {
   const placementCells =
-    getPlacementCells(placement)
+    getPlacementCells(
+      placement,
+    )
   const incorrectLetters =
-    placementCells.filter((cell) => {
-      const value =
+    placementCells.filter(
+      (cell) => {
+        const value =
+          enteredLetters[
+          getCellKey(
+            cell.row,
+            cell.col,
+          )
+          ]
+
+        return (
+          value &&
+          value !==
+          cells[cell.row][
+            cell.col
+          ].letter
+        )
+      },
+    ).length
+  const correct =
+    placementCells.every(
+      (cell) =>
         enteredLetters[
         getCellKey(
           cell.row,
           cell.col,
         )
-        ]
-
-      return (
-        value &&
-        value !==
-        cells[cell.row][cell.col].letter
-      )
-    }).length
-  const correct = placementCells.every(
-    (cell) =>
-      enteredLetters[
-      getCellKey(
-        cell.row,
-        cell.col,
-      )
-      ] ===
-      cells[cell.row][cell.col].letter,
-  )
+        ] ===
+        cells[cell.row][
+          cell.col
+        ].letter,
+    )
 
   if (correct) {
     return 'Correct'
