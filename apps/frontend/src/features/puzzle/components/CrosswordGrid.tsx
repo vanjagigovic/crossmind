@@ -11,6 +11,7 @@ import {
   getPlacementsAtCell,
   type CellCoordinate,
 } from './placementUtils'
+import { countMistakes, trackMistake } from '../utils/mistakeTracking'
 import { formatElapsedTime } from '../utils/timerUtils'
 
 type CrosswordGridProps = {
@@ -29,7 +30,7 @@ export function CrosswordGrid({ grid, onComplete }: CrosswordGridProps) {
   const [activeDirection, setActiveDirection] = useState<'across' | 'down'>('across')
   const [enteredLetters, setEnteredLetters] = useState<Record<string, string>>({})
   const [elapsedTime, setElapsedTime] = useState(0)
-  const [mistakes, setMistakes] = useState(0)
+  const [mistakenCells, setMistakenCells] = useState<ReadonlySet<string>>(new Set())
   const inputRef = useRef<HTMLInputElement>(null)
   const startedAtRef = useRef<number | null>(null)
   const completionHandledRef = useRef(false)
@@ -97,18 +98,16 @@ export function CrosswordGrid({ grid, onComplete }: CrosswordGridProps) {
       [key]: letter.toUpperCase(),
     }
     const isIncorrect = grid.cells[selectedCell.row][selectedCell.col].letter !== letter.toUpperCase()
-    const nextMistakes = mistakes + (isIncorrect ? 1 : 0)
+    const nextMistakenCells = trackMistake(mistakenCells, key, isIncorrect)
 
     setEnteredLetters(nextLetters)
-    if (isIncorrect) {
-      setMistakes(nextMistakes)
-    }
+    setMistakenCells(nextMistakenCells)
     if (isSolved(grid.cells, nextLetters) && startedAtRef.current !== null) {
       const finalElapsedTime = getElapsedSeconds(startedAtRef.current)
       setElapsedTime(finalElapsedTime)
       if (!completionHandledRef.current) {
         completionHandledRef.current = true
-        onComplete({ elapsedSeconds: finalElapsedTime, mistakes: nextMistakes })
+        onComplete({ elapsedSeconds: finalElapsedTime, mistakes: countMistakes(nextMistakenCells) })
       }
     }
 
