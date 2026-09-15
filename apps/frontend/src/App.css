@@ -5,16 +5,26 @@
 .landing-page,
 .create-puzzle-page {
   box-sizing: border-box;
-  width: min(100%, 42rem);
+  width: min(100%, 64rem);
   margin: 0 auto;
-  padding: 5rem 2rem;
+  padding: 4rem 2rem;
   text-align: left;
 }
 
 .landing-page {
   display: grid;
-  align-content: center;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.8fr);
+  align-items: center;
+  gap: clamp(3rem, 8vw, 7rem);
   min-height: 100svh;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg) 62%, var(--accent-bg) 100%);
+}
+
+.landing-page__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 32rem;
 }
 
 .landing-page__eyebrow,
@@ -30,7 +40,9 @@
 }
 
 .landing-page h1 {
-  margin: 0.5rem 0 1rem;
+  margin: 0.5rem 0 1.25rem;
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  line-height: 0.95;
 }
 
 .landing-page__intro {
@@ -49,6 +61,8 @@
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
+  display: inline-block;
+  margin-top: 2rem;
 }
 
 .primary-action:disabled {
@@ -56,12 +70,25 @@
   opacity: 0.6;
 }
 
+.primary-action:focus-visible,
+.secondary-action:focus-visible,
+.choice-control:has(input:focus-visible),
+.custom-topic-input input:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
+
 .create-puzzle-page__header {
-  margin-bottom: 2rem;
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
 }
 
 .create-puzzle-page__header h1 {
   margin: 0.25rem 0 0;
+}
+
+.create-puzzle-page__header>p:last-child {
+  margin-top: 0.75rem;
 }
 
 .puzzle-form {
@@ -71,7 +98,7 @@
 
 .puzzle-form fieldset {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.875rem;
   margin: 0;
   border: 0;
   padding: 0;
@@ -80,6 +107,25 @@
 .puzzle-form legend {
   color: var(--text-h);
   font-weight: 700;
+}
+
+.form-step {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.375rem;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: var(--accent-bg);
+  font-size: 0.75rem;
+  font-family: var(--mono);
+}
+
+.fieldset-hint,
+.input-hint {
+  color: var(--text);
+  font-size: 0.875rem;
 }
 
 .choice-grid {
@@ -96,11 +142,22 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 2.5rem;
+  min-height: 3.25rem;
   border: 1px solid var(--border);
-  padding: 0 0.625rem;
+  border-radius: 6px;
+  padding: 0 0.875rem;
   color: var(--text-h);
   cursor: pointer;
+}
+
+.choice-control:hover {
+  border-color: var(--accent-border);
+}
+
+.choice-control--selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: inset 0 0 0 1px var(--accent);
 }
 
 .choice-control input {
@@ -126,6 +183,67 @@
   color: var(--text-h);
   background: var(--bg);
   font: inherit;
+}
+
+.custom-topic-input input[aria-invalid='true'] {
+  border-color: #b42318;
+}
+
+.generate-action {
+  margin-top: 0.25rem;
+}
+
+.puzzle-state--error {
+  margin: 0;
+  border-left: 3px solid #b42318;
+  padding: 0.75rem 1rem;
+  background: rgba(180, 35, 24, 0.08);
+}
+
+.landing-page__preview {
+  justify-self: center;
+  width: min(100%, 22rem);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg) 82%, var(--accent-bg));
+  box-shadow: var(--shadow);
+  transform: rotate(2deg);
+}
+
+.crossword-preview__label {
+  margin-bottom: 1rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.crossword-preview {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  aspect-ratio: 1;
+  border: 2px solid var(--text-h);
+}
+
+.crossword-preview__cell {
+  display: grid;
+  place-items: center;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+.crossword-preview__cell--blocked {
+  background: var(--text-h);
+}
+
+.crossword-preview__caption {
+  margin-top: 1rem;
+  font-size: 0.875rem;
 }
 
 .puzzle-page {
@@ -391,5 +509,17 @@
   .clue-list {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .landing-page {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 3rem;
+  }
+
+  .landing-page__preview {
+    width: min(100%, 18rem);
   }
 }
