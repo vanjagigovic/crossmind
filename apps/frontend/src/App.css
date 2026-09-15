@@ -251,15 +251,20 @@
 .crossword-cell {
   display: grid;
   position: relative;
+  width: 100%;
+  height: 100%;
   min-width: 0;
   min-height: 0;
+  box-sizing: border-box;
   place-items: center;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   color: var(--text-h);
   font-size: 1.25rem;
   font-weight: 700;
+  line-height: 1;
   text-transform: uppercase;
+  overflow: hidden;
 }
 
 .crossword-cell-number {
@@ -272,7 +277,7 @@
 }
 
 .crossword-cell--blocked {
-  background: var(--text-h);
+    background: var(--text-h);
 }
 
 .crossword-cell--selected {
@@ -334,6 +339,7 @@
   color: var(--text-h);
   font-weight: 700;
 }
+
 .clue-item {
   width: 100%;
   display: flex;
@@ -365,6 +371,7 @@
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
 .clue-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

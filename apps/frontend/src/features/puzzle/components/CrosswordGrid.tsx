@@ -456,6 +456,7 @@ export function CrosswordGrid({
         aria-label="Crossword grid"
         style={{
           gridTemplateColumns: `repeat(${grid.cols}, minmax(0, 1fr))`,
+          gridTemplateRows: `repeat(${grid.rows}, minmax(0, 1fr))`,
         }}
       >
         {grid.cells.flatMap((row) =>
