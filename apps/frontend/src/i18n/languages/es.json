@@ -17,6 +17,10 @@
     "puzzleCompleted": "¡Crucigrama completado!",
     "language": "Idioma"
   },
+  "language": {
+    "title": "Idioma del crucigrama",
+    "hint": "¿En qué idioma se debe generar el contenido del crucigrama?"
+  },
   "landing": {
     "eyebrow": "Un crucigrama para tu curiosidad",
     "intro": "Elige un tema, selecciona tu desafío y CrossMind creará un crucigrama para ti.",

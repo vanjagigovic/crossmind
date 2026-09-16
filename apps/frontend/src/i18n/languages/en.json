@@ -17,6 +17,10 @@
         "puzzleCompleted": "Puzzle completed!",
         "language": "Language"
     },
+    "language": {
+        "title": "Puzzle language",
+        "hint": "Which language should the crossword content be generated in?"
+    },
     "landing": {
         "eyebrow": "A crossword for your curiosity",
         "intro": "Choose a topic, pick your challenge, and CrossMind will build a crossword made for you.",

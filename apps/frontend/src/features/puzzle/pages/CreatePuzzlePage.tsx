@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { generatePuzzle } from '../../../api/puzzles'
-import type { PuzzleDifficulty } from '../../../types/puzzle'
+import type { PuzzleDifficulty, PuzzleLanguage } from '../../../types/puzzle'
 
 const TOPICS = [
   'programming',
@@ -49,6 +49,7 @@ export function CreatePuzzlePage() {
   const [size, setSize] = useState<PuzzleSize>('medium')
   const [error, setError] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [language, setLanguage] = useState<PuzzleLanguage>('en')
 
   const isCustomTopic = selectedTopic === 'custom'
 
@@ -75,6 +76,7 @@ export function CreatePuzzlePage() {
         rows: selectedSize.rows,
         columns: selectedSize.columns,
         wordCount: selectedSize.wordCount,
+        language,
       })
 
       window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`)
@@ -110,8 +112,8 @@ export function CreatePuzzlePage() {
               <label
                 key={topic}
                 className={`choice-control${selectedTopic === topic
-                    ? ' choice-control--selected'
-                    : ''
+                  ? ' choice-control--selected'
+                  : ''
                   }`}
               >
                 <input
@@ -128,8 +130,8 @@ export function CreatePuzzlePage() {
 
             <label
               className={`choice-control${isCustomTopic
-                  ? ' choice-control--selected'
-                  : ''
+                ? ' choice-control--selected'
+                : ''
                 }`}
             >
               <input
@@ -174,6 +176,44 @@ export function CreatePuzzlePage() {
         <fieldset>
           <legend>
             <span className="form-step">02</span>{' '}
+            {t('createPuzzle.language.title')}
+          </legend>
+
+          <p className="fieldset-hint">
+            {t('createPuzzle.language.hint')}
+          </p>
+
+          <div className="choice-grid choice-grid--compact">
+            {(
+              [
+                { value: 'en', label: 'English' },
+                { value: 'sr', label: 'Srpski' },
+                { value: 'es', label: 'Español' },
+              ] as const
+            ).map((option) => (
+              <label
+                key={option.value}
+                className={`choice-control${language === option.value
+                    ? ' choice-control--selected'
+                    : ''
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="language"
+                  value={option.value}
+                  checked={language === option.value}
+                  onChange={() => setLanguage(option.value)}
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>
+            <span className="form-step">03</span>{' '}
             {t('createPuzzle.difficulty.title')}
           </legend>
 
@@ -187,8 +227,8 @@ export function CreatePuzzlePage() {
                 <label
                   key={option}
                   className={`choice-control${difficulty === option
-                      ? ' choice-control--selected'
-                      : ''
+                    ? ' choice-control--selected'
+                    : ''
                     }`}
                 >
                   <input
@@ -210,7 +250,7 @@ export function CreatePuzzlePage() {
 
         <fieldset>
           <legend>
-            <span className="form-step">03</span>{' '}
+            <span className="form-step">04</span>{' '}
             {t('createPuzzle.size.title')}
           </legend>
 
@@ -228,8 +268,8 @@ export function CreatePuzzlePage() {
               <label
                 key={value}
                 className={`choice-control${size === value
-                    ? ' choice-control--selected'
-                    : ''
+                  ? ' choice-control--selected'
+                  : ''
                   }`}
               >
                 <input

@@ -28,6 +28,8 @@ export type WordPlacement = {
 
 export type PuzzleDifficulty = 'easy' | 'medium' | 'hard'
 
+export type PuzzleLanguage = 'en' | 'sr' | 'es'
+
 export type PuzzleStatus =
   | 'draft'
   | 'generating'

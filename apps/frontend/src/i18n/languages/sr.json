@@ -17,6 +17,10 @@
     "puzzleCompleted": "Ukrštenica je završena!",
     "language": "Jezik"
   },
+  "language": {
+    "title": "Jezik ukrštenice",
+    "hint": "Na kom jeziku treba generisati sadržaj ukrštenice?"
+  },
   "landing": {
     "eyebrow": "Ukrštenica za tvoju radoznalost",
     "intro": "Izaberi temu, odaberi izazov, a CrossMind će napraviti ukrštenicu baš za tebe.",
