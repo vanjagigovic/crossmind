@@ -1,0 +1,107 @@
+{
+    "common": {
+        "createPuzzle": "Create Puzzle",
+        "generatePuzzle": "Generate Puzzle",
+        "generating": "Generating...",
+        "newPuzzle": "New puzzle",
+        "customTopic": "Custom topic",
+        "custom": "Custom",
+        "difficulty": "Difficulty",
+        "size": "Size",
+        "status": "Status",
+        "time": "Time",
+        "score": "Score",
+        "mistakes": "Mistakes",
+        "across": "Across",
+        "down": "Down",
+        "puzzleCompleted": "Puzzle completed!"
+    },
+    "landing": {
+        "eyebrow": "A crossword for your curiosity",
+        "intro": "Choose a topic, pick your challenge, and CrossMind will build a crossword made for you.",
+        "previewLabel": "Your next puzzle",
+        "previewCaption": "A fresh grid, shaped around what you want to explore.",
+        "previewAriaLabel": "A crossword puzzle preview"
+    },
+    "createPuzzle": {
+        "title": "Create Puzzle",
+        "description": "Choose a topic, difficulty, and size. We will handle the rest.",
+        "topic": {
+            "title": "Topic",
+            "hint": "What should your crossword be about?",
+            "customLabel": "Custom topic",
+            "placeholder": "Formula 1 racing",
+            "inputHint": "Keep it specific for a more focused puzzle.",
+            "error": "Enter a custom topic to generate your puzzle."
+        },
+        "difficulty": {
+            "title": "Difficulty",
+            "hint": "How much of a challenge are you after?",
+            "easy": "Easy",
+            "medium": "Medium",
+            "hard": "Hard"
+        },
+        "size": {
+            "title": "Puzzle size",
+            "hint": "How much grid do you want to tackle?",
+            "small": "Small",
+            "medium": "Medium",
+            "large": "Large"
+        },
+        "error": "We could not generate that puzzle. Check your selections and try again.",
+        "generating": "Generating your puzzle..."
+    },
+    "topics": {
+        "programming": "Programming",
+        "travel": "Travel",
+        "animals": "Animals",
+        "movies": "Movies",
+        "science": "Science",
+        "history": "History",
+        "sports": "Sports",
+        "food": "Food"
+    },
+    "puzzlePage": {
+        "error": {
+            "idRequired": "A puzzle ID is required.",
+            "loadFailed": "Unable to load the puzzle."
+        },
+        "loading": "Loading puzzle...",
+        "difficulty": "Difficulty",
+        "statusLabel": "Status",
+        "status": {
+            "draft": "Draft",
+            "generating": "Generating",
+            "ready": "Ready",
+            "published": "Published",
+            "archived": "Archived"
+        },
+        "size": "Size",
+        "time": "Time",
+        "completed": "Puzzle completed!",
+        "gameplay": {
+            "correct": "Correct",
+            "incorrect": "{{count}} incorrect",
+            "inProgress": "In progress"
+        }
+    },
+    "result": {
+        "completed": "Puzzle completed!",
+        "title": "Great work",
+        "noSession": "No completed puzzle session was found.",
+        "playAgain": "Play Again",
+        "createNewPuzzle": "Create New Puzzle"
+    },
+    "accessibility": {
+        "crosswordGrid": "Crossword grid",
+        "enterLetter": "Enter a letter for the selected crossword cell",
+        "blockedCell": "Blocked cell",
+        "entry": "Entry {{number}}, row {{row}}, column {{column}}",
+        "cell": "Row {{row}}, column {{column}}",
+        "contains": "contains {{value}}",
+        "empty": "empty",
+        "incorrect": "incorrect",
+        "selected": "selected",
+        "elapsedTime": "Elapsed time {{time}}"
+    }
+}
