@@ -1,5 +1,5 @@
 import { get, post } from './client'
-import type { Puzzle, PuzzleDifficulty } from '../types/puzzle'
+import type { Puzzle, PuzzleDifficulty, PuzzleLanguage } from '../types/puzzle'
 
 export type GeneratePuzzleRequest = {
   title: string
@@ -8,6 +8,7 @@ export type GeneratePuzzleRequest = {
   rows: number
   columns: number
   wordCount: number
+  language: PuzzleLanguage
 }
 
 export function getPuzzle(id: string): Promise<Puzzle> {

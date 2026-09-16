@@ -11,8 +11,15 @@ import type {
 import { normalizeCrosswordWords } from "../normalize-crossword-word.js";
 import { OPENAI_CLIENT_FACTORY } from "./openai-client.js";
 import type { OpenAiClientFactory } from "./openai-client.js";
+import { CrosswordLanguage } from "../../domain/language.js";
 
 const DEFAULT_MODEL = "gpt-4o-mini";
+
+const LANGUAGE_NAMES: Record<CrosswordLanguage, string> = {
+  en: "English",
+  sr: "Serbian",
+  es: "Spanish",
+};
 
 // Structured output schema: guarantees shape, not crossword-specific validity (see normalizeCrosswordWords).
 const CROSSWORD_WORDS_SCHEMA = {
@@ -43,7 +50,7 @@ export class OpenAiCrosswordContentProvider implements CrosswordContentProvider 
     @Inject(OPENAI_CLIENT_FACTORY)
     private readonly createClient: OpenAiClientFactory,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async generateWords(request: CrosswordContentRequest): Promise<CrosswordWord[]> {
     const apiKey = this.configService.getOrThrow<string>("OPENAI_API_KEY");
@@ -88,18 +95,42 @@ export class OpenAiCrosswordContentProvider implements CrosswordContentProvider 
       {
         role: "system",
         content:
-          "You generate content for a crossword puzzle. Every answer must be a single " +
-          "word using only the letters A-Z, with no spaces, hyphens, numbers, or other " +
-          "punctuation. Avoid proper nouns unless the requested theme clearly requires " +
-          "them. Clues must be concise, unambiguous, and must never contain the answer " +
-          "word itself. Prefer a varied mix of answer lengths, roughly 4 to 10 letters, " +
+          "You generate content for a crossword puzzle. " +
+          `The requested language is ${request.language}. ` +
+          `EVERY answer AND EVERY clue MUST be written entirely in the requested language. ` +
+          `If the requested language is Serbian (sr), use Serbian for both answers and clues. ` +
+          "NEVER return an English answer or English clue when Serbian is requested. " +
+          "NEVER mix languages within the same crossword. " +
+          "All answers must be real, established words in the requested language. " +
+          "Never invent, fabricate, modify, or hallucinate words. " +
+          "Every answer must be a word that a native speaker of the requested language " +
+          "would recognize as a valid word. " +
+          "The answer must directly match the meaning of its clue. " +
+          "The grammatical form of the answer MUST match the clue. " +
+          "For example, if the clue describes a singular noun as the subject, " +
+          "use the nominative singular form. " +
+          "Do not use an English word when a standard Serbian word exists. " +
+          "Do not translate an answer into another language. " +
+          "Every answer must be a single word. " +
+          "Avoid proper nouns unless the requested theme clearly requires them. " +
+          "Clues must be concise, natural, grammatically correct, and unambiguous. " +
+          "A clue must describe the answer naturally in the requested language. " +
+          "The clue must never contain the answer word itself. " +
+          "Prefer a varied mix of answer lengths, roughly 4 to 10 letters, " +
           "so the words can be placed in a crossing grid.",
       },
       {
         role: "user",
         content:
-          `Generate exactly ${request.wordCount} crossword entries for the theme ` +
-          `"${request.theme}" at ${request.difficulty} difficulty.`,
+          `Generate exactly ${request.wordCount} crossword entries in the ${request.language} ` +
+          `language for the theme "${request.theme}" at ${request.difficulty} difficulty. ` +
+          "Before returning the result, check EVERY entry individually: " +
+          "1. Is the answer a real word in the requested language? " +
+          "2. Is the clue written in the requested language? " +
+          "3. Does the clue describe exactly that answer? " +
+          "4. Is the answer in the grammatically correct form for the clue? " +
+          "5. Are both answer and clue natural for a native speaker? " +
+          "If any entry fails one of these checks, replace it before returning the response.",
       },
     ];
   }

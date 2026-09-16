@@ -80,6 +80,7 @@ export class DrizzlePuzzleRepository implements PuzzleRepository {
       title: puzzle.title,
       theme: puzzle.theme,
       difficulty: puzzle.difficulty,
+      language: puzzle.language,
       status: puzzle.status,
       rows: puzzle.rows,
       columns: puzzle.columns,

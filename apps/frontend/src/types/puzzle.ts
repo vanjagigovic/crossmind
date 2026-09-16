@@ -28,6 +28,8 @@ export type WordPlacement = {
 
 export type PuzzleDifficulty = 'easy' | 'medium' | 'hard'
 
+export type PuzzleLanguage = 'en' | 'sr' | 'es'
+
 export type PuzzleStatus =
   | 'draft'
   | 'generating'
@@ -40,6 +42,7 @@ export type Puzzle = {
   title: string
   theme: string
   difficulty: PuzzleDifficulty
+  language: PuzzleLanguage
   status: PuzzleStatus
   rows: number
   columns: number

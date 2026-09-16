@@ -1,0 +1,110 @@
+{
+  "common": {
+    "createPuzzle": "Crear crucigrama",
+    "generatePuzzle": "Generar crucigrama",
+    "generating": "Generando...",
+    "newPuzzle": "Nuevo crucigrama",
+    "customTopic": "Tema personalizada",
+    "custom": "Personalizado",
+    "difficulty": "Dificultad",
+    "size": "Tamaño",
+    "status": "Estado",
+    "time": "Tiempo",
+    "score": "Puntuación",
+    "mistakes": "Errores",
+    "across": "Horizontal",
+    "down": "Vertical",
+    "puzzleCompleted": "¡Crucigrama completado!",
+    "language": "Idioma"
+  },
+  "language": {
+    "title": "Idioma del crucigrama",
+    "hint": "¿En qué idioma se debe generar el contenido del crucigrama?"
+  },
+  "landing": {
+    "eyebrow": "Un crucigrama para tu curiosidad",
+    "intro": "Elige un tema, selecciona tu desafío y CrossMind creará un crucigrama para ti.",
+    "previewLabel": "Tu próximo crucigrama",
+    "previewCaption": "Una nueva cuadrícula creada según lo que quieras explorar.",
+    "previewAriaLabel": "Vista previa del crucigrama"
+  },
+  "createPuzzle": {
+    "title": "Crear crucigrama",
+    "description": "Elige un tema, una dificultad y un tamaño. Nosotros nos encargamos del resto.",
+    "topic": {
+      "title": "Tema",
+      "hint": "¿Sobre qué quieres que sea tu crucigrama?",
+      "customLabel": "Tema personalizado",
+      "placeholder": "Carreras de Fórmula 1",
+      "inputHint": "Sé específico para conseguir un crucigrama más enfocado.",
+      "error": "Introduce un tema personalizado para generar tu crucigrama."
+    },
+    "difficulty": {
+      "title": "Dificultad",
+      "hint": "¿Qué nivel de desafío quieres?",
+      "easy": "Fácil",
+      "medium": "Medio",
+      "hard": "Difícil"
+    },
+    "size": {
+      "title": "Tamaño del crucigrama",
+      "hint": "¿Qué tamaño de cuadrícula quieres resolver?",
+      "small": "Pequeño",
+      "medium": "Mediano",
+      "large": "Grande"
+    },
+    "error": "No hemos podido generar ese crucigrama. Comprueba tus opciones e inténtalo de nuevo.",
+    "generating": "Generando tu crucigrama..."
+  },
+  "topics": {
+    "programming": "Programación",
+    "travel": "Viajes",
+    "animals": "Animales",
+    "movies": "Películas",
+    "science": "Ciencia",
+    "history": "Historia",
+    "sports": "Deportes",
+    "food": "Comida"
+  },
+  "puzzlePage": {
+    "error": {
+      "noPuzzleId": "Se requiere un ID del crucigrama.",
+      "unableToLoad": "No se ha podido cargar el crucigrama."
+    },
+    "loading": "Cargando crucigrama...",
+    "difficulty": "Dificultad",
+    "statusLabel": "Estado",
+    "status": {
+      "draft": "Borrador",
+      "generating": "Generando",
+      "ready": "Listo",
+      "published": "Publicado",
+      "archived": "Archivado"
+    },
+    "size": "Tamaño"
+  },
+  "gameplay": {
+    "correct": "Correcto",
+    "incorrect": "{{count}} incorrecto",
+    "inProgress": "En progreso"
+  },
+  "result": {
+    "completed": "¡Crucigrama completado!",
+    "title": "¡Buen trabajo!",
+    "noSession": "No se ha encontrado ninguna sesión de crucigrama completada.",
+    "playAgain": "Jugar de nuevo",
+    "createNewPuzzle": "Crear nuevo crucigrama"
+  },
+  "accessibility": {
+    "crosswordGrid": "Cuadrícula del crucigrama",
+    "enterLetter": "Introduce una letra en la casilla seleccionada del crucigrama",
+    "blockedCell": "Casilla bloqueada",
+    "entry": "Palabra {{number}}, fila {{row}}, columna {{column}}",
+    "cell": "Fila {{row}}, columna {{column}}",
+    "contains": "contiene {{value}}",
+    "empty": "vacía",
+    "incorrect": "incorrecta",
+    "selected": "seleccionada",
+    "elapsedTime": "Tiempo transcurrido {{time}}"
+  }
+}

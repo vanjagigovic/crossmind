@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Direction, PuzzleEntry } from '../../../types/puzzle'
 
 type ClueListProps = {
@@ -17,19 +18,20 @@ export function ClueList({
   activeEntryId,
   onSelectEntry,
 }: ClueListProps) {
+  const { t } = useTranslation()
   const acrossEntries = getEntriesByDirection(entries, 'across')
   const downEntries = getEntriesByDirection(entries, 'down')
 
   return (
     <div className="clue-list">
       <ClueSection
-        heading="Across"
+        heading={t('common.across')}
         entries={acrossEntries}
         activeEntryId={activeEntryId}
         onSelectEntry={onSelectEntry}
       />
       <ClueSection
-        heading="Down"
+        heading={t('common.down')}
         entries={downEntries}
         activeEntryId={activeEntryId}
         onSelectEntry={onSelectEntry}

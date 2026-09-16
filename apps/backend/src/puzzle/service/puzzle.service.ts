@@ -67,6 +67,7 @@ export class PuzzleService {
       theme: data.theme,
       difficulty: data.difficulty,
       wordCount: data.wordCount,
+      language: data.language,
     });
 
     const generator = this.crosswordGeneratorFactory({
@@ -81,6 +82,7 @@ export class PuzzleService {
           title: data.title,
           theme: data.theme,
           difficulty: data.difficulty,
+          language: data.language,
           status: "ready",
           rows: data.rows,
           columns: data.columns,

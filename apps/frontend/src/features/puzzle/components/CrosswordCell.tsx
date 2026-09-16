@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import type { GridCell } from '../../../types/puzzle'
+import { useTranslation } from 'react-i18next'
 
 type CrosswordCellProps = {
   cell: GridCell
@@ -26,6 +27,7 @@ export function CrosswordCell({
   onSelect,
   onKeyDown,
 }: CrosswordCellProps) {
+  const { t } = useTranslation()
   const isBlocked = cell.isBlocked || cell.letter === null
 
   if (isBlocked) {
@@ -33,16 +35,23 @@ export function CrosswordCell({
       <div
         className="crossword-cell crossword-cell--blocked"
         role="gridcell"
-        aria-label="Blocked cell"
+        aria-label={t('accessibility.blockedCell')}
       />
     )
   }
 
   const label = number
-    ? `Entry ${number}, row ${cell.row + 1}, column ${cell.col + 1}`
-    : `Row ${cell.row + 1}, column ${cell.col + 1}`
-  const stateLabel = value ? `contains ${value}` : 'empty'
-  const validationLabel = incorrect ? ', incorrect' : ''
+    ? t('accessibility.entry', {
+      number,
+      row: cell.row + 1,
+      column: cell.col + 1,
+    })
+    : t('accessibility.cell', {
+      row: cell.row + 1,
+      column: cell.col + 1,
+    })
+  const stateLabel = value ? t('accessibility.contains', { value }) : t('accessibility.empty')
+  const validationLabel = incorrect ? `, ${t('accessibility.incorrect')}` : ''
 
   return (
     <div

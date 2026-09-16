@@ -24,6 +24,7 @@ import type {
 } from "../../../crossword/domain/word-placement.js";
 import type {
   PuzzleDifficulty,
+  PuzzleLanguage,
   PuzzleStatus,
 } from "../../domain/puzzle.js";
 
@@ -31,6 +32,12 @@ export enum PuzzleDifficultyDto {
   EASY = "easy",
   MEDIUM = "medium",
   HARD = "hard",
+}
+
+export enum PuzzleLanguageDto {
+  English = 'en',
+  Serbian = 'sr',
+  Spanish = 'es',
 }
 
 export enum PuzzleStatusDto {
@@ -117,6 +124,10 @@ export class CreatePuzzleDto {
 
   @IsEnum(PuzzleDifficultyDto)
   difficulty!: PuzzleDifficulty;
+
+  @IsEnum(PuzzleLanguageDto)
+  language!: PuzzleLanguage;
+
 
   @IsEnum(PuzzleStatusDto)
   status!: PuzzleStatus;
