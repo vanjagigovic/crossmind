@@ -1,0 +1,105 @@
+{
+  "common": {
+    "createPuzzle": "Kreiraj ukrštenicu",
+    "generatePuzzle": "Generiši ukrštenicu",
+    "generating": "Generisanje...",
+    "newPuzzle": "Nova ukrštenica",
+    "customTopic": "Prilagođena tema",
+    "custom": "Prilagođeno",
+    "difficulty": "Težina",
+    "size": "Veličina",
+    "status": "Status",
+    "time": "Vrijeme",
+    "score": "Rezultat",
+    "mistakes": "Greške",
+    "across": "Vodoravno",
+    "down": "Uspravno",
+    "puzzleCompleted": "Ukrštenica je završena!"
+  },
+  "landing": {
+    "eyebrow": "Ukrštenica za tvoju radoznalost",
+    "intro": "Izaberi temu, odaberi izazov, a CrossMind će napraviti ukrštenicu baš za tebe.",
+    "previewLabel": "Tvoja sljedeća ukrštenica",
+    "previewCaption": "Nova mreža, kreirana prema onome što želiš da istražiš.",
+    "previewAriaLabel": "Pregled ukrštenice"
+  },
+  "createPuzzle": {
+    "title": "Kreiraj ukrštenicu",
+    "description": "Izaberi temu, težinu i veličinu. Mi ćemo se pobrinuti za ostalo.",
+    "topic": {
+      "title": "Tema",
+      "hint": "O čemu želiš da bude tvoja ukrštenica?",
+      "customLabel": "Prilagođena tema",
+      "placeholder": "Formula 1 trke",
+      "inputHint": "Budi što precizniji za fokusiraniju ukrštenicu.",
+      "error": "Unesi prilagođenu temu da bi generisao ukrštenicu."
+    },
+    "difficulty": {
+      "title": "Težina",
+      "hint": "Koliki izazov želiš?",
+      "easy": "Lako",
+      "medium": "Srednje",
+      "hard": "Teško"
+    },
+    "size": {
+      "title": "Veličina ukrštenice",
+      "hint": "Koliku mrežu želiš da riješiš?",
+      "small": "Mala",
+      "medium": "Srednja",
+      "large": "Velika"
+    },
+    "error": "Nismo mogli da generišemo tu ukrštenicu. Provjeri odabrane opcije i pokušaj ponovo.",
+    "generating": "Generisanje tvoje ukrštenice..."
+  },
+  "topics": {
+    "programming": "Programiranje",
+    "travel": "Putovanja",
+    "animals": "Životinje",
+    "movies": "Filmovi",
+    "science": "Nauka",
+    "history": "Istorija",
+    "sports": "Sport",
+    "food": "Hrana"
+  },
+  "puzzlePage": {
+    "error": {
+      "noPuzzleId": "ID ukrštenice je obavezan.",
+      "unableToLoad": "Nije moguće učitati ukrštenicu."
+    },
+    "loading": "Učitavanje ukrštenice...",
+    "difficulty": "Težina",
+    "statusLabel": "Status",
+    "status": {
+      "draft": "Nacrt",
+      "generating": "Generisanje",
+      "ready": "Spremno",
+      "published": "Objavljeno",
+      "archived": "Arhivirano"
+    },
+    "size": "Veličina"
+  },
+  "gameplay": {
+    "correct": "Tačno",
+    "incorrect": "{{count}} netačno",
+    "inProgress": "U toku"
+  },
+  "result": {
+    "completed": "Ukrštenica je završena!",
+    "title": "Odlično!",
+    "noSession": "Nije pronađena završena sesija ukrštenice.",
+    "playAgain": "Igraj ponovo",
+    "createNewPuzzle": "Kreiraj novu ukrštenicu"
+  },
+  "accessibility": {
+    "crosswordGrid": "Mreža ukrštenice",
+    "enterLetter": "Unesi slovo za izabrano polje ukrštenice",
+    "blockedCell": "Blokirano polje",
+    "entry": "Pojam {{number}}, red {{row}}, kolona {{column}}",
+    "cell": "Red {{row}}, kolona {{column}}",
+    "contains": "sadrži {{value}}",
+    "empty": "prazno",
+    "incorrect": "netačno",
+    "selected": "izabrano",
+    "elapsedTime": "Proteklo vrijeme {{time}}"
+  }
+}
