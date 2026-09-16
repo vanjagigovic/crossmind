@@ -176,11 +176,11 @@ export function CreatePuzzlePage() {
         <fieldset>
           <legend>
             <span className="form-step">02</span>{' '}
-            {t('createPuzzle.language.title')}
+            {t('language.title')}
           </legend>
 
           <p className="fieldset-hint">
-            {t('createPuzzle.language.hint')}
+            {t('language.hint')}
           </p>
 
           <div className="choice-grid choice-grid--compact">
