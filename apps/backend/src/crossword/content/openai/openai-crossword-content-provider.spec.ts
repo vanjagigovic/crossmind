@@ -10,6 +10,7 @@ describe("OpenAiCrosswordContentProvider", () => {
   const request: CrosswordContentRequest = {
     theme: "Animals",
     difficulty: "medium",
+    language: "en" as const,
     wordCount: 2,
   };
 

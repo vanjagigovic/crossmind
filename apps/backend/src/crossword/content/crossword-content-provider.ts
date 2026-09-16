@@ -7,8 +7,8 @@ export const CROSSWORD_CONTENT_PROVIDER = Symbol("CROSSWORD_CONTENT_PROVIDER");
 export type CrosswordContentRequest = {
   theme: string;
   difficulty: CrosswordDifficulty;
-  wordCount: number;
   language: CrosswordLanguage;
+  wordCount: number;
 };
 
 export interface CrosswordContentProvider {
