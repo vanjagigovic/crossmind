@@ -7,6 +7,12 @@ export const difficultyEnum = pgEnum("difficulty", [
   "hard",
 ]);
 
+export const languageEnum = pgEnum("puzzle_language", [
+  "en",
+  "sr",
+  "es",
+]);
+
 export const puzzleStatusEnum = pgEnum("puzzle_status", [
   "draft",
   "generating",
@@ -25,6 +31,7 @@ export const puzzles = pgTable("puzzles", {
   title: varchar("title", { length: 255 }).notNull(),
   theme: varchar("theme", { length: 255 }).notNull(),
   difficulty: difficultyEnum("difficulty").notNull(),
+  language: languageEnum("language").notNull(),
   status: puzzleStatusEnum("status").notNull(),
   rows: integer("rows").notNull(),
   columns: integer("columns").notNull(),
