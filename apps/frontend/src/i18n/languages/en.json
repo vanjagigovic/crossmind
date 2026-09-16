@@ -14,7 +14,8 @@
         "mistakes": "Mistakes",
         "across": "Across",
         "down": "Down",
-        "puzzleCompleted": "Puzzle completed!"
+        "puzzleCompleted": "Puzzle completed!",
+        "language": "Language"
     },
     "landing": {
         "eyebrow": "A crossword for your curiosity",

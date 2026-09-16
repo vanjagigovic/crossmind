@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { LanguageSwitcher } from "../components/LanguageSwitcher"
 
 
 export function LandingPage() {
@@ -6,6 +7,7 @@ export function LandingPage() {
   const { t } = useTranslation()
   return (
     <main className="landing-page">
+       <LanguageSwitcher />
       <div className="landing-page__content">
         <p className="landing-page__eyebrow">{t('landing.eyebrow')}</p>
         <h1>CrossMind</h1>

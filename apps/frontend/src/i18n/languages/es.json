@@ -14,7 +14,8 @@
     "mistakes": "Errores",
     "across": "Horizontal",
     "down": "Vertical",
-    "puzzleCompleted": "¡Crucigrama completado!"
+    "puzzleCompleted": "¡Crucigrama completado!",
+    "language": "Idioma"
   },
   "landing": {
     "eyebrow": "Un crucigrama para tu curiosidad",
