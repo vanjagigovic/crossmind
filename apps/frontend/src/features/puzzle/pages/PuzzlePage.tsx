@@ -222,7 +222,7 @@ function LoadedPuzzlePage({
           </div>
 
           <div>
-            <dt>{t('puzzlePage.status')}</dt>
+            <dt>{t('puzzlePage.statusLabel')}</dt>
             <dd>
               {t(`puzzlePage.status.${loadedPuzzle.status}`)}
             </dd>

@@ -63,8 +63,8 @@
     },
     "puzzlePage": {
         "error": {
-            "idRequired": "A puzzle ID is required.",
-            "loadFailed": "Unable to load the puzzle."
+            "noPuzzleId": "A puzzle ID is required.",
+            "unableToLoad": "Unable to load the puzzle."
         },
         "loading": "Loading puzzle...",
         "difficulty": "Difficulty",
@@ -76,14 +76,12 @@
             "published": "Published",
             "archived": "Archived"
         },
-        "size": "Size",
-        "time": "Time",
-        "completed": "Puzzle completed!",
-        "gameplay": {
-            "correct": "Correct",
-            "incorrect": "{{count}} incorrect",
-            "inProgress": "In progress"
-        }
+        "size": "Size"
+    },
+    "gameplay": {
+        "correct": "Correct",
+        "incorrect": "{{count}} incorrect",
+        "inProgress": "In progress"
     },
     "result": {
         "completed": "Puzzle completed!",
