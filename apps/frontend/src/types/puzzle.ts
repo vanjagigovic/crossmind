@@ -42,6 +42,7 @@ export type Puzzle = {
   title: string
   theme: string
   difficulty: PuzzleDifficulty
+  language: PuzzleLanguage
   status: PuzzleStatus
   rows: number
   columns: number
