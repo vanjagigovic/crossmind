@@ -6,8 +6,8 @@ import {
   Min,
 } from "class-validator";
 
-import type { PuzzleDifficulty } from "../../domain/puzzle.js";
-import { PuzzleDifficultyDto } from "./create-puzzle.dto.js";
+import type { PuzzleDifficulty, PuzzleLanguage } from "../../domain/puzzle.js";
+import { PuzzleDifficultyDto, PuzzleLanguageDto } from "./create-puzzle.dto.js";
 
 export class GeneratePuzzleDto {
   @IsString()
@@ -32,4 +32,7 @@ export class GeneratePuzzleDto {
   @IsInt()
   @Min(1)
   wordCount!: number;
+
+  @IsEnum(PuzzleLanguageDto)
+  language!: PuzzleLanguage;
 }

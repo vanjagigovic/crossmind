@@ -40,6 +40,7 @@ async function main() {
         title: SEED_TITLE,
         theme: "Programming",
         difficulty: "easy",
+        language: "en",
         status: "ready",
         rows: grid.rows,
         columns: grid.cols,

@@ -11,8 +11,15 @@ import type {
 import { normalizeCrosswordWords } from "../normalize-crossword-word.js";
 import { OPENAI_CLIENT_FACTORY } from "./openai-client.js";
 import type { OpenAiClientFactory } from "./openai-client.js";
+import type { PuzzleLanguage } from "../../../puzzle/domain/puzzle.js";
 
 const DEFAULT_MODEL = "gpt-4o-mini";
+
+const LANGUAGE_NAMES: Record<PuzzleLanguage, string> = {
+  en: "English",
+  sr: "Serbian",
+  es: "Spanish",
+};
 
 // Structured output schema: guarantees shape, not crossword-specific validity (see normalizeCrosswordWords).
 const CROSSWORD_WORDS_SCHEMA = {
@@ -43,7 +50,7 @@ export class OpenAiCrosswordContentProvider implements CrosswordContentProvider 
     @Inject(OPENAI_CLIENT_FACTORY)
     private readonly createClient: OpenAiClientFactory,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async generateWords(request: CrosswordContentRequest): Promise<CrosswordWord[]> {
     const apiKey = this.configService.getOrThrow<string>("OPENAI_API_KEY");
@@ -89,8 +96,10 @@ export class OpenAiCrosswordContentProvider implements CrosswordContentProvider 
         role: "system",
         content:
           "You generate content for a crossword puzzle. Every answer must be a single " +
-          "word using only the letters A-Z, with no spaces, hyphens, numbers, or other " +
-          "punctuation. Avoid proper nouns unless the requested theme clearly requires " +
+          "word using only the letters A-Z, with no spaces, hyphens, numbers, diacritics, or other " +
+          "punctuation. If the selected language normally uses accented or special letters, " +
+          "normalize the answer to plain A-Z letters while keeping the clue natural and correctly " +
+          "written in the selected language. Avoid proper nouns unless the requested theme clearly requires " +
           "them. Clues must be concise, unambiguous, and must never contain the answer " +
           "word itself. Prefer a varied mix of answer lengths, roughly 4 to 10 letters, " +
           "so the words can be placed in a crossing grid.",
@@ -99,7 +108,8 @@ export class OpenAiCrosswordContentProvider implements CrosswordContentProvider 
         role: "user",
         content:
           `Generate exactly ${request.wordCount} crossword entries for the theme ` +
-          `"${request.theme}" at ${request.difficulty} difficulty.`,
+          `"${request.theme}" at ${request.difficulty} difficulty. ` +
+          `Generate both the answers and clues in ${LANGUAGE_NAMES[request.language]}.`,
       },
     ];
   }
