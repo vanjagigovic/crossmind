@@ -8,6 +8,7 @@ import {
 } from '../components/CrosswordGrid'
 import { savePuzzleSessionResult } from '../utils/puzzleSessionResult'
 import { calculateScore } from '../utils/scoreUtils'
+import { useTranslation } from 'react-i18next'
 
 type PuzzlePageProps = {
   puzzleId?: string
@@ -16,11 +17,12 @@ type PuzzlePageProps = {
 export function PuzzlePage({
   puzzleId,
 }: PuzzlePageProps) {
+  const { t } = useTranslation()
   if (!puzzleId) {
     return (
       <main className="puzzle-page">
         <p className="puzzle-state puzzle-state--error">
-          A puzzle ID is required.
+          {t('puzzlePage.error.noPuzzleId')}
         </p>
       </main>
     )
@@ -41,6 +43,7 @@ type LoadedPuzzlePageProps = {
 function LoadedPuzzlePage({
   puzzleId,
 }: LoadedPuzzlePageProps) {
+  const { t } = useTranslation()
   const [puzzle, setPuzzle] =
     useState<Puzzle | null>(null)
 
@@ -72,7 +75,7 @@ function LoadedPuzzlePage({
           setError(
             loadError instanceof Error
               ? loadError.message
-              : 'Unable to load the puzzle.',
+              : t('puzzlePage.error.unableToLoad'),
           )
         }
       }
@@ -83,7 +86,7 @@ function LoadedPuzzlePage({
     return () => {
       isCurrent = false
     }
-  }, [puzzleId])
+  }, [puzzleId, t])
 
   if (error) {
     return (
@@ -99,7 +102,7 @@ function LoadedPuzzlePage({
     return (
       <main className="puzzle-page">
         <p className="puzzle-state">
-          Loading puzzle...
+          {t('puzzlePage.loading')}
         </p>
       </main>
     )
@@ -212,21 +215,21 @@ function LoadedPuzzlePage({
 
         <dl className="puzzle-details">
           <div>
-            <dt>Difficulty</dt>
+            <dt>{t('puzzlePage.difficulty')}</dt>
             <dd>
-              {loadedPuzzle.difficulty}
+              {t(`createPuzzle.difficulty.${loadedPuzzle.difficulty}`)}
             </dd>
           </div>
 
           <div>
-            <dt>Status</dt>
+            <dt>{t('puzzlePage.status')}</dt>
             <dd>
-              {loadedPuzzle.status}
+              {t(`puzzlePage.status.${loadedPuzzle.status}`)}
             </dd>
           </div>
 
           <div>
-            <dt>Size</dt>
+            <dt>{t('puzzlePage.size')}</dt>
             <dd>
               {loadedPuzzle.rows} x{' '}
               {loadedPuzzle.columns}

@@ -19,6 +19,8 @@ import {
   trackMistake,
 } from '../utils/mistakeTracking'
 import { formatElapsedTime } from '../utils/timerUtils'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
 type CrosswordGridProps = {
   grid: CrosswordGridData
@@ -43,6 +45,7 @@ export function CrosswordGrid({
   onSelectionChange,
   onComplete,
 }: CrosswordGridProps) {
+  const { t } = useTranslation()
   const entryNumbers = getEntryNumbers(grid.placements)
 
   const [enteredLetters, setEnteredLetters] = useState<
@@ -409,11 +412,11 @@ export function CrosswordGrid({
     <>
       <p
         className="puzzle-timer"
-        aria-label={`Elapsed time ${formatElapsedTime(
-          elapsedTime,
-        )}`}
+        aria-label={t('accessibility.elapsedTime', {
+          time: formatElapsedTime(elapsedTime),
+        })}
       >
-        Time:{' '}
+        {t('common.time')}:{' '}
         <time
           dateTime={`PT${elapsedTime}S`}
         >
@@ -429,8 +432,8 @@ export function CrosswordGrid({
             <p className="active-clue__heading">
               {activePlacement.direction ===
                 'across'
-                ? 'Across'
-                : 'Down'}{' '}
+                ? t('common.across')
+                : t('common.down')}{' '}
               {entryNumbers.get(
                 getCellKey(
                   activePlacement.row,
@@ -446,6 +449,7 @@ export function CrosswordGrid({
                 activePlacement,
                 enteredLetters,
                 grid.cells,
+                t,
               )}
             </p>
           </section>
@@ -453,7 +457,7 @@ export function CrosswordGrid({
       <div
         className="crossword-grid"
         role="grid"
-        aria-label="Crossword grid"
+        aria-label={t('accessibility.crosswordGrid')}
         style={{
           gridTemplateColumns: `repeat(${grid.cols}, minmax(0, 1fr))`,
           gridTemplateRows: `repeat(${grid.rows}, minmax(0, 1fr))`,
@@ -515,7 +519,7 @@ export function CrosswordGrid({
         <input
           ref={inputRef}
           className="crossword-grid-input"
-          aria-label="Enter a letter for the selected crossword cell"
+          aria-label={t('accessibility.enterLetter')}
           value=""
           disabled={completed}
           onChange={handleInputChange}
@@ -527,7 +531,7 @@ export function CrosswordGrid({
           className="puzzle-completion"
           role="status"
         >
-          Puzzle completed!
+          {t('common.puzzleCompleted')}
         </p>
       )}
     </>
@@ -597,6 +601,7 @@ function getWordStatus(
     string
   >,
   cells: GridCell[][],
+  t: TFunction,
 ) {
   const placementCells =
     getPlacementCells(
@@ -637,10 +642,12 @@ function getWordStatus(
     )
 
   if (correct) {
-    return 'Correct'
+    return t('gameplay.correct')
   }
 
   return incorrectLetters > 0
-    ? `${incorrectLetters} incorrect`
-    : 'In progress'
+    ? t('gameplay.incorrect', {
+      count: incorrectLetters,
+    })
+    : t('gameplay.inProgress')
 }
