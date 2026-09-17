@@ -36,6 +36,13 @@
       "when": 1789645498447,
       "tag": "0004_public_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789648294014,
+      "tag": "0005_naive_karnak",
+      "breakpoints": true
     }
   ]
 }
