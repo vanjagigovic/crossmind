@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 
 import { DatabaseModule } from "./db/database.module.js";
 import { PuzzleModule } from "./puzzle/puzzle.module.js";
+import { UserModule } from "./user/user.module.js";
 
 const backendEnvPath = resolve(process.cwd(), "apps/backend/.env");
 const envFilePath = existsSync(backendEnvPath)
@@ -19,6 +20,7 @@ const envFilePath = existsSync(backendEnvPath)
     }),
     DatabaseModule,
     PuzzleModule,
+    UserModule,
   ],
 })
 export class AppModule {}

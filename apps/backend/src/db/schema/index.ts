@@ -1,4 +1,4 @@
-import { pgTable, varchar, timestamp, integer, pgEnum, uuid, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, integer, pgEnum, uuid, jsonb, boolean } from "drizzle-orm/pg-core";
 import type { CrosswordGrid } from "../../crossword/domain/grid.js";
 
 export const difficultyEnum = pgEnum("difficulty", [
@@ -25,6 +25,16 @@ export const directionEnum = pgEnum("direction", [
   "across",
   "down",
 ]);
+
+export const users = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: varchar("email", { length: 255 }).unique(),
+  passwordHash: varchar("password_hash", { length: 255 }),
+  displayName: varchar("display_name", { length: 100 }),
+  isGuest: boolean("is_guest").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
 
 export const puzzles = pgTable("puzzles", {
   id: uuid("id").defaultRandom().primaryKey(),
