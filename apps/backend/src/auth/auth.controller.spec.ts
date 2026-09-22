@@ -9,6 +9,7 @@ describe("AuthController", () => {
     login: vi.fn(),
     guest: vi.fn(),
     refresh: vi.fn(),
+    logout: vi.fn(),
   };
 
   beforeEach(() => {
@@ -110,4 +111,20 @@ describe("AuthController", () => {
       refreshToken: "new-refresh-token",
     });
   });
+
+  it("should logout a user", async () => {
+  const dto = {
+    refreshToken: "refresh-token",
+  };
+
+  authService.logout.mockResolvedValue(undefined);
+
+  const result = await authController.logout(dto);
+
+  expect(authService.logout).toHaveBeenCalledWith(
+    "refresh-token",
+  );
+
+  expect(result).toBeUndefined();
+});
 });

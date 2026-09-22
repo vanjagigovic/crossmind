@@ -479,4 +479,76 @@ describe("AuthService", () => {
     expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
   });
 
+  it("should revoke the refresh session on logout", async () => {
+    jwtTokenService.verifyRefreshToken.mockResolvedValue({
+      sub: "user-1",
+      isGuest: false,
+      sid: "session-1",
+    });
+
+    refreshSessionRepository.findById.mockResolvedValue({
+      id: "session-1",
+      userId: "user-1",
+      tokenHash: "hashed-refresh-token",
+      expiresAt: new Date(Date.now() + 60_000),
+      createdAt: new Date(),
+      revokedAt: null,
+    });
+
+    await authService.logout("refresh-token");
+
+    expect(jwtTokenService.verifyRefreshToken).toHaveBeenCalledWith(
+      "refresh-token",
+    );
+
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
+      "session-1",
+    );
+
+    expect(refreshSessionRepository.revoke).toHaveBeenCalledWith(
+      "session-1",
+    );
+  });
+
+  it("should do nothing on logout when the refresh token is invalid", async () => {
+    jwtTokenService.verifyRefreshToken.mockRejectedValue(
+      new Error("Invalid token"),
+    );
+
+    await authService.logout("invalid-refresh-token");
+
+    expect(refreshSessionRepository.findById).not.toHaveBeenCalled();
+    expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
+  });
+
+  it("should do nothing on logout when the session does not exist", async () => {
+    jwtTokenService.verifyRefreshToken.mockResolvedValue({
+      sub: "user-1",
+      isGuest: false,
+      sid: "session-1",
+    });
+
+    refreshSessionRepository.findById.mockResolvedValue(null);
+
+    await authService.logout("refresh-token");
+
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
+      "session-1",
+    );
+
+    expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
+  });
+
+  it("should do nothing on logout when the token has no session id", async () => {
+    jwtTokenService.verifyRefreshToken.mockResolvedValue({
+      sub: "user-1",
+      isGuest: false,
+    });
+
+    await authService.logout("refresh-token");
+
+    expect(refreshSessionRepository.findById).not.toHaveBeenCalled();
+    expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
+  });
+
 });

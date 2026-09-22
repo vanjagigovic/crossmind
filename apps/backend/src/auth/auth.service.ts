@@ -26,7 +26,7 @@ export class AuthService {
     @Inject(REFRESH_SESSION_REPOSITORY)
     private readonly refreshSessionRepository: RefreshSessionRepository,
     private readonly tokenHashService: TokenHashService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const email = dto.email.trim().toLowerCase();
@@ -223,5 +223,27 @@ export class AuthService {
     });
 
     return refreshToken;
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    let payload;
+
+    try {
+      payload = await this.jwtTokenService.verifyRefreshToken(refreshToken);
+    } catch {
+      return;
+    }
+
+    if (!payload.sid) {
+      return;
+    }
+
+    const session = await this.refreshSessionRepository.findById(payload.sid);
+
+    if (!session) {
+      return;
+    }
+
+    await this.refreshSessionRepository.revoke(session.id);
   }
 }
