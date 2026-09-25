@@ -7,7 +7,7 @@ import type { User } from "../domain/user.js";
 
 @Injectable()
 export class DrizzleUserRepository implements UserRepository {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(private readonly database: DatabaseService) { }
 
   async findById(id: string): Promise<User | null> {
     const result = await this.database.client
@@ -58,5 +58,17 @@ export class DrizzleUserRepository implements UserRepository {
       displayName: user.displayName,
       isGuest: user.isGuest,
     };
+  }
+
+  async updatePassword(
+    userId: string,
+    passwordHash: string,
+  ): Promise<void> {
+    await this.database.client
+      .update(users)
+      .set({
+        passwordHash,
+      })
+      .where(eq(users.id, userId));
   }
 }

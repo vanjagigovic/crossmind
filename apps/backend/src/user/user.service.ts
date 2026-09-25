@@ -12,7 +12,7 @@ export class UserService {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
-  ) {}
+  ) { }
 
   async findById(id: string): Promise<User | null> {
     return this.userRepository.findById(id);
@@ -24,5 +24,9 @@ export class UserService {
 
   async create(data: CreateUserData): Promise<User> {
     return this.userRepository.create(data);
+  }
+
+  async updatePassword(userId: string, passwordHash: string,): Promise<void> { 
+    return this.userRepository.updatePassword(userId, passwordHash); 
   }
 }

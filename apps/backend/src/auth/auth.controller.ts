@@ -4,6 +4,8 @@ import { RegisterDto } from "./dto/register.dto.js";
 import { LoginDto } from "./dto/login.dto.js";
 import { RefreshDto } from "./dto/refresh.dto.js";
 import { LogoutDto } from "./dto/logout.dto.js";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto.js";
+import { ResetPasswordDto } from "./dto/reset-password.dto.js";
 
 @Controller("auth")
 export class AuthController {
@@ -32,5 +34,15 @@ export class AuthController {
     @Post("logout")
     async logout(@Body() dto: LogoutDto) {
         return this.authService.logout(dto.refreshToken);
+    }
+
+    @Post("forgot-password")
+    async forgotPassword(@Body() dto: ForgotPasswordDto) {
+        return this.authService.forgotPassword(dto);
+    }
+
+    @Post("reset-password")
+    async resetPassword(@Body() dto: ResetPasswordDto) {
+        return this.authService.resetPassword(dto);
     }
 }

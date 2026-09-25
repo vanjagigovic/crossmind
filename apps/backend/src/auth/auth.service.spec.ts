@@ -9,6 +9,7 @@ describe("AuthService", () => {
     findById: vi.fn(),
     findByEmail: vi.fn(),
     create: vi.fn(),
+    updatePassword: vi.fn(),
   };
 
   const passwordService = {
@@ -33,6 +34,17 @@ describe("AuthService", () => {
     matches: vi.fn(),
   };
 
+  const passwordResetTokenRepository = {
+    create: vi.fn(),
+    findById: vi.fn(),
+    findByTokenHash: vi.fn(),
+    markAsUsed: vi.fn(),
+  };
+
+  const passwordResetEmailService = {
+  send: vi.fn(),
+};
+
   beforeEach(() => {
     vi.clearAllMocks();
 
@@ -44,6 +56,8 @@ describe("AuthService", () => {
       jwtTokenService as any,
       refreshSessionRepository as any,
       tokenHashService as any,
+      passwordResetTokenRepository as any,
+      passwordResetEmailService as any,
     );
   });
 
@@ -549,6 +563,168 @@ describe("AuthService", () => {
 
     expect(refreshSessionRepository.findById).not.toHaveBeenCalled();
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
+  });
+
+  it("should create a password reset token for an existing user", async () => {
+    const user = {
+      id: "user-1",
+      email: "vanja@example.com",
+      passwordHash: "hashed-password",
+      displayName: "Vanja",
+      isGuest: false,
+    };
+
+    userService.findByEmail.mockResolvedValue(user);
+
+    const result = await authService.forgotPassword({
+      email: "vanja@example.com",
+    });
+
+    expect(result).toEqual({
+      message: "If an account with that email exists, a password reset link has been sent",
+    });
+
+    expect(passwordResetTokenRepository.create).toHaveBeenCalledTimes(1);
+
+    expect(passwordResetTokenRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: "user-1",
+        tokenHash: expect.any(String),
+        expiresAt: expect.any(Date),
+      }),
+    );
+  });
+
+  it("should return the same response when the user does not exist", async () => {
+    userService.findByEmail.mockResolvedValue(null);
+
+    const result = await authService.forgotPassword({
+      email: "unknown@example.com",
+    });
+
+    expect(result).toEqual({
+      message: "If an account with that email exists, a password reset link has been sent",
+    });
+
+    expect(passwordResetTokenRepository.create).not.toHaveBeenCalled();
+  });
+
+  it("should normalize the email before looking up the user", async () => {
+    userService.findByEmail.mockResolvedValue(null);
+
+    await authService.forgotPassword({
+      email: "  VANJA@EXAMPLE.COM  ",
+    });
+
+    expect(userService.findByEmail).toHaveBeenCalledWith(
+      "vanja@example.com",
+    );
+  });
+
+  it("should reset the password with a valid reset token", async () => {
+    const resetToken = {
+      id: "reset-token-1",
+      userId: "user-1",
+      tokenHash: "hashed-token",
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      createdAt: new Date(),
+      usedAt: null,
+    };
+
+    const user = {
+      id: "user-1",
+      email: "vanja@example.com",
+      passwordHash: "old-password-hash",
+      displayName: "Vanja",
+      isGuest: false,
+    };
+
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(
+      resetToken,
+    );
+
+    tokenHashService.hash.mockReturnValue("hashed-token");
+
+    userService.findById.mockResolvedValue(user);
+
+    passwordService.hash.mockResolvedValue("new-password-hash");
+
+    await authService.resetPassword({
+      token: "raw-reset-token",
+      newPassword: "new-password",
+    });
+
+    expect(passwordService.hash).toHaveBeenCalledWith("new-password");
+
+    expect(userService.updatePassword).toHaveBeenCalledWith(
+      "user-1",
+      "new-password-hash",
+    );
+
+    expect(passwordResetTokenRepository.markAsUsed).toHaveBeenCalledWith(
+      "reset-token-1",
+    );
+  });
+
+  it("should reject an invalid reset token", async () => {
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(null);
+
+    tokenHashService.hash.mockReturnValue("hashed-token");
+
+    await expect(
+      authService.resetPassword({
+        token: "invalid-token",
+        newPassword: "new-password",
+      }),
+    ).rejects.toThrow("Invalid or expired password reset token");
+  });
+
+  it("should reject an expired reset token", async () => {
+    const resetToken = {
+      id: "reset-token-1",
+      userId: "user-1",
+      tokenHash: "hashed-token",
+      expiresAt: new Date(Date.now() - 60 * 60 * 1000),
+      createdAt: new Date(),
+      usedAt: null,
+    };
+
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(
+      resetToken,
+    );
+
+    tokenHashService.hash.mockReturnValue("hashed-token");
+
+    await expect(
+      authService.resetPassword({
+        token: "expired-token",
+        newPassword: "new-password",
+      }),
+    ).rejects.toThrow("Invalid or expired password reset token");
+  });
+
+  it("should reject an already used reset token", async () => {
+    const resetToken = {
+      id: "reset-token-1",
+      userId: "user-1",
+      tokenHash: "hashed-token",
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      createdAt: new Date(),
+      usedAt: new Date(),
+    };
+
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(
+      resetToken,
+    );
+
+    tokenHashService.hash.mockReturnValue("hashed-token");
+
+    await expect(
+      authService.resetPassword({
+        token: "used-token",
+        newPassword: "new-password",
+      }),
+    ).rejects.toThrow("Invalid or expired password reset token");
   });
 
 });

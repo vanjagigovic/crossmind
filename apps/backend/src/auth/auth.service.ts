@@ -4,7 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 
 import { UserService } from "../user/user.service.js";
 import type { RegisterDto } from "./dto/register.dto.js";
@@ -16,6 +16,14 @@ import {
 import { JwtTokenService } from "./security/jwt.service.js";
 import { PasswordService } from "./security/password.service.js";
 import { TokenHashService } from "./security/token-hash.service.js";
+import type { ForgotPasswordDto } from "./dto/forgot-password.dto.js";
+import type { ResetPasswordDto } from "./dto/reset-password.dto.js";
+import {
+  PASSWORD_RESET_TOKEN_REPOSITORY,
+  type PasswordResetTokenRepository,
+} from "./repository/password-reset-token.repository.js";
+import { PasswordResetEmailService } from "./email/password-reset-email.service.js";
+
 
 @Injectable()
 export class AuthService {
@@ -26,6 +34,9 @@ export class AuthService {
     @Inject(REFRESH_SESSION_REPOSITORY)
     private readonly refreshSessionRepository: RefreshSessionRepository,
     private readonly tokenHashService: TokenHashService,
+    @Inject(PASSWORD_RESET_TOKEN_REPOSITORY)
+    private readonly passwordResetTokenRepository: PasswordResetTokenRepository,
+    private readonly passwordResetEmailService: PasswordResetEmailService,
   ) { }
 
   async register(dto: RegisterDto) {
@@ -127,6 +138,92 @@ export class AuthService {
       },
     };
   }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+  const email = dto.email.trim().toLowerCase();
+
+  const user = await this.userService.findByEmail(email);
+
+  const message =
+    "If an account with that email exists, a password reset link has been sent";
+
+  if (!user || user.isGuest) {
+    return { message };
+  }
+
+  const token = randomBytes(32).toString("hex");
+
+  const tokenHash = this.tokenHashService.hash(token);
+
+  const expiresAt = new Date(
+    Date.now() + 60 * 60 * 1000,
+  );
+
+ await this.passwordResetTokenRepository.create({
+  userId: user.id,
+  tokenHash,
+  expiresAt,
+});
+
+if (user.email) {
+  await this.passwordResetEmailService.send(
+    user.email,
+    token,
+  );
+}
+
+return { message };
+}
+
+async resetPassword(dto: ResetPasswordDto) {
+  const tokenHash = this.tokenHashService.hash(dto.token);
+
+  const resetToken =
+    await this.passwordResetTokenRepository.findByTokenHash(tokenHash);
+
+  if (!resetToken) {
+    throw new UnauthorizedException(
+      "Invalid or expired password reset token",
+    );
+  }
+
+  if (resetToken.usedAt) {
+    throw new UnauthorizedException(
+      "Invalid or expired password reset token",
+    );
+  }
+
+  if (resetToken.expiresAt <= new Date()) {
+    throw new UnauthorizedException(
+      "Invalid or expired password reset token",
+    );
+  }
+
+  const user = await this.userService.findById(resetToken.userId);
+
+  if (!user || user.isGuest) {
+    throw new UnauthorizedException(
+      "Invalid or expired password reset token",
+    );
+  }
+
+  const passwordHash = await this.passwordService.hash(
+    dto.newPassword,
+  );
+
+  await this.userService.updatePassword(
+    user.id,
+    passwordHash,
+  );
+
+  await this.passwordResetTokenRepository.markAsUsed(
+    resetToken.id,
+  );
+
+  return {
+    message: "Password has been reset successfully",
+  };
+}
 
   async refresh(refreshToken: string) {
     const payload =

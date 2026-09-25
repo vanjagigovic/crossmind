@@ -9,6 +9,9 @@ import { PasswordService } from "./security/password.service.js";
 import { DrizzleRefreshSessionRepository } from "./repository/drizzle-refresh-session.repository.js";
 import { REFRESH_SESSION_REPOSITORY } from "./repository/refresh-session.repository.js";
 import { TokenHashService } from "./security/token-hash.service.js";
+import { DrizzlePasswordResetTokenRepository } from "./repository/drizzle-password-reset-token.repository.js";
+import { PASSWORD_RESET_TOKEN_REPOSITORY } from "./repository/password-reset-token.repository.js";
+import { PasswordResetEmailService } from "./email/password-reset-email.service.js";
 
 @Module({
   imports: [
@@ -28,9 +31,15 @@ import { TokenHashService } from "./security/token-hash.service.js";
   JwtTokenService,
   TokenHashService,
   DrizzleRefreshSessionRepository,
+  PasswordResetEmailService,
   {
     provide: REFRESH_SESSION_REPOSITORY,
     useExisting: DrizzleRefreshSessionRepository,
+  },
+  DrizzlePasswordResetTokenRepository,
+  {
+    provide: PASSWORD_RESET_TOKEN_REPOSITORY,
+    useExisting: DrizzlePasswordResetTokenRepository,
   },
 ],
   exports: [
