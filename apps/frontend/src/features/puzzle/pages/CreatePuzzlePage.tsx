@@ -54,8 +54,8 @@ export function CreatePuzzlePage() {
   const isCustomTopic = selectedTopic === 'custom'
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
 
+    event.preventDefault()
     const theme = isCustomTopic ? customTopic.trim() : selectedTopic
 
     if (!theme) {
@@ -194,8 +194,8 @@ export function CreatePuzzlePage() {
               <label
                 key={option.value}
                 className={`choice-control${language === option.value
-                    ? ' choice-control--selected'
-                    : ''
+                  ? ' choice-control--selected'
+                  : ''
                   }`}
               >
                 <input
