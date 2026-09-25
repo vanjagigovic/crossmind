@@ -43,6 +43,13 @@
       "when": 1789648294014,
       "tag": "0005_naive_karnak",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790084756467,
+      "tag": "0006_confused_silverclaw",
+      "breakpoints": true
     }
   ]
 }
