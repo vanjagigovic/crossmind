@@ -1,3 +1,5 @@
+import { getAccessToken } from '../features/auth/auth-storage'
+
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
 
 export class ApiError extends Error {
@@ -14,7 +16,10 @@ export async function get<T>(path: string): Promise<T> {
   return request<T>(path)
 }
 
-export async function post<T>(path: string, body: unknown): Promise<T> {
+export async function post<T>(
+  path: string,
+  body: unknown,
+): Promise<T> {
   return request<T>(path, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -22,11 +27,28 @@ export async function post<T>(path: string, body: unknown): Promise<T> {
   })
 }
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, options)
+async function request<T>(
+  path: string,
+  options?: RequestInit,
+): Promise<T> {
+  const token = getAccessToken()
+
+  const headers = new Headers(options?.headers)
+
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`)
+  }
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers,
+  })
 
   if (!response.ok) {
-    throw new ApiError(response.status, `Request failed with status ${response.status}`)
+    throw new ApiError(
+      response.status,
+      `Request failed with status ${response.status}`,
+    )
   }
 
   return response.json() as Promise<T>
