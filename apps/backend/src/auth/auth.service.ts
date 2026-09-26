@@ -278,6 +278,7 @@ async resetPassword(dto: ResetPasswordDto) {
     const newRefreshToken = await this.createRefreshSession(
       user.id,
       user.isGuest,
+      session.familyId,
     );
 
     return {
@@ -295,8 +296,10 @@ async resetPassword(dto: ResetPasswordDto) {
   private async createRefreshSession(
     userId: string,
     isGuest: boolean,
+    familyId?: string,
   ) {
     const sessionId = randomUUID();
+    const sessionFamilyId = familyId ?? randomUUID();
 
     const payload = {
       sub: userId,
@@ -315,6 +318,7 @@ async resetPassword(dto: ResetPasswordDto) {
 
     await this.refreshSessionRepository.create({
       userId,
+      familyId: sessionFamilyId,
       tokenHash,
       expiresAt,
     });

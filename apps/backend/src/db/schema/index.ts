@@ -41,6 +41,7 @@ export const refreshSessions = pgTable("refresh_sessions", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  familyId: uuid("family_id").notNull(),
   tokenHash: varchar("token_hash", { length: 255 }).notNull(),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

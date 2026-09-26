@@ -42,8 +42,8 @@ describe("AuthService", () => {
   };
 
   const passwordResetEmailService = {
-  send: vi.fn(),
-};
+    send: vi.fn(),
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -174,8 +174,9 @@ describe("AuthService", () => {
       "refresh-token",
     );
 
-    expect(refreshSessionRepository.create).toHaveBeenCalledWith({
+     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
       userId: "user-1",
+      familyId: expect.any(String),
       tokenHash: "hashed-refresh-token",
       expiresAt: expect.any(Date),
     });
@@ -255,6 +256,7 @@ describe("AuthService", () => {
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
       userId: "guest-1",
+      familyId: expect.any(String),
       tokenHash: "hashed-refresh-token",
       expiresAt: expect.any(Date),
     });
@@ -281,6 +283,7 @@ describe("AuthService", () => {
     refreshSessionRepository.findById.mockResolvedValue({
       id: "session-1",
       userId: "user-1",
+      familyId: "family-1",
       tokenHash: "hashed-refresh-token",
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
@@ -308,13 +311,24 @@ describe("AuthService", () => {
     refreshSessionRepository.create.mockResolvedValue({
       id: "session-2",
       userId: "user-1",
+      familyId: "family-1",
       tokenHash: "hashed-new-refresh-token",
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       createdAt: new Date(),
       revokedAt: null,
     });
 
+
+    tokenHashService.hash.mockReturnValueOnce("hashed-new-refresh-token");
+    
     const result = await authService.refresh("refresh-token");
+
+    expect(refreshSessionRepository.create).toHaveBeenCalledWith({
+      userId: "user-1",
+      familyId: "family-1",
+      tokenHash: "hashed-new-refresh-token",
+      expiresAt: expect.any(Date),
+    });
 
     expect(jwtTokenService.verifyRefreshToken).toHaveBeenCalledWith(
       "refresh-token",
@@ -390,6 +404,7 @@ describe("AuthService", () => {
     refreshSessionRepository.findById.mockResolvedValue({
       id: "session-1",
       userId: "user-1",
+      familyId: "family-1",
       tokenHash: "hashed-refresh-token",
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
@@ -415,6 +430,7 @@ describe("AuthService", () => {
     refreshSessionRepository.findById.mockResolvedValue({
       id: "session-1",
       userId: "user-1",
+      familyId: "family-1",
       tokenHash: "hashed-refresh-token",
       expiresAt: new Date(Date.now() - 60_000),
       createdAt: new Date(),
@@ -440,6 +456,7 @@ describe("AuthService", () => {
     refreshSessionRepository.findById.mockResolvedValue({
       id: "session-1",
       userId: "user-1",
+      familyId: "family-1",
       tokenHash: "hashed-refresh-token",
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
@@ -471,6 +488,7 @@ describe("AuthService", () => {
     refreshSessionRepository.findById.mockResolvedValue({
       id: "session-1",
       userId: "user-2",
+      familyId: "family-1",
       tokenHash: "hashed-refresh-token",
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
@@ -503,6 +521,7 @@ describe("AuthService", () => {
     refreshSessionRepository.findById.mockResolvedValue({
       id: "session-1",
       userId: "user-1",
+      familyId: "family-1",
       tokenHash: "hashed-refresh-token",
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),

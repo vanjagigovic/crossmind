@@ -6,6 +6,7 @@ export const REFRESH_SESSION_REPOSITORY = Symbol(
 
 export interface CreateRefreshSessionData {
   userId: string;
+  familyId: string;
   tokenHash: string;
   expiresAt: Date;
 }

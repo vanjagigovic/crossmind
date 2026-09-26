@@ -1,0 +1,1 @@
+ALTER TABLE "refresh_sessions" ADD COLUMN "family_id" uuid NOT NULL;

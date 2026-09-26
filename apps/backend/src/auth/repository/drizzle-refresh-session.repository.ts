@@ -57,6 +57,7 @@ export class DrizzleRefreshSessionRepository
     return {
       id: session.id,
       userId: session.userId,
+      familyId: session.familyId,
       tokenHash: session.tokenHash,
       expiresAt: session.expiresAt,
       createdAt: session.createdAt,
