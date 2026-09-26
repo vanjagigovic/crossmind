@@ -3,10 +3,11 @@ import type { SubmitEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../../api/client'
 import { guest, login } from '../api/auth'
-import { saveAuth } from '../auth-storage'
+import { useAuth } from '../useAuth'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { setAuth } = useAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -20,7 +21,7 @@ export function LoginPage() {
 
     try {
       const response = await login({ email, password })
-      saveAuth(response.accessToken, response.refreshToken, response.user)
+      setAuth(response.accessToken, response.refreshToken, response.user)
       navigate('/')
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
@@ -39,7 +40,7 @@ export function LoginPage() {
 
     try {
       const response = await guest()
-      saveAuth(response.accessToken, response.refreshToken, response.user)
+      setAuth(response.accessToken, response.refreshToken, response.user)
       navigate('/')
     } catch {
       setError('Unable to continue as guest. Please try again.')
