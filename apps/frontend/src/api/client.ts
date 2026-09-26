@@ -1,6 +1,14 @@
-import { getAccessToken } from '../features/auth/auth-storage'
+import {
+  getAccessToken,
+  getRefreshToken,
+  saveAuth,
+  clearAuth,
+} from '../features/auth/auth-storage'
+import type { AuthResponse } from '../features/auth/api/auth'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
+
+let refreshPromise: Promise<AuthResponse> | null = null
 
 export class ApiError extends Error {
   public readonly status: number
@@ -31,19 +39,89 @@ async function request<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
-  const token = getAccessToken()
+  const response = await sendRequest(path, options)
 
+  if (response.status !== 401 || path === '/auth/refresh') {
+    return handleResponse<T>(response)
+  }
+
+  const refreshToken = getRefreshToken()
+
+  if (!refreshToken) {
+    clearAuth()
+    throw new ApiError(401, 'Authentication required')
+  }
+
+  try {
+    if (!refreshPromise) {
+      refreshPromise = refreshAccessToken(refreshToken)
+    }
+
+    const auth = await refreshPromise
+
+    saveAuth(
+      auth.accessToken,
+      auth.refreshToken,
+      auth.user,
+    )
+
+    const retryResponse = await sendRequest(path, options)
+
+    return handleResponse<T>(retryResponse)
+  } catch (error) {
+    clearAuth()
+
+    if (error instanceof ApiError) {
+      throw error
+    }
+
+    throw new ApiError(401, 'Authentication required')
+  }
+}
+
+async function refreshAccessToken(
+  refreshToken: string,
+): Promise<AuthResponse> {
+  try {
+    const response = await sendRequest(
+      '/auth/refresh',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken }),
+      },
+      true,
+    )
+
+    return await handleResponse<AuthResponse>(response)
+  } finally {
+    refreshPromise = null
+  }
+}
+
+async function sendRequest(
+  path: string,
+  options?: RequestInit,
+  skipAccessToken = false,
+): Promise<Response> {
+  const token = getAccessToken()
   const headers = new Headers(options?.headers)
 
-  if (token) {
+  if (token && !skipAccessToken) {
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  return fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
   })
+}
 
+async function handleResponse<T>(
+  response: Response,
+): Promise<T> {
   if (!response.ok) {
     throw new ApiError(
       response.status,
