@@ -11,9 +11,8 @@ import type {
 
 @Injectable()
 export class DrizzleRefreshSessionRepository
-  implements RefreshSessionRepository
-{
-  constructor(private readonly database: DatabaseService) {}
+  implements RefreshSessionRepository {
+  constructor(private readonly database: DatabaseService) { }
 
   async create(
     data: CreateRefreshSessionData,
@@ -52,18 +51,32 @@ export class DrizzleRefreshSessionRepository
   }
 
   async revokeByFamilyId(familyId: string): Promise<void> {
-  await this.database.client
-    .update(refreshSessions)
-    .set({
-      revokedAt: new Date(),
-    })
-    .where(
-      and(
-        eq(refreshSessions.familyId, familyId),
-        isNull(refreshSessions.revokedAt),
-      ),
-    );
-}
+    await this.database.client
+      .update(refreshSessions)
+      .set({
+        revokedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(refreshSessions.familyId, familyId),
+          isNull(refreshSessions.revokedAt),
+        ),
+      );
+  }
+
+  async revokeByUserId(userId: string): Promise<void> {
+    await this.database.client
+      .update(refreshSessions)
+      .set({
+        revokedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(refreshSessions.userId, userId),
+          isNull(refreshSessions.revokedAt),
+        ),
+      );
+  }
 
   private toDomain(
     session: typeof refreshSessions.$inferSelect,

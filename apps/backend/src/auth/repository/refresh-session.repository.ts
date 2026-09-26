@@ -19,4 +19,6 @@ export interface RefreshSessionRepository {
   revoke(id: string): Promise<void>;
 
   revokeByFamilyId(familyId: string): Promise<void>;
+
+  revokeByUserId(userId: string): Promise<void>;
 }

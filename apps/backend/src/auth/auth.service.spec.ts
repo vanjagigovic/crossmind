@@ -28,6 +28,7 @@ describe("AuthService", () => {
     findById: vi.fn(),
     revoke: vi.fn(),
     revokeByFamilyId: vi.fn(),
+    revokeByUserId: vi.fn(),
   };
 
   const tokenHashService = {
@@ -175,7 +176,7 @@ describe("AuthService", () => {
       "refresh-token",
     );
 
-     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
+    expect(refreshSessionRepository.create).toHaveBeenCalledWith({
       userId: "user-1",
       familyId: expect.any(String),
       tokenHash: "hashed-refresh-token",
@@ -321,7 +322,7 @@ describe("AuthService", () => {
 
 
     tokenHashService.hash.mockReturnValueOnce("hashed-new-refresh-token");
-    
+
     const result = await authService.refresh("refresh-token");
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
@@ -422,35 +423,35 @@ describe("AuthService", () => {
   });
 
   it("should revoke the entire refresh token family when a revoked token is reused", async () => {
-  jwtTokenService.verifyRefreshToken.mockResolvedValue({
-    sub: "user-1",
-    isGuest: false,
-    sid: "session-1",
+    jwtTokenService.verifyRefreshToken.mockResolvedValue({
+      sub: "user-1",
+      isGuest: false,
+      sid: "session-1",
+    });
+
+    refreshSessionRepository.findById.mockResolvedValue({
+      id: "session-1",
+      userId: "user-1",
+      familyId: "family-1",
+      tokenHash: "hashed-refresh-token",
+      expiresAt: new Date(Date.now() + 60_000),
+      createdAt: new Date(),
+      revokedAt: new Date(),
+    });
+
+    await expect(
+      authService.refresh("refresh-token"),
+    ).rejects.toThrow(UnauthorizedException);
+
+    expect(
+      refreshSessionRepository.revokeByFamilyId,
+    ).toHaveBeenCalledWith("family-1");
+
+    expect(tokenHashService.matches).not.toHaveBeenCalled();
+    expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
+    expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
+    expect(jwtTokenService.generateRefreshToken).not.toHaveBeenCalled();
   });
-
-  refreshSessionRepository.findById.mockResolvedValue({
-    id: "session-1",
-    userId: "user-1",
-    familyId: "family-1",
-    tokenHash: "hashed-refresh-token",
-    expiresAt: new Date(Date.now() + 60_000),
-    createdAt: new Date(),
-    revokedAt: new Date(),
-  });
-
-  await expect(
-    authService.refresh("refresh-token"),
-  ).rejects.toThrow(UnauthorizedException);
-
-  expect(
-    refreshSessionRepository.revokeByFamilyId,
-  ).toHaveBeenCalledWith("family-1");
-
-  expect(tokenHashService.matches).not.toHaveBeenCalled();
-  expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
-  expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
-  expect(jwtTokenService.generateRefreshToken).not.toHaveBeenCalled();
-});
 
   it("should reject refresh when session is expired", async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
@@ -710,6 +711,10 @@ describe("AuthService", () => {
     expect(userService.updatePassword).toHaveBeenCalledWith(
       "user-1",
       "new-password-hash",
+    );
+
+    expect(refreshSessionRepository.revokeByUserId).toHaveBeenCalledWith(
+      "user-1",
     );
 
     expect(passwordResetTokenRepository.markAsUsed).toHaveBeenCalledWith(

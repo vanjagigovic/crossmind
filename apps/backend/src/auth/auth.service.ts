@@ -216,6 +216,8 @@ export class AuthService {
       passwordHash,
     );
 
+    await this.refreshSessionRepository.revokeByUserId(user.id);
+    
     await this.passwordResetTokenRepository.markAsUsed(
       resetToken.id,
     );
