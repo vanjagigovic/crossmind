@@ -74,3 +74,7 @@ export function resetPassword(
 export function logout(refreshToken: string): Promise<void> {
   return post<void>('/auth/logout', { refreshToken })
 }
+
+export function refresh(refreshToken: string): Promise<AuthResponse> {
+  return post<AuthResponse>('/auth/refresh', { refreshToken })
+}
