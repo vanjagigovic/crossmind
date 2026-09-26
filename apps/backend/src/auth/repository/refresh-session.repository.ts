@@ -17,4 +17,6 @@ export interface RefreshSessionRepository {
   findById(id: string): Promise<RefreshSession | null>;
 
   revoke(id: string): Promise<void>;
+
+  revokeByFamilyId(familyId: string): Promise<void>;
 }

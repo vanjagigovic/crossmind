@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 import { DatabaseService } from "../../db/database.service.js";
 import { refreshSessions } from "../../db/schema/index.js";
@@ -50,6 +50,20 @@ export class DrizzleRefreshSessionRepository
       })
       .where(eq(refreshSessions.id, id));
   }
+
+  async revokeByFamilyId(familyId: string): Promise<void> {
+  await this.database.client
+    .update(refreshSessions)
+    .set({
+      revokedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(refreshSessions.familyId, familyId),
+        isNull(refreshSessions.revokedAt),
+      ),
+    );
+}
 
   private toDomain(
     session: typeof refreshSessions.$inferSelect,
