@@ -6,6 +6,7 @@ export const REFRESH_SESSION_REPOSITORY = Symbol(
 
 export interface CreateRefreshSessionData {
   userId: string;
+  familyId: string;
   tokenHash: string;
   expiresAt: Date;
 }
@@ -16,4 +17,8 @@ export interface RefreshSessionRepository {
   findById(id: string): Promise<RefreshSession | null>;
 
   revoke(id: string): Promise<void>;
+
+  revokeByFamilyId(familyId: string): Promise<void>;
+
+  revokeByUserId(userId: string): Promise<void>;
 }

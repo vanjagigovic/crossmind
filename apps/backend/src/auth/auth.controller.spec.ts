@@ -6,7 +6,10 @@ describe("AuthController", () => {
 
     const authService = {
         register: vi.fn(),
-        login: vi.fn(),
+        login: vi.fn().mockResolvedValue({
+            accessToken: "access-token",
+            refreshToken: "refresh-token",
+        }),
         guest: vi.fn(),
         refresh: vi.fn(),
         logout: vi.fn(),
@@ -147,22 +150,22 @@ describe("AuthController", () => {
     });
 
     it("should reset the password", async () => {
-  const dto = {
-    token: "raw-reset-token",
-    newPassword: "new-password",
-  };
+        const dto = {
+            token: "raw-reset-token",
+            newPassword: "new-password",
+        };
 
-  const result = {
-    message: "Password has been reset successfully",
-  };
+        const result = {
+            message: "Password has been reset successfully",
+        };
 
-  authService.resetPassword.mockResolvedValue(result);
+        authService.resetPassword.mockResolvedValue(result);
 
-  await expect(
-    authController.resetPassword(dto),
-  ).resolves.toEqual(result);
+        await expect(
+            authController.resetPassword(dto),
+        ).resolves.toEqual(result);
 
-  expect(authService.resetPassword).toHaveBeenCalledWith(dto);
-});
+        expect(authService.resetPassword).toHaveBeenCalledWith(dto);
+    });
 
 });

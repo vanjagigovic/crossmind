@@ -140,90 +140,92 @@ export class AuthService {
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
-  const email = dto.email.trim().toLowerCase();
+    const email = dto.email.trim().toLowerCase();
 
-  const user = await this.userService.findByEmail(email);
+    const user = await this.userService.findByEmail(email);
 
-  const message =
-    "If an account with that email exists, a password reset link has been sent";
+    const message =
+      "If an account with that email exists, a password reset link has been sent";
 
-  if (!user || user.isGuest) {
+    if (!user || user.isGuest) {
+      return { message };
+    }
+
+    const token = randomBytes(32).toString("hex");
+
+    const tokenHash = this.tokenHashService.hash(token);
+
+    const expiresAt = new Date(
+      Date.now() + 60 * 60 * 1000,
+    );
+
+    await this.passwordResetTokenRepository.create({
+      userId: user.id,
+      tokenHash,
+      expiresAt,
+    });
+
+    if (user.email) {
+      await this.passwordResetEmailService.send(
+        user.email,
+        token,
+      );
+    }
+
     return { message };
   }
 
-  const token = randomBytes(32).toString("hex");
+  async resetPassword(dto: ResetPasswordDto) {
+    const tokenHash = this.tokenHashService.hash(dto.token);
 
-  const tokenHash = this.tokenHashService.hash(token);
+    const resetToken =
+      await this.passwordResetTokenRepository.findByTokenHash(tokenHash);
 
-  const expiresAt = new Date(
-    Date.now() + 60 * 60 * 1000,
-  );
+    if (!resetToken) {
+      throw new UnauthorizedException(
+        "Invalid or expired password reset token",
+      );
+    }
 
- await this.passwordResetTokenRepository.create({
-  userId: user.id,
-  tokenHash,
-  expiresAt,
-});
+    if (resetToken.usedAt) {
+      throw new UnauthorizedException(
+        "Invalid or expired password reset token",
+      );
+    }
 
-if (user.email) {
-  await this.passwordResetEmailService.send(
-    user.email,
-    token,
-  );
-}
+    if (resetToken.expiresAt <= new Date()) {
+      throw new UnauthorizedException(
+        "Invalid or expired password reset token",
+      );
+    }
 
-return { message };
-}
+    const user = await this.userService.findById(resetToken.userId);
 
-async resetPassword(dto: ResetPasswordDto) {
-  const tokenHash = this.tokenHashService.hash(dto.token);
+    if (!user || user.isGuest) {
+      throw new UnauthorizedException(
+        "Invalid or expired password reset token",
+      );
+    }
 
-  const resetToken =
-    await this.passwordResetTokenRepository.findByTokenHash(tokenHash);
-
-  if (!resetToken) {
-    throw new UnauthorizedException(
-      "Invalid or expired password reset token",
+    const passwordHash = await this.passwordService.hash(
+      dto.newPassword,
     );
-  }
 
-  if (resetToken.usedAt) {
-    throw new UnauthorizedException(
-      "Invalid or expired password reset token",
+    await this.userService.updatePassword(
+      user.id,
+      passwordHash,
     );
-  }
 
-  if (resetToken.expiresAt <= new Date()) {
-    throw new UnauthorizedException(
-      "Invalid or expired password reset token",
+    await this.refreshSessionRepository.revokeByUserId(user.id);
+    
+    await this.passwordResetTokenRepository.markAsUsed(
+      resetToken.id,
     );
+
+    return {
+      message: "Password has been reset successfully",
+    };
   }
-
-  const user = await this.userService.findById(resetToken.userId);
-
-  if (!user || user.isGuest) {
-    throw new UnauthorizedException(
-      "Invalid or expired password reset token",
-    );
-  }
-
-  const passwordHash = await this.passwordService.hash(
-    dto.newPassword,
-  );
-
-  await this.userService.updatePassword(
-    user.id,
-    passwordHash,
-  );
-
-  await this.passwordResetTokenRepository.markAsUsed(
-    resetToken.id,
-  );
-
-  return {
-    message: "Password has been reset successfully",
-  };
-}
 
   async refresh(refreshToken: string) {
     const payload =
@@ -241,6 +243,10 @@ async resetPassword(dto: ResetPasswordDto) {
     }
 
     if (session.revokedAt) {
+      await this.refreshSessionRepository.revokeByFamilyId(
+        session.familyId,
+      );
+
       throw new UnauthorizedException("Invalid refresh token");
     }
 
@@ -278,6 +284,7 @@ async resetPassword(dto: ResetPasswordDto) {
     const newRefreshToken = await this.createRefreshSession(
       user.id,
       user.isGuest,
+      session.familyId,
     );
 
     return {
@@ -295,8 +302,10 @@ async resetPassword(dto: ResetPasswordDto) {
   private async createRefreshSession(
     userId: string,
     isGuest: boolean,
+    familyId?: string,
   ) {
     const sessionId = randomUUID();
+    const sessionFamilyId = familyId ?? randomUUID();
 
     const payload = {
       sub: userId,
@@ -315,6 +324,7 @@ async resetPassword(dto: ResetPasswordDto) {
 
     await this.refreshSessionRepository.create({
       userId,
+      familyId: sessionFamilyId,
       tokenHash,
       expiresAt,
     });

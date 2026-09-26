@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 import { DatabaseService } from "../../db/database.service.js";
 import { refreshSessions } from "../../db/schema/index.js";
@@ -11,9 +11,8 @@ import type {
 
 @Injectable()
 export class DrizzleRefreshSessionRepository
-  implements RefreshSessionRepository
-{
-  constructor(private readonly database: DatabaseService) {}
+  implements RefreshSessionRepository {
+  constructor(private readonly database: DatabaseService) { }
 
   async create(
     data: CreateRefreshSessionData,
@@ -51,12 +50,41 @@ export class DrizzleRefreshSessionRepository
       .where(eq(refreshSessions.id, id));
   }
 
+  async revokeByFamilyId(familyId: string): Promise<void> {
+    await this.database.client
+      .update(refreshSessions)
+      .set({
+        revokedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(refreshSessions.familyId, familyId),
+          isNull(refreshSessions.revokedAt),
+        ),
+      );
+  }
+
+  async revokeByUserId(userId: string): Promise<void> {
+    await this.database.client
+      .update(refreshSessions)
+      .set({
+        revokedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(refreshSessions.userId, userId),
+          isNull(refreshSessions.revokedAt),
+        ),
+      );
+  }
+
   private toDomain(
     session: typeof refreshSessions.$inferSelect,
   ): RefreshSession {
     return {
       id: session.id,
       userId: session.userId,
+      familyId: session.familyId,
       tokenHash: session.tokenHash,
       expiresAt: session.expiresAt,
       createdAt: session.createdAt,
