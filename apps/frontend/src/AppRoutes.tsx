@@ -7,11 +7,12 @@ import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage'
 import { ResetPasswordPage } from './features/auth/pages/ResetPasswordPage'
 import { PuzzlePage } from './features/puzzle/pages/PuzzlePage'
 import { PuzzleResultPage } from './features/puzzle/pages/PuzzleResultPage'
+import { ProtectedRoute } from './features/auth/components/ProtectedRoute'
 
 function PuzzleRoute() {
   const { puzzleId } = useParams<{ puzzleId: string }>()
 
-  return <PuzzlePage puzzleId={puzzleId} />
+  return <PuzzlePage puzzleId={puzzleId ?? ''} />
 }
 
 function PuzzleResultRoute() {
@@ -28,8 +29,10 @@ export function AppRoutes() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
-      <Route path="/create" element={<CreatePuzzlePage />} />
-      <Route path="/puzzle/:puzzleId" element={<PuzzleRoute />} />
+      <Route element={<ProtectedRoute />}>
+        <Route path="/create" element={<CreatePuzzlePage />} />
+        <Route path="/puzzle/:puzzleId" element={<PuzzleRoute />} />
+      </Route>
       <Route path="/puzzle/:puzzleId/result" element={<PuzzleResultRoute />} />
     </Routes>
   )
