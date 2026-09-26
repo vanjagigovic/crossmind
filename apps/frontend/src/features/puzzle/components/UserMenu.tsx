@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { clearAuth, getRefreshToken, getUser } from '../../auth/auth-storage'
+import { getRefreshToken } from '../../auth/auth-storage'
 import { logout } from '../../auth/api/auth'
+import { useAuth } from '../../auth/useAuth'
 
 
 
@@ -9,7 +10,7 @@ export function UserMenu() {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
 
-  const user = getUser()
+  const { user, clearSession } = useAuth()
 
   if (!user) {
     return null
@@ -18,11 +19,11 @@ export function UserMenu() {
   const initials = user.isGuest
     ? 'G'
     : user.displayName
-        .split(' ')
-        .map((name) => name[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
+      .split(' ')
+      .map((name) => name[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase()
 
   async function handleLogout() {
     const refreshToken = getRefreshToken()
@@ -32,7 +33,7 @@ export function UserMenu() {
         await logout(refreshToken)
       }
     } finally {
-      clearAuth()
+      clearSession()
       navigate('/login')
     }
   }
