@@ -1,9 +1,6 @@
-import { CrosswordGrid, Grid } from "../domain/grid.js";
+import { CrosswordGrid, Grid } from '../domain/grid.js';
 
-export function createCrosswordGrid(
-  rows: number,
-  cols: number,
-): CrosswordGrid {
+export function createCrosswordGrid(rows: number, cols: number): CrosswordGrid {
   const cells: Grid = [];
 
   for (let row = 0; row < rows; row++) {

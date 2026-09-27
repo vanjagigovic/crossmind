@@ -1,22 +1,19 @@
-import { Injectable } from "@nestjs/common";
-import { and, eq, isNull } from "drizzle-orm";
+import { Injectable } from '@nestjs/common';
+import { and, eq, isNull } from 'drizzle-orm';
 
-import { DatabaseService } from "../../db/database.service.js";
-import { refreshSessions } from "../../db/schema/index.js";
-import type { RefreshSession } from "../domain/refresh-session.js";
+import { DatabaseService } from '../../db/database.service.js';
+import { refreshSessions } from '../../db/schema/index.js';
+import type { RefreshSession } from '../domain/refresh-session.js';
 import type {
   CreateRefreshSessionData,
   RefreshSessionRepository,
-} from "./refresh-session.repository.js";
+} from './refresh-session.repository.js';
 
 @Injectable()
-export class DrizzleRefreshSessionRepository
-  implements RefreshSessionRepository {
-  constructor(private readonly database: DatabaseService) { }
+export class DrizzleRefreshSessionRepository implements RefreshSessionRepository {
+  constructor(private readonly database: DatabaseService) {}
 
-  async create(
-    data: CreateRefreshSessionData,
-  ): Promise<RefreshSession> {
+  async create(data: CreateRefreshSessionData): Promise<RefreshSession> {
     const result = await this.database.client
       .insert(refreshSessions)
       .values(data)

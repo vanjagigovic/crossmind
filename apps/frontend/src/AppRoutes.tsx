@@ -1,24 +1,24 @@
-import { Route, Routes, useParams } from 'react-router-dom'
-import { CreatePuzzlePage } from './features/puzzle/pages/CreatePuzzlePage'
-import { LandingPage } from './features/puzzle/pages/LandingPage'
-import { LoginPage } from './features/auth/pages/LoginPage'
-import { RegisterPage } from './features/auth/pages/RegisterPage'
-import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage'
-import { ResetPasswordPage } from './features/auth/pages/ResetPasswordPage'
-import { PuzzlePage } from './features/puzzle/pages/PuzzlePage'
-import { PuzzleResultPage } from './features/puzzle/pages/PuzzleResultPage'
-import { ProtectedRoute } from './features/auth/components/ProtectedRoute'
+import { Route, Routes, useParams } from 'react-router-dom';
+import { CreatePuzzlePage } from './features/puzzle/pages/CreatePuzzlePage';
+import { LandingPage } from './features/puzzle/pages/LandingPage';
+import { LoginPage } from './features/auth/pages/LoginPage';
+import { RegisterPage } from './features/auth/pages/RegisterPage';
+import { ForgotPasswordPage } from './features/auth/pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './features/auth/pages/ResetPasswordPage';
+import { PuzzlePage } from './features/puzzle/pages/PuzzlePage';
+import { PuzzleResultPage } from './features/puzzle/pages/PuzzleResultPage';
+import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
 
 function PuzzleRoute() {
-  const { puzzleId } = useParams<{ puzzleId: string }>()
+  const { puzzleId } = useParams<{ puzzleId: string }>();
 
-  return <PuzzlePage puzzleId={puzzleId ?? ''} />
+  return <PuzzlePage puzzleId={puzzleId ?? ''} />;
 }
 
 function PuzzleResultRoute() {
-  const { puzzleId } = useParams<{ puzzleId: string }>()
+  const { puzzleId } = useParams<{ puzzleId: string }>();
 
-  return <PuzzleResultPage puzzleId={puzzleId ?? ''} />
+  return <PuzzleResultPage puzzleId={puzzleId ?? ''} />;
 }
 
 export function AppRoutes() {
@@ -35,5 +35,5 @@ export function AppRoutes() {
       </Route>
       <Route path="/puzzle/:puzzleId/result" element={<PuzzleResultRoute />} />
     </Routes>
-  )
+  );
 }

@@ -1,17 +1,13 @@
-import type { CrosswordGrid } from "../../crossword/domain/grid.js";
-import type { CrosswordDifficulty } from "../../crossword/domain/difficulty.js";
-import type { PuzzleEntry } from "./puzzle-entry.js";
-import type { CrosswordLanguage } from "../../crossword/domain/language.js";
+import type { CrosswordGrid } from '../../crossword/domain/grid.js';
+import type { CrosswordDifficulty } from '../../crossword/domain/difficulty.js';
+import type { PuzzleEntry } from './puzzle-entry.js';
+import type { CrosswordLanguage } from '../../crossword/domain/language.js';
 
 export type PuzzleDifficulty = CrosswordDifficulty;
-export type PuzzleLanguage = CrosswordLanguage
+export type PuzzleLanguage = CrosswordLanguage;
 
 export type PuzzleStatus =
-  | "draft"
-  | "generating"
-  | "ready"
-  | "published"
-  | "archived";
+  'draft' | 'generating' | 'ready' | 'published' | 'archived';
 
 export type Puzzle = {
   id: string;

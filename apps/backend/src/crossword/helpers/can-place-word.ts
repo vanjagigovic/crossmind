@@ -1,18 +1,9 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { WordPlacement } from "../domain/word-placement.js";
-import { hasCrossing } from "./has-crossing.js";
+import { CrosswordGrid } from '../domain/grid.js';
+import { WordPlacement } from '../domain/word-placement.js';
+import { hasCrossing } from './has-crossing.js';
 
-function isInsideGrid(
-  grid: CrosswordGrid,
-  row: number,
-  col: number,
-): boolean {
-  return (
-    row >= 0 &&
-    row < grid.rows &&
-    col >= 0 &&
-    col < grid.cols
-  );
+function isInsideGrid(grid: CrosswordGrid, row: number, col: number): boolean {
+  return row >= 0 && row < grid.rows && col >= 0 && col < grid.cols;
 }
 
 export function canPlaceWord(
@@ -22,17 +13,14 @@ export function canPlaceWord(
   const { answer } = placement.word;
   const { row, col, direction } = placement;
 
-  const rowStep = direction === "down" ? 1 : 0;
-  const colStep = direction === "across" ? 1 : 0;
+  const rowStep = direction === 'down' ? 1 : 0;
+  const colStep = direction === 'across' ? 1 : 0;
 
   const endRow = row + rowStep * (answer.length - 1);
   const endCol = col + colStep * (answer.length - 1);
 
   // The complete word must fit inside the grid.
-  if (
-    !isInsideGrid(grid, row, col) ||
-    !isInsideGrid(grid, endRow, endCol)
-  ) {
+  if (!isInsideGrid(grid, row, col) || !isInsideGrid(grid, endRow, endCol)) {
     return false;
   }
 
@@ -68,10 +56,7 @@ export function canPlaceWord(
       return false;
     }
 
-    if (
-      cell.letter !== null &&
-      cell.letter !== answer[index]
-    ) {
+    if (cell.letter !== null && cell.letter !== answer[index]) {
       return false;
     }
 
@@ -82,7 +67,7 @@ export function canPlaceWord(
     }
 
     // Empty cells cannot have neighbouring letters beside the word.
-    if (direction === "across") {
+    if (direction === 'across') {
       for (const neighbourRow of [currentRow - 1, currentRow + 1]) {
         if (
           isInsideGrid(grid, neighbourRow, currentCol) &&

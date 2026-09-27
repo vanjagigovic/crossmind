@@ -1,16 +1,16 @@
-import { useTranslation } from 'react-i18next'
-import type { Direction, PuzzleEntry } from '../../../types/puzzle'
+import { useTranslation } from 'react-i18next';
+import type { Direction, PuzzleEntry } from '../../../types/puzzle';
 
 type ClueListProps = {
-  entries: PuzzleEntry[]
-  activeEntryId?: string
-  onSelectEntry: (entry: PuzzleEntry) => void
-}
+  entries: PuzzleEntry[];
+  activeEntryId?: string;
+  onSelectEntry: (entry: PuzzleEntry) => void;
+};
 
 function getEntriesByDirection(entries: PuzzleEntry[], direction: Direction) {
   return entries
     .filter((entry) => entry.direction === direction)
-    .sort((first, second) => first.number - second.number)
+    .sort((first, second) => first.number - second.number);
 }
 
 export function ClueList({
@@ -18,9 +18,9 @@ export function ClueList({
   activeEntryId,
   onSelectEntry,
 }: ClueListProps) {
-  const { t } = useTranslation()
-  const acrossEntries = getEntriesByDirection(entries, 'across')
-  const downEntries = getEntriesByDirection(entries, 'down')
+  const { t } = useTranslation();
+  const acrossEntries = getEntriesByDirection(entries, 'across');
+  const downEntries = getEntriesByDirection(entries, 'down');
 
   return (
     <div className="clue-list">
@@ -37,15 +37,15 @@ export function ClueList({
         onSelectEntry={onSelectEntry}
       />
     </div>
-  )
+  );
 }
 
 type ClueSectionProps = {
-  heading: string
-  entries: PuzzleEntry[]
-  activeEntryId?: string
-  onSelectEntry: (entry: PuzzleEntry) => void
-}
+  heading: string;
+  entries: PuzzleEntry[];
+  activeEntryId?: string;
+  onSelectEntry: (entry: PuzzleEntry) => void;
+};
 
 function ClueSection({
   heading,
@@ -61,7 +61,7 @@ function ClueSection({
       <h2 id={`clues-${heading.toLowerCase()}`}>{heading}</h2>
       <ol>
         {entries.map((entry) => {
-          const active = entry.id === activeEntryId
+          const active = entry.id === activeEntryId;
 
           return (
             <li key={entry.id} value={entry.number}>
@@ -75,9 +75,9 @@ function ClueSection({
                 <span>{entry.clue}</span>
               </button>
             </li>
-          )
+          );
         })}
       </ol>
     </section>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -10,28 +10,28 @@ import {
   Min,
   ValidateIf,
   ValidateNested,
-} from "class-validator";
+} from 'class-validator';
 
 import type {
   CrosswordGrid,
   Grid,
   GridCell,
-} from "../../../crossword/domain/grid.js";
-import type { CrosswordWord } from "../../../crossword/domain/word.js";
+} from '../../../crossword/domain/grid.js';
+import type { CrosswordWord } from '../../../crossword/domain/word.js';
 import type {
   Direction,
   WordPlacement,
-} from "../../../crossword/domain/word-placement.js";
+} from '../../../crossword/domain/word-placement.js';
 import type {
   PuzzleDifficulty,
   PuzzleLanguage,
   PuzzleStatus,
-} from "../../domain/puzzle.js";
+} from '../../domain/puzzle.js';
 
 export enum PuzzleDifficultyDto {
-  EASY = "easy",
-  MEDIUM = "medium",
-  HARD = "hard",
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
 }
 
 export enum PuzzleLanguageDto {
@@ -41,11 +41,11 @@ export enum PuzzleLanguageDto {
 }
 
 export enum PuzzleStatusDto {
-  DRAFT = "draft",
-  GENERATING = "generating",
-  READY = "ready",
-  PUBLISHED = "published",
-  ARCHIVED = "archived",
+  DRAFT = 'draft',
+  GENERATING = 'generating',
+  READY = 'ready',
+  PUBLISHED = 'published',
+  ARCHIVED = 'archived',
 }
 
 class CrosswordWordDto implements CrosswordWord {
@@ -89,7 +89,7 @@ class WordPlacementDto implements WordPlacement {
   @Min(0)
   col!: number;
 
-  @IsEnum(["across", "down"])
+  @IsEnum(['across', 'down'])
   direction!: Direction;
 }
 
@@ -127,7 +127,6 @@ export class CreatePuzzleDto {
 
   @IsEnum(PuzzleLanguageDto)
   language!: PuzzleLanguage;
-
 
   @IsEnum(PuzzleStatusDto)
   status!: PuzzleStatus;

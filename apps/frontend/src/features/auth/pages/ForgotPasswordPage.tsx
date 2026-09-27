@@ -1,33 +1,33 @@
-import { useState } from 'react'
-import type { SubmitEvent } from 'react'
-import { Link } from 'react-router-dom'
-import { ApiError } from '../../../api/client'
-import { forgotPassword } from '../api/auth'
+import { useState } from 'react';
+import type { SubmitEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { ApiError } from '../../../api/client';
+import { forgotPassword } from '../api/auth';
 
 export function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: SubmitEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
-    setMessage('')
-    setError('')
-    setIsLoading(true)
+    setMessage('');
+    setError('');
+    setIsLoading(true);
 
     try {
-      const response = await forgotPassword({ email })
-      setMessage(response.message)
+      const response = await forgotPassword({ email });
+      setMessage(response.message);
     } catch (error) {
       if (error instanceof ApiError) {
-        setError('Unable to send password reset email. Please try again.')
+        setError('Unable to send password reset email. Please try again.');
       } else {
-        setError('Something went wrong. Please try again.')
+        setError('Something went wrong. Please try again.');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -85,5 +85,5 @@ export function ForgotPasswordPage() {
         </footer>
       </section>
     </main>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import type { WordPlacement } from "../../crossword/domain/word-placement.js";
-import type { CreatePuzzleEntryData } from "../domain/puzzle-entry.js";
+import type { WordPlacement } from '../../crossword/domain/word-placement.js';
+import type { CreatePuzzleEntryData } from '../domain/puzzle-entry.js';
 
 // Numbers starting cells in reading order (top-to-bottom, left-to-right); shared start cells share a number.
 export function buildPuzzleEntries(

@@ -1,22 +1,22 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
-import type { CrosswordWord } from "../domain/word.js";
+import type { CrosswordWord } from '../domain/word.js';
 import type {
   CrosswordContentProvider,
   CrosswordContentRequest,
-} from "./crossword-content-provider.js";
+} from './crossword-content-provider.js';
 
 const WORD_POOL: CrosswordWord[] = [
-  { answer: "CAT", clue: "A small domesticated feline" },
-  { answer: "DOG", clue: "Man's best friend" },
-  { answer: "BIRD", clue: "An animal that can fly" },
-  { answer: "FISH", clue: "An animal that lives in water" },
-  { answer: "LION", clue: "The king of the jungle" },
-  { answer: "TIGER", clue: "A large striped wild cat" },
-  { answer: "BEAR", clue: "A large furry mammal" },
-  { answer: "HORSE", clue: "An animal often ridden" },
-  { answer: "SHEEP", clue: "An animal known for its wool" },
-  { answer: "MOUSE", clue: "A small rodent" },
+  { answer: 'CAT', clue: 'A small domesticated feline' },
+  { answer: 'DOG', clue: "Man's best friend" },
+  { answer: 'BIRD', clue: 'An animal that can fly' },
+  { answer: 'FISH', clue: 'An animal that lives in water' },
+  { answer: 'LION', clue: 'The king of the jungle' },
+  { answer: 'TIGER', clue: 'A large striped wild cat' },
+  { answer: 'BEAR', clue: 'A large furry mammal' },
+  { answer: 'HORSE', clue: 'An animal often ridden' },
+  { answer: 'SHEEP', clue: 'An animal known for its wool' },
+  { answer: 'MOUSE', clue: 'A small rodent' },
 ];
 
 @Injectable()

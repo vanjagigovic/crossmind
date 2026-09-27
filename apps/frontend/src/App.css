@@ -17,7 +17,12 @@
   align-items: center;
   gap: clamp(3rem, 8vw, 7rem);
   min-height: 100svh;
-  background: linear-gradient(135deg, var(--bg) 0%, var(--bg) 62%, var(--accent-bg) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--bg) 0%,
+    var(--bg) 62%,
+    var(--accent-bg) 100%
+  );
   position: relative;
 }
 
@@ -88,7 +93,7 @@
   margin: 0.25rem 0 0;
 }
 
-.create-puzzle-page__header>p:last-child {
+.create-puzzle-page__header > p:last-child {
   margin-top: 0.75rem;
 }
 
@@ -522,44 +527,43 @@
   font-weight: 700;
 }
 
-
- .language-switcher {
+.language-switcher {
   position: relative;
   z-index: 10;
   display: flex;
   align-items: center;
 }
 
-  .language-switcher__flag {
-    position: absolute;
-    left: 0.75rem;
-    z-index: 1;
-    font-size: 1rem;
-    line-height: 1;
-    pointer-events: none;
-  }
+.language-switcher__flag {
+  position: absolute;
+  left: 0.75rem;
+  z-index: 1;
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+}
 
-  .language-switcher select {
-    appearance: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.5rem 2rem 0.5rem 2.25rem;
-    color: var(--text-h);
-    background-color: var(--bg);
-    font: inherit;
-    font-size: 0.875rem;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-  }
+.language-switcher select {
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 2rem 0.5rem 2.25rem;
+  color: var(--text-h);
+  background-color: var(--bg);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
 
-  .language-switcher select:hover {
-    border-color: var(--accent-border);
-  }
+.language-switcher select:hover {
+  border-color: var(--accent-border);
+}
 
-  .language-switcher select:focus-visible {
-    outline: 3px solid var(--accent-border);
-    outline-offset: 3px;
-  }
+.language-switcher select:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 3px;
+}
 
 @media (max-width: 640px) {
   .puzzle-page {
@@ -942,9 +946,9 @@
 }
 @media (max-width: 640px) {
   .landing-page__topbar {
-  top: 1rem;
-  right: 1rem;
-}
+    top: 1rem;
+    right: 1rem;
+  }
   /* .user-menu {
     top: 1rem;
     right: 5.5rem;

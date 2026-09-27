@@ -1,52 +1,52 @@
-import { useState } from 'react'
-import type { SubmitEvent } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { ApiError } from '../../../api/client'
-import { resetPassword } from '../api/auth'
+import { useState } from 'react';
+import type { SubmitEvent } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { ApiError } from '../../../api/client';
+import { resetPassword } from '../api/auth';
 
 export function ResetPasswordPage() {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const token = searchParams.get('token')
+  const token = searchParams.get('token');
 
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: SubmitEvent) {
-    event.preventDefault()
+    event.preventDefault();
 
-    setError('')
+    setError('');
 
     if (!token) {
-      setError('Invalid or missing reset token.')
-      return
+      setError('Invalid or missing reset token.');
+      return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.')
-      return
+      setError('Passwords do not match.');
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       await resetPassword({
         token,
         newPassword: password,
-      })
+      });
 
-      navigate('/login')
+      navigate('/login');
     } catch (error) {
       if (error instanceof ApiError && error.status === 400) {
-        setError('This reset link is invalid or has expired.')
+        setError('This reset link is invalid or has expired.');
       } else {
-        setError('Something went wrong. Please try again.')
+        setError('Something went wrong. Please try again.');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -108,5 +108,5 @@ export function ResetPasswordPage() {
         </footer>
       </section>
     </main>
-  )
+  );
 }

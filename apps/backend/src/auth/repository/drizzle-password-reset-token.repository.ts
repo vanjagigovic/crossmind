@@ -1,18 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 
-import { DatabaseService } from "../../db/database.service.js";
-import { passwordResetTokens } from "../../db/schema/index.js";
-import type { PasswordResetToken } from "../domain/password-reset-token.js";
+import { DatabaseService } from '../../db/database.service.js';
+import { passwordResetTokens } from '../../db/schema/index.js';
+import type { PasswordResetToken } from '../domain/password-reset-token.js';
 import type {
   CreatePasswordResetTokenData,
   PasswordResetTokenRepository,
-} from "./password-reset-token.repository.js";
+} from './password-reset-token.repository.js';
 
 @Injectable()
-export class DrizzlePasswordResetTokenRepository
-  implements PasswordResetTokenRepository
-{
+export class DrizzlePasswordResetTokenRepository implements PasswordResetTokenRepository {
   constructor(private readonly database: DatabaseService) {}
 
   async create(
@@ -42,23 +40,21 @@ export class DrizzlePasswordResetTokenRepository
     return this.toDomain(token);
   }
 
-  async findByTokenHash(
-  tokenHash: string,
-): Promise<PasswordResetToken | null> {
-  const result = await this.database.client
-    .select()
-    .from(passwordResetTokens)
-    .where(eq(passwordResetTokens.tokenHash, tokenHash))
-    .limit(1);
+  async findByTokenHash(tokenHash: string): Promise<PasswordResetToken | null> {
+    const result = await this.database.client
+      .select()
+      .from(passwordResetTokens)
+      .where(eq(passwordResetTokens.tokenHash, tokenHash))
+      .limit(1);
 
-  const token = result[0];
+    const token = result[0];
 
-  if (!token) {
-    return null;
+    if (!token) {
+      return null;
+    }
+
+    return this.toDomain(token);
   }
-
-  return this.toDomain(token);
-}
 
   async markAsUsed(id: string): Promise<void> {
     await this.database.client

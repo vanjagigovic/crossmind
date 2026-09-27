@@ -1,5 +1,5 @@
 export interface JwtPayload {
-    sub: string;
-    isGuest: boolean;
-    sid?: string;
+  sub: string;
+  isGuest: boolean;
+  sid?: string;
 }

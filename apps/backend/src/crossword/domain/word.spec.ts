@@ -9,8 +9,6 @@ describe('CrosswordWord', () => {
     };
 
     expect(word.answer).toBe('REACT');
-    expect(word.clue).toBe(
-      'A JavaScript library for building user interfaces',
-    );
+    expect(word.clue).toBe('A JavaScript library for building user interfaces');
   });
 });

@@ -1,24 +1,24 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import { generatePuzzle, getPuzzle } from '../../../api/puzzles'
-import { getPuzzleSessionResult } from '../utils/puzzleSessionResult'
-import { formatElapsedTime } from '../utils/timerUtils'
+import { generatePuzzle, getPuzzle } from '../../../api/puzzles';
+import { getPuzzleSessionResult } from '../utils/puzzleSessionResult';
+import { formatElapsedTime } from '../utils/timerUtils';
 
 type PuzzleResultPageProps = {
-  puzzleId: string
-}
+  puzzleId: string;
+};
 
 export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
-  const result = getPuzzleSessionResult(puzzleId)
-  const [isPlayingAgain, setIsPlayingAgain] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const result = getPuzzleSessionResult(puzzleId);
+  const [isPlayingAgain, setIsPlayingAgain] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handlePlayAgain() {
-    setIsPlayingAgain(true)
-    setError(null)
+    setIsPlayingAgain(true);
+    setError(null);
 
     try {
-      const currentPuzzle = await getPuzzle(puzzleId)
+      const currentPuzzle = await getPuzzle(puzzleId);
 
       const puzzle = await generatePuzzle({
         title: `${currentPuzzle.theme} Crossword`,
@@ -28,12 +28,12 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
         rows: currentPuzzle.rows,
         columns: currentPuzzle.columns,
         wordCount: currentPuzzle.entries.length,
-      })
+      });
 
-      window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`)
+      window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`);
     } catch {
-      setError('We could not generate the puzzle again. Please try again.')
-      setIsPlayingAgain(false)
+      setError('We could not generate the puzzle again. Please try again.');
+      setIsPlayingAgain(false);
     }
   }
 
@@ -47,7 +47,7 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
           Create New Puzzle
         </a>
       </main>
-    )
+    );
   }
 
   return (
@@ -93,5 +93,5 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
         </a>
       </div>
     </main>
-  )
+  );
 }

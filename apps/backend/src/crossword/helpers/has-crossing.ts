@@ -1,5 +1,5 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { WordPlacement } from "../domain/word-placement.js";
+import { CrosswordGrid } from '../domain/grid.js';
+import { WordPlacement } from '../domain/word-placement.js';
 
 export function hasCrossing(
   grid: CrosswordGrid,
@@ -19,7 +19,11 @@ export function hasCrossing(
 
       const existingAnswer = existingPlacement.word.answer;
 
-      for (let existingIndex = 0; existingIndex < existingAnswer.length; existingIndex++) {
+      for (
+        let existingIndex = 0;
+        existingIndex < existingAnswer.length;
+        existingIndex++
+      ) {
         const existingRow =
           existingPlacement.direction === 'across'
             ? existingPlacement.row

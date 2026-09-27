@@ -1,40 +1,38 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { getRefreshToken } from '../../auth/auth-storage'
-import { logout } from '../../auth/api/auth'
-import { useAuth } from '../../auth/useAuth'
-
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getRefreshToken } from '../../auth/auth-storage';
+import { logout } from '../../auth/api/auth';
+import { useAuth } from '../../auth/useAuth';
 
 export function UserMenu() {
-  const navigate = useNavigate()
-  const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const { user, clearSession } = useAuth()
+  const { user, clearSession } = useAuth();
 
   if (!user) {
-    return null
+    return null;
   }
 
   const initials = user.isGuest
     ? 'G'
     : user.displayName
-      .split(' ')
-      .map((name) => name[0])
-      .join('')
-      .slice(0, 2)
-      .toUpperCase()
+        .split(' ')
+        .map((name) => name[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
 
   async function handleLogout() {
-    const refreshToken = getRefreshToken()
+    const refreshToken = getRefreshToken();
 
     try {
       if (refreshToken) {
-        await logout(refreshToken)
+        await logout(refreshToken);
       }
     } finally {
-      clearSession()
-      navigate('/login')
+      clearSession();
+      navigate('/login');
     }
   }
 
@@ -51,9 +49,7 @@ export function UserMenu() {
           {initials}
         </span>
 
-        <span className="user-menu__name">
-          {user.displayName}
-        </span>
+        <span className="user-menu__name">{user.displayName}</span>
 
         <span className="user-menu__chevron" aria-hidden="true">
           ▾
@@ -65,9 +61,7 @@ export function UserMenu() {
           <div className="user-menu__identity">
             <strong>{user.displayName}</strong>
 
-            {user.email && (
-              <span>{user.email}</span>
-            )}
+            {user.email && <span>{user.email}</span>}
           </div>
 
           <div className="user-menu__separator" />
@@ -92,5 +86,5 @@ export function UserMenu() {
         </div>
       )}
     </div>
-  )
+  );
 }

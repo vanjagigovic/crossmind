@@ -1,51 +1,51 @@
-import { useState } from 'react'
-import type { SubmitEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { ApiError } from '../../../api/client'
-import { guest, login } from '../api/auth'
-import { useAuth } from '../useAuth'
+import { useState } from 'react';
+import type { SubmitEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ApiError } from '../../../api/client';
+import { guest, login } from '../api/auth';
+import { useAuth } from '../useAuth';
 
 export function LoginPage() {
-  const navigate = useNavigate()
-  const { setAuth } = useAuth()
+  const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: SubmitEvent) {
-    event.preventDefault()
-    setError('')
-    setIsLoading(true)
+    event.preventDefault();
+    setError('');
+    setIsLoading(true);
 
     try {
-      const response = await login({ email, password })
-      setAuth(response.accessToken, response.refreshToken, response.user)
-      navigate('/')
+      const response = await login({ email, password });
+      setAuth(response.accessToken, response.refreshToken, response.user);
+      navigate('/');
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
-        setError('Invalid email or password')
+        setError('Invalid email or password');
       } else {
-        setError('Something went wrong. Please try again.')
+        setError('Something went wrong. Please try again.');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   async function handleGuestLogin() {
-    setError('')
-    setIsLoading(true)
+    setError('');
+    setIsLoading(true);
 
     try {
-      const response = await guest()
-      setAuth(response.accessToken, response.refreshToken, response.user)
-      navigate('/')
+      const response = await guest();
+      setAuth(response.accessToken, response.refreshToken, response.user);
+      navigate('/');
     } catch {
-      setError('Unable to continue as guest. Please try again.')
+      setError('Unable to continue as guest. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -117,11 +117,10 @@ export function LoginPage() {
 
         <footer className="auth-footer">
           <p>
-            Don&apos;t have an account?{' '}
-            <Link to="/register">Register</Link>
+            Don&apos;t have an account? <Link to="/register">Register</Link>
           </p>
         </footer>
       </section>
     </main>
-  )
+  );
 }

@@ -1,28 +1,30 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from '@nestjs/common';
 
 import {
   CrosswordGenerator,
   CrosswordGeneratorOptions,
-} from "../../crossword/generator/crossword-generator.js";
-import { CROSSWORD_CONTENT_PROVIDER } from "../../crossword/content/crossword-content-provider.js";
-import type { CrosswordContentProvider } from "../../crossword/content/crossword-content-provider.js";
-import { normalizeCrosswordWords } from "../../crossword/content/normalize-crossword-word.js";
-import { DatabaseService } from "../../db/database.service.js";
+} from '../../crossword/generator/crossword-generator.js';
+import { CROSSWORD_CONTENT_PROVIDER } from '../../crossword/content/crossword-content-provider.js';
+import type { CrosswordContentProvider } from '../../crossword/content/crossword-content-provider.js';
+import { normalizeCrosswordWords } from '../../crossword/content/normalize-crossword-word.js';
+import { DatabaseService } from '../../db/database.service.js';
 import type {
   CreatePuzzleData,
   GeneratePuzzleData,
   Puzzle,
   PuzzleWithEntries,
   UpdatePuzzleData,
-} from "../domain/puzzle.js";
+} from '../domain/puzzle.js';
 
-import type { PuzzleRepository } from "../repository/puzzle.repository.js";
-import type { PuzzleEntryRepository } from "../repository/puzzle-entry.repository.js";
-import { buildPuzzleEntries } from "./build-puzzle-entries.js";
+import type { PuzzleRepository } from '../repository/puzzle.repository.js';
+import type { PuzzleEntryRepository } from '../repository/puzzle-entry.repository.js';
+import { buildPuzzleEntries } from './build-puzzle-entries.js';
 
-export const PUZZLE_REPOSITORY = Symbol("PUZZLE_REPOSITORY");
-export const PUZZLE_ENTRY_REPOSITORY = Symbol("PUZZLE_ENTRY_REPOSITORY");
-export const CROSSWORD_GENERATOR_FACTORY = Symbol("CROSSWORD_GENERATOR_FACTORY");
+export const PUZZLE_REPOSITORY = Symbol('PUZZLE_REPOSITORY');
+export const PUZZLE_ENTRY_REPOSITORY = Symbol('PUZZLE_ENTRY_REPOSITORY');
+export const CROSSWORD_GENERATOR_FACTORY = Symbol(
+  'CROSSWORD_GENERATOR_FACTORY',
+);
 
 export type CrosswordGeneratorFactory = (
   options: CrosswordGeneratorOptions,
@@ -83,7 +85,7 @@ export class PuzzleService {
           theme: data.theme,
           difficulty: data.difficulty,
           language: data.language,
-          status: "ready",
+          status: 'ready',
           rows: data.rows,
           columns: data.columns,
           grid,
@@ -99,10 +101,7 @@ export class PuzzleService {
     });
   }
 
-  async update(
-    id: string,
-    data: UpdatePuzzleData,
-  ): Promise<Puzzle | null> {
+  async update(id: string, data: UpdatePuzzleData): Promise<Puzzle | null> {
     return this.puzzleRepository.update(id, data);
   }
 

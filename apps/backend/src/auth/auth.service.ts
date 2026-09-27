@@ -3,27 +3,26 @@ import {
   Inject,
   Injectable,
   UnauthorizedException,
-} from "@nestjs/common";
-import { randomBytes, randomUUID } from "node:crypto";
+} from '@nestjs/common';
+import { randomBytes, randomUUID } from 'node:crypto';
 
-import { UserService } from "../user/user.service.js";
-import type { RegisterDto } from "./dto/register.dto.js";
-import type { LoginDto } from "./dto/login.dto.js";
+import { UserService } from '../user/user.service.js';
+import type { RegisterDto } from './dto/register.dto.js';
+import type { LoginDto } from './dto/login.dto.js';
 import {
   REFRESH_SESSION_REPOSITORY,
   type RefreshSessionRepository,
-} from "./repository/refresh-session.repository.js";
-import { JwtTokenService } from "./security/jwt.service.js";
-import { PasswordService } from "./security/password.service.js";
-import { TokenHashService } from "./security/token-hash.service.js";
-import type { ForgotPasswordDto } from "./dto/forgot-password.dto.js";
-import type { ResetPasswordDto } from "./dto/reset-password.dto.js";
+} from './repository/refresh-session.repository.js';
+import { JwtTokenService } from './security/jwt.service.js';
+import { PasswordService } from './security/password.service.js';
+import { TokenHashService } from './security/token-hash.service.js';
+import type { ForgotPasswordDto } from './dto/forgot-password.dto.js';
+import type { ResetPasswordDto } from './dto/reset-password.dto.js';
 import {
   PASSWORD_RESET_TOKEN_REPOSITORY,
   type PasswordResetTokenRepository,
-} from "./repository/password-reset-token.repository.js";
-import { PasswordResetEmailService } from "./email/password-reset-email.service.js";
-
+} from './repository/password-reset-token.repository.js';
+import { PasswordResetEmailService } from './email/password-reset-email.service.js';
 
 @Injectable()
 export class AuthService {
@@ -37,7 +36,7 @@ export class AuthService {
     @Inject(PASSWORD_RESET_TOKEN_REPOSITORY)
     private readonly passwordResetTokenRepository: PasswordResetTokenRepository,
     private readonly passwordResetEmailService: PasswordResetEmailService,
-  ) { }
+  ) {}
 
   async register(dto: RegisterDto) {
     const email = dto.email.trim().toLowerCase();
@@ -45,7 +44,7 @@ export class AuthService {
     const existingUser = await this.userService.findByEmail(email);
 
     if (existingUser) {
-      throw new ConflictException("Email is already registered");
+      throw new ConflictException('Email is already registered');
     }
 
     const passwordHash = await this.passwordService.hash(dto.password);
@@ -71,7 +70,7 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
 
     if (!user || !user.passwordHash) {
-      throw new UnauthorizedException("Invalid email or password");
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     const passwordMatches = await this.passwordService.verify(
@@ -80,7 +79,7 @@ export class AuthService {
     );
 
     if (!passwordMatches) {
-      throw new UnauthorizedException("Invalid email or password");
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     const payload = {
@@ -88,13 +87,9 @@ export class AuthService {
       isGuest: user.isGuest,
     };
 
-    const accessToken =
-      await this.jwtTokenService.generateAccessToken(payload);
+    const accessToken = await this.jwtTokenService.generateAccessToken(payload);
 
-    const refreshToken = await this.createRefreshSession(
-      user.id,
-      user.isGuest,
-    );
+    const refreshToken = await this.createRefreshSession(user.id, user.isGuest);
 
     return {
       accessToken,
@@ -110,7 +105,7 @@ export class AuthService {
 
   async guest() {
     const user = await this.userService.create({
-      displayName: "Guest",
+      displayName: 'Guest',
       isGuest: true,
     });
 
@@ -119,13 +114,9 @@ export class AuthService {
       isGuest: true,
     };
 
-    const accessToken =
-      await this.jwtTokenService.generateAccessToken(payload);
+    const accessToken = await this.jwtTokenService.generateAccessToken(payload);
 
-    const refreshToken = await this.createRefreshSession(
-      user.id,
-      true,
-    );
+    const refreshToken = await this.createRefreshSession(user.id, true);
 
     return {
       accessToken,
@@ -145,19 +136,17 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
 
     const message =
-      "If an account with that email exists, a password reset link has been sent";
+      'If an account with that email exists, a password reset link has been sent';
 
     if (!user || user.isGuest) {
       return { message };
     }
 
-    const token = randomBytes(32).toString("hex");
+    const token = randomBytes(32).toString('hex');
 
     const tokenHash = this.tokenHashService.hash(token);
 
-    const expiresAt = new Date(
-      Date.now() + 60 * 60 * 1000,
-    );
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
     await this.passwordResetTokenRepository.create({
       userId: user.id,
@@ -166,10 +155,7 @@ export class AuthService {
     });
 
     if (user.email) {
-      await this.passwordResetEmailService.send(
-        user.email,
-        token,
-      );
+      await this.passwordResetEmailService.send(user.email, token);
     }
 
     return { message };
@@ -183,19 +169,19 @@ export class AuthService {
 
     if (!resetToken) {
       throw new UnauthorizedException(
-        "Invalid or expired password reset token",
+        'Invalid or expired password reset token',
       );
     }
 
     if (resetToken.usedAt) {
       throw new UnauthorizedException(
-        "Invalid or expired password reset token",
+        'Invalid or expired password reset token',
       );
     }
 
     if (resetToken.expiresAt <= new Date()) {
       throw new UnauthorizedException(
-        "Invalid or expired password reset token",
+        'Invalid or expired password reset token',
       );
     }
 
@@ -203,55 +189,44 @@ export class AuthService {
 
     if (!user || user.isGuest) {
       throw new UnauthorizedException(
-        "Invalid or expired password reset token",
+        'Invalid or expired password reset token',
       );
     }
 
-    const passwordHash = await this.passwordService.hash(
-      dto.newPassword,
-    );
+    const passwordHash = await this.passwordService.hash(dto.newPassword);
 
-    await this.userService.updatePassword(
-      user.id,
-      passwordHash,
-    );
+    await this.userService.updatePassword(user.id, passwordHash);
 
     await this.refreshSessionRepository.revokeByUserId(user.id);
-    
-    await this.passwordResetTokenRepository.markAsUsed(
-      resetToken.id,
-    );
+
+    await this.passwordResetTokenRepository.markAsUsed(resetToken.id);
 
     return {
-      message: "Password has been reset successfully",
+      message: 'Password has been reset successfully',
     };
   }
 
   async refresh(refreshToken: string) {
-    const payload =
-      await this.jwtTokenService.verifyRefreshToken(refreshToken);
+    const payload = await this.jwtTokenService.verifyRefreshToken(refreshToken);
 
     if (!payload.sid) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
-    const session =
-      await this.refreshSessionRepository.findById(payload.sid);
+    const session = await this.refreshSessionRepository.findById(payload.sid);
 
     if (!session) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     if (session.revokedAt) {
-      await this.refreshSessionRepository.revokeByFamilyId(
-        session.familyId,
-      );
+      await this.refreshSessionRepository.revokeByFamilyId(session.familyId);
 
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     if (session.expiresAt <= new Date()) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     const tokenMatches = this.tokenHashService.matches(
@@ -260,26 +235,25 @@ export class AuthService {
     );
 
     if (!tokenMatches) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     if (session.userId !== payload.sub) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     const user = await this.userService.findById(payload.sub);
 
     if (!user) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     await this.refreshSessionRepository.revoke(session.id);
 
-    const accessToken =
-      await this.jwtTokenService.generateAccessToken({
-        sub: user.id,
-        isGuest: user.isGuest,
-      });
+    const accessToken = await this.jwtTokenService.generateAccessToken({
+      sub: user.id,
+      isGuest: user.isGuest,
+    });
 
     const newRefreshToken = await this.createRefreshSession(
       user.id,
@@ -318,9 +292,7 @@ export class AuthService {
 
     const tokenHash = this.tokenHashService.hash(refreshToken);
 
-    const expiresAt = new Date(
-      Date.now() + 7 * 24 * 60 * 60 * 1000,
-    );
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     await this.refreshSessionRepository.create({
       userId,
