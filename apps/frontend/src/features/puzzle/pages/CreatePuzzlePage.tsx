@@ -20,19 +20,19 @@ const SIZES = {
     label: 'createPuzzle.size.small',
     rows: 11,
     columns: 11,
-    wordCount: 5,
+    wordCount: 7,
   },
   medium: {
     label: 'createPuzzle.size.medium',
     rows: 13,
     columns: 13,
-    wordCount: 7,
+    wordCount: 10,
   },
   large: {
     label: 'createPuzzle.size.large',
     rows: 15,
     columns: 15,
-    wordCount: 9,
+    wordCount: 14,
   },
 } as const;
 
