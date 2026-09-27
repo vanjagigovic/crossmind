@@ -65,18 +65,39 @@ export class PuzzleService {
   }
 
   async generate(data: GeneratePuzzleData): Promise<Puzzle> {
+    const candidateCount = Math.max(data.wordCount * 2, 24);
+
     const words = await this.crosswordContentProvider.generateWords({
       theme: data.theme,
       difficulty: data.difficulty,
-      wordCount: data.wordCount,
       language: data.language,
+      candidateCount,
     });
+
+    const normalizedWords = normalizeCrosswordWords(words);
+
+    if (normalizedWords.length < data.wordCount) {
+      throw new Error(
+        `Could not generate enough valid crossword candidates. ` +
+          `Required at least ${data.wordCount}, got ${normalizedWords.length}.`,
+      );
+    }
 
     const generator = this.crosswordGeneratorFactory({
       rows: data.rows,
       cols: data.columns,
     });
-    const { grid } = generator.generate(normalizeCrosswordWords(words));
+
+    const { grid, placedWords } = generator.generate(
+      normalizedWords,
+      data.wordCount,
+    );
+
+    if (placedWords.length !== data.wordCount) {
+      throw new Error(
+        `Could not place all ${data.wordCount} words in the crossword.`,
+      );
+    }
 
     return this.databaseService.transaction(async (tx) => {
       const puzzle = await this.puzzleRepository.create(
