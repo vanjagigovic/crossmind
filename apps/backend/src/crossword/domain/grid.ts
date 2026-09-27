@@ -1,4 +1,4 @@
-import { WordPlacement } from "./word-placement.js";
+import { WordPlacement } from './word-placement.js';
 
 export type GridCell = {
   row: number;

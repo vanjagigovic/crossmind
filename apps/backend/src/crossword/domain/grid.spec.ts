@@ -4,39 +4,39 @@ import { CrosswordGrid } from './grid.js';
 describe('CrosswordGrid', () => {
   it('represents a crossword grid with dimensions and cells', () => {
     const grid: CrosswordGrid = {
-        rows: 2,
-        cols: 2,
-        cells: [
-            [
-                {
-                    row: 0,
-                    col: 0,
-                    letter: null,
-                    isBlocked: false,
-                },
-                {
-                    row: 0,
-                    col: 1,
-                    letter: null,
-                    isBlocked: false,
-                },
-            ],
-            [
-                {
-                    row: 1,
-                    col: 0,
-                    letter: null,
-                    isBlocked: false,
-                },
-                {
-                    row: 1,
-                    col: 1,
-                    letter: null,
-                    isBlocked: false,
-                },
-            ],
+      rows: 2,
+      cols: 2,
+      cells: [
+        [
+          {
+            row: 0,
+            col: 0,
+            letter: null,
+            isBlocked: false,
+          },
+          {
+            row: 0,
+            col: 1,
+            letter: null,
+            isBlocked: false,
+          },
         ],
-        placements: []
+        [
+          {
+            row: 1,
+            col: 0,
+            letter: null,
+            isBlocked: false,
+          },
+          {
+            row: 1,
+            col: 1,
+            letter: null,
+            isBlocked: false,
+          },
+        ],
+      ],
+      placements: [],
     };
 
     expect(grid.rows).toBe(2);

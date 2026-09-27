@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DrizzlePasswordResetTokenRepository } from "./drizzle-password-reset-token.repository.js";
+import { DrizzlePasswordResetTokenRepository } from './drizzle-password-reset-token.repository.js';
 
-describe("DrizzlePasswordResetTokenRepository", () => {
+describe('DrizzlePasswordResetTokenRepository', () => {
   let repository: DrizzlePasswordResetTokenRepository;
 
   const database = {
@@ -16,18 +16,16 @@ describe("DrizzlePasswordResetTokenRepository", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    repository = new DrizzlePasswordResetTokenRepository(
-      database as any,
-    );
+    repository = new DrizzlePasswordResetTokenRepository(database as any);
   });
 
-  it("should create a password reset token", async () => {
+  it('should create a password reset token', async () => {
     const token = {
-      id: "token-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
-      expiresAt: new Date("2026-09-24T12:00:00.000Z"),
-      createdAt: new Date("2026-09-17T12:00:00.000Z"),
+      id: 'token-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date('2026-09-24T12:00:00.000Z'),
+      createdAt: new Date('2026-09-17T12:00:00.000Z'),
       usedAt: null,
     };
 
@@ -40,8 +38,8 @@ describe("DrizzlePasswordResetTokenRepository", () => {
     });
 
     const result = await repository.create({
-      userId: "user-1",
-      tokenHash: "hashed-token",
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
       expiresAt: token.expiresAt,
     });
 
@@ -49,13 +47,13 @@ describe("DrizzlePasswordResetTokenRepository", () => {
     expect(database.client.insert).toHaveBeenCalled();
   });
 
-  it("should find a password reset token by id", async () => {
+  it('should find a password reset token by id', async () => {
     const token = {
-      id: "token-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
-      expiresAt: new Date("2026-09-24T12:00:00.000Z"),
-      createdAt: new Date("2026-09-17T12:00:00.000Z"),
+      id: 'token-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date('2026-09-24T12:00:00.000Z'),
+      createdAt: new Date('2026-09-17T12:00:00.000Z'),
       usedAt: null,
     };
 
@@ -69,12 +67,12 @@ describe("DrizzlePasswordResetTokenRepository", () => {
       }),
     });
 
-    const result = await repository.findById("token-1");
+    const result = await repository.findById('token-1');
 
     expect(result).toEqual(token);
   });
 
-  it("should return null when password reset token does not exist", async () => {
+  it('should return null when password reset token does not exist', async () => {
     const limit = vi.fn().mockResolvedValue([]);
 
     database.client.select.mockReturnValue({
@@ -85,12 +83,12 @@ describe("DrizzlePasswordResetTokenRepository", () => {
       }),
     });
 
-    const result = await repository.findById("missing-token");
+    const result = await repository.findById('missing-token');
 
     expect(result).toBeNull();
   });
 
-  it("should mark a password reset token as used", async () => {
+  it('should mark a password reset token as used', async () => {
     const where = vi.fn().mockResolvedValue(undefined);
 
     database.client.update.mockReturnValue({
@@ -99,33 +97,33 @@ describe("DrizzlePasswordResetTokenRepository", () => {
       }),
     });
 
-    await repository.markAsUsed("token-1");
+    await repository.markAsUsed('token-1');
 
     expect(database.client.update).toHaveBeenCalled();
   });
 
-  it("should find a password reset token by token hash", async () => {
-  const token = {
-    id: "token-1",
-    userId: "user-1",
-    tokenHash: "hashed-token",
-    expiresAt: new Date("2026-09-24T12:00:00.000Z"),
-    createdAt: new Date("2026-09-17T12:00:00.000Z"),
-    usedAt: null,
-  };
+  it('should find a password reset token by token hash', async () => {
+    const token = {
+      id: 'token-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date('2026-09-24T12:00:00.000Z'),
+      createdAt: new Date('2026-09-17T12:00:00.000Z'),
+      usedAt: null,
+    };
 
-  const limit = vi.fn().mockResolvedValue([token]);
+    const limit = vi.fn().mockResolvedValue([token]);
 
-  database.client.select.mockReturnValue({
-    from: vi.fn().mockReturnValue({
-      where: vi.fn().mockReturnValue({
-        limit,
+    database.client.select.mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockReturnValue({
+          limit,
+        }),
       }),
-    }),
+    });
+
+    const result = await repository.findByTokenHash('hashed-token');
+
+    expect(result).toEqual(token);
   });
-
-  const result = await repository.findByTokenHash("hashed-token");
-
-  expect(result).toEqual(token);
-});
 });

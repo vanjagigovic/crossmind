@@ -1,7 +1,7 @@
-import type { PasswordResetToken } from "../domain/password-reset-token.js";
+import type { PasswordResetToken } from '../domain/password-reset-token.js';
 
 export const PASSWORD_RESET_TOKEN_REPOSITORY = Symbol(
-  "PASSWORD_RESET_TOKEN_REPOSITORY",
+  'PASSWORD_RESET_TOKEN_REPOSITORY',
 );
 
 export interface CreatePasswordResetTokenData {
@@ -11,9 +11,7 @@ export interface CreatePasswordResetTokenData {
 }
 
 export interface PasswordResetTokenRepository {
-  create(
-    data: CreatePasswordResetTokenData,
-  ): Promise<PasswordResetToken>;
+  create(data: CreatePasswordResetTokenData): Promise<PasswordResetToken>;
 
   findById(id: string): Promise<PasswordResetToken | null>;
 

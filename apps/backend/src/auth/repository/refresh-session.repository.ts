@@ -1,8 +1,6 @@
-import type { RefreshSession } from "../domain/refresh-session.js";
+import type { RefreshSession } from '../domain/refresh-session.js';
 
-export const REFRESH_SESSION_REPOSITORY = Symbol(
-  "REFRESH_SESSION_REPOSITORY",
-);
+export const REFRESH_SESSION_REPOSITORY = Symbol('REFRESH_SESSION_REPOSITORY');
 
 export interface CreateRefreshSessionData {
   userId: string;

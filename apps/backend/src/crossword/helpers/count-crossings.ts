@@ -1,5 +1,5 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { WordPlacement } from "../domain/word-placement.js";
+import { CrosswordGrid } from '../domain/grid.js';
+import { WordPlacement } from '../domain/word-placement.js';
 
 export function countCrossings(
   grid: CrosswordGrid,
@@ -13,8 +13,14 @@ export function countCrossings(
     }
 
     for (let index = 0; index < placement.word.answer.length; index++) {
-      const row = placement.direction === "across" ? placement.row : placement.row + index;
-      const col = placement.direction === "across" ? placement.col + index : placement.col;
+      const row =
+        placement.direction === 'across'
+          ? placement.row
+          : placement.row + index;
+      const col =
+        placement.direction === 'across'
+          ? placement.col + index
+          : placement.col;
 
       for (
         let existingIndex = 0;
@@ -22,18 +28,19 @@ export function countCrossings(
         existingIndex++
       ) {
         const existingRow =
-          existingPlacement.direction === "across"
+          existingPlacement.direction === 'across'
             ? existingPlacement.row
             : existingPlacement.row + existingIndex;
         const existingCol =
-          existingPlacement.direction === "across"
+          existingPlacement.direction === 'across'
             ? existingPlacement.col + existingIndex
             : existingPlacement.col;
 
         if (
           row === existingRow &&
           col === existingCol &&
-          placement.word.answer[index] === existingPlacement.word.answer[existingIndex]
+          placement.word.answer[index] ===
+            existingPlacement.word.answer[existingIndex]
         ) {
           crossings++;
         }

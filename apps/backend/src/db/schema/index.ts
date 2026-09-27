@@ -1,89 +1,87 @@
-import { pgTable, varchar, timestamp, integer, pgEnum, uuid, jsonb, boolean } from "drizzle-orm/pg-core";
-import type { CrosswordGrid } from "../../crossword/domain/grid.js";
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  integer,
+  pgEnum,
+  uuid,
+  jsonb,
+  boolean,
+} from 'drizzle-orm/pg-core';
+import type { CrosswordGrid } from '../../crossword/domain/grid.js';
 
-export const difficultyEnum = pgEnum("difficulty", [
-  "easy",
-  "medium",
-  "hard",
+export const difficultyEnum = pgEnum('difficulty', ['easy', 'medium', 'hard']);
+
+export const languageEnum = pgEnum('puzzle_language', ['en', 'sr', 'es']);
+
+export const puzzleStatusEnum = pgEnum('puzzle_status', [
+  'draft',
+  'generating',
+  'ready',
+  'published',
+  'archived',
 ]);
 
-export const languageEnum = pgEnum("puzzle_language", [
-  "en",
-  "sr",
-  "es",
-]);
+export const directionEnum = pgEnum('direction', ['across', 'down']);
 
-export const puzzleStatusEnum = pgEnum("puzzle_status", [
-  "draft",
-  "generating",
-  "ready",
-  "published",
-  "archived",
-]);
-
-export const directionEnum = pgEnum("direction", [
-  "across",
-  "down",
-]);
-
-export const users = pgTable("users", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  email: varchar("email", { length: 255 }).unique(),
-  passwordHash: varchar("password_hash", { length: 255 }),
-  displayName: varchar("display_name", { length: 100 }),
-  isGuest: boolean("is_guest").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+export const users = pgTable('users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  email: varchar('email', { length: 255 }).unique(),
+  passwordHash: varchar('password_hash', { length: 255 }),
+  displayName: varchar('display_name', { length: 100 }),
+  isGuest: boolean('is_guest').notNull().default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export const refreshSessions = pgTable("refresh_sessions", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
+export const refreshSessions = pgTable('refresh_sessions', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  familyId: uuid("family_id").notNull(),
-  tokenHash: varchar("token_hash", { length: 255 }).notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  revokedAt: timestamp("revoked_at"),
+    .references(() => users.id, { onDelete: 'cascade' }),
+  familyId: uuid('family_id').notNull(),
+  tokenHash: varchar('token_hash', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  revokedAt: timestamp('revoked_at'),
 });
 
-export const passwordResetTokens = pgTable("password_reset_tokens", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  tokenHash: varchar("token_hash", { length: 255 }).notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  usedAt: timestamp("used_at"),
+    .references(() => users.id, { onDelete: 'cascade' }),
+  tokenHash: varchar('token_hash', { length: 255 }).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  usedAt: timestamp('used_at'),
 });
 
-export const puzzles = pgTable("puzzles", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  title: varchar("title", { length: 255 }).notNull(),
-  theme: varchar("theme", { length: 255 }).notNull(),
-  difficulty: difficultyEnum("difficulty").notNull(),
-  language: languageEnum("language").notNull(),
-  status: puzzleStatusEnum("status").notNull(),
-  rows: integer("rows").notNull(),
-  columns: integer("columns").notNull(),
-  grid: jsonb("grid").$type<CrosswordGrid>().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+export const puzzles = pgTable('puzzles', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  theme: varchar('theme', { length: 255 }).notNull(),
+  difficulty: difficultyEnum('difficulty').notNull(),
+  language: languageEnum('language').notNull(),
+  status: puzzleStatusEnum('status').notNull(),
+  rows: integer('rows').notNull(),
+  columns: integer('columns').notNull(),
+  grid: jsonb('grid').$type<CrosswordGrid>().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export const puzzleEntries = pgTable("puzzle_entries", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  puzzleId: uuid("puzzle_id")
+export const puzzleEntries = pgTable('puzzle_entries', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  puzzleId: uuid('puzzle_id')
     .notNull()
-    .references(() => puzzles.id, { onDelete: "cascade" }),
-  word: varchar("word", { length: 255 }).notNull(),
-  clue: varchar("clue", { length: 500 }).notNull(),
-  direction: directionEnum("direction").notNull(),
-  row: integer("row").notNull(),
-  column: integer("column").notNull(),
-  length: integer("length").notNull(),
-  number: integer("number").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+    .references(() => puzzles.id, { onDelete: 'cascade' }),
+  word: varchar('word', { length: 255 }).notNull(),
+  clue: varchar('clue', { length: 500 }).notNull(),
+  direction: directionEnum('direction').notNull(),
+  row: integer('row').notNull(),
+  column: integer('column').notNull(),
+  length: integer('length').notNull(),
+  number: integer('number').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });

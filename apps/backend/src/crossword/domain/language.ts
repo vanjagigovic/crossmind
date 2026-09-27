@@ -1,1 +1,1 @@
-export type CrosswordLanguage = "en" | "sr" | "es";
+export type CrosswordLanguage = 'en' | 'sr' | 'es';

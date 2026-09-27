@@ -1,13 +1,7 @@
-import {
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsString,
-  Min,
-} from "class-validator";
+import { IsEnum, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 
-import type { PuzzleDifficulty, PuzzleLanguage } from "../../domain/puzzle.js";
-import { PuzzleDifficultyDto, PuzzleLanguageDto } from "./create-puzzle.dto.js";
+import type { PuzzleDifficulty, PuzzleLanguage } from '../../domain/puzzle.js';
+import { PuzzleDifficultyDto, PuzzleLanguageDto } from './create-puzzle.dto.js';
 
 export class GeneratePuzzleDto {
   @IsString()

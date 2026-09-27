@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-import { DrizzleRefreshSessionRepository } from "./drizzle-refresh-session.repository.js";
+import { DrizzleRefreshSessionRepository } from './drizzle-refresh-session.repository.js';
 
-describe("DrizzleRefreshSessionRepository", () => {
+describe('DrizzleRefreshSessionRepository', () => {
   let repository: DrizzleRefreshSessionRepository;
 
   const database = {
@@ -16,18 +16,16 @@ describe("DrizzleRefreshSessionRepository", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    repository = new DrizzleRefreshSessionRepository(
-      database as any,
-    );
+    repository = new DrizzleRefreshSessionRepository(database as any);
   });
 
-  it("should create a refresh session", async () => {
+  it('should create a refresh session', async () => {
     const session = {
-      id: "session-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
-      expiresAt: new Date("2026-09-24T12:00:00.000Z"),
-      createdAt: new Date("2026-09-17T12:00:00.000Z"),
+      id: 'session-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date('2026-09-24T12:00:00.000Z'),
+      createdAt: new Date('2026-09-17T12:00:00.000Z'),
       revokedAt: null,
     };
 
@@ -40,8 +38,8 @@ describe("DrizzleRefreshSessionRepository", () => {
     });
 
     const result = await repository.create({
-      userId: "user-1",
-      tokenHash: "hashed-token",
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
       expiresAt: session.expiresAt,
     });
 
@@ -50,13 +48,13 @@ describe("DrizzleRefreshSessionRepository", () => {
     expect(database.client.insert).toHaveBeenCalled();
   });
 
-  it("should find a refresh session by id", async () => {
+  it('should find a refresh session by id', async () => {
     const session = {
-      id: "session-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
-      expiresAt: new Date("2026-09-24T12:00:00.000Z"),
-      createdAt: new Date("2026-09-17T12:00:00.000Z"),
+      id: 'session-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
+      expiresAt: new Date('2026-09-24T12:00:00.000Z'),
+      createdAt: new Date('2026-09-17T12:00:00.000Z'),
       revokedAt: null,
     };
 
@@ -70,12 +68,12 @@ describe("DrizzleRefreshSessionRepository", () => {
       }),
     });
 
-    const result = await repository.findById("session-1");
+    const result = await repository.findById('session-1');
 
     expect(result).toEqual(session);
   });
 
-  it("should return null when refresh session does not exist", async () => {
+  it('should return null when refresh session does not exist', async () => {
     const limit = vi.fn().mockResolvedValue([]);
 
     database.client.select.mockReturnValue({
@@ -86,12 +84,12 @@ describe("DrizzleRefreshSessionRepository", () => {
       }),
     });
 
-    const result = await repository.findById("missing-session");
+    const result = await repository.findById('missing-session');
 
     expect(result).toBeNull();
   });
 
-  it("should revoke a refresh session", async () => {
+  it('should revoke a refresh session', async () => {
     const where = vi.fn().mockResolvedValue(undefined);
 
     database.client.update.mockReturnValue({
@@ -100,7 +98,7 @@ describe("DrizzleRefreshSessionRepository", () => {
       }),
     });
 
-    await repository.revoke("session-1");
+    await repository.revoke('session-1');
 
     expect(database.client.update).toHaveBeenCalled();
   });

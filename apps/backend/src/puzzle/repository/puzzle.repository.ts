@@ -1,9 +1,9 @@
-import type { DatabaseTransaction } from "../../db/database.service.js";
+import type { DatabaseTransaction } from '../../db/database.service.js';
 import type {
   CreatePuzzleData,
   Puzzle,
   UpdatePuzzleData,
-} from "../domain/puzzle.js";
+} from '../domain/puzzle.js';
 
 export interface PuzzleRepository {
   findById(id: string): Promise<Puzzle | null>;

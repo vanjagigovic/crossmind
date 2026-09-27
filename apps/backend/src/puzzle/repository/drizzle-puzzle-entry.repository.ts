@@ -1,11 +1,14 @@
-import { Injectable } from "@nestjs/common";
-import { asc, eq } from "drizzle-orm";
+import { Injectable } from '@nestjs/common';
+import { asc, eq } from 'drizzle-orm';
 
-import { DatabaseService } from "../../db/database.service.js";
-import type { DatabaseTransaction } from "../../db/database.service.js";
-import { puzzleEntries } from "../../db/schema/index.js";
-import type { CreatePuzzleEntryData, PuzzleEntry } from "../domain/puzzle-entry.js";
-import type { PuzzleEntryRepository } from "./puzzle-entry.repository.js";
+import { DatabaseService } from '../../db/database.service.js';
+import type { DatabaseTransaction } from '../../db/database.service.js';
+import { puzzleEntries } from '../../db/schema/index.js';
+import type {
+  CreatePuzzleEntryData,
+  PuzzleEntry,
+} from '../domain/puzzle-entry.js';
+import type { PuzzleEntryRepository } from './puzzle-entry.repository.js';
 
 @Injectable()
 export class DrizzlePuzzleEntryRepository implements PuzzleEntryRepository {

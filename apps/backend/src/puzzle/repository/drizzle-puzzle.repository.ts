@@ -1,15 +1,15 @@
-import { Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 
-import { DatabaseService } from "../../db/database.service.js";
-import type { DatabaseTransaction } from "../../db/database.service.js";
-import { puzzles } from "../../db/schema/index.js";
+import { DatabaseService } from '../../db/database.service.js';
+import type { DatabaseTransaction } from '../../db/database.service.js';
+import { puzzles } from '../../db/schema/index.js';
 import type {
   CreatePuzzleData,
   Puzzle,
   UpdatePuzzleData,
-} from "../domain/puzzle.js";
-import type { PuzzleRepository } from "./puzzle.repository.js";
+} from '../domain/puzzle.js';
+import type { PuzzleRepository } from './puzzle.repository.js';
 
 @Injectable()
 export class DrizzlePuzzleRepository implements PuzzleRepository {
@@ -37,7 +37,10 @@ export class DrizzlePuzzleRepository implements PuzzleRepository {
     return result.map((puzzle) => this.toDomain(puzzle));
   }
 
-  async create(data: CreatePuzzleData, tx?: DatabaseTransaction): Promise<Puzzle> {
+  async create(
+    data: CreatePuzzleData,
+    tx?: DatabaseTransaction,
+  ): Promise<Puzzle> {
     const result = await (tx ?? this.database.client)
       .insert(puzzles)
       .values(data)
@@ -46,10 +49,7 @@ export class DrizzlePuzzleRepository implements PuzzleRepository {
     return this.toDomain(result[0]);
   }
 
-  async update(
-    id: string,
-    data: UpdatePuzzleData,
-  ): Promise<Puzzle | null> {
+  async update(id: string, data: UpdatePuzzleData): Promise<Puzzle | null> {
     const result = await this.database.client
       .update(puzzles)
       .set({
@@ -69,9 +69,7 @@ export class DrizzlePuzzleRepository implements PuzzleRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.database.client
-      .delete(puzzles)
-      .where(eq(puzzles.id, id));
+    await this.database.client.delete(puzzles).where(eq(puzzles.id, id));
   }
 
   private toDomain(puzzle: typeof puzzles.$inferSelect): Puzzle {

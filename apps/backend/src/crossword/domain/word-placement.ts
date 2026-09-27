@@ -1,4 +1,4 @@
-import { CrosswordWord } from "./word.js";
+import { CrosswordWord } from './word.js';
 
 export type Direction = 'across' | 'down';
 

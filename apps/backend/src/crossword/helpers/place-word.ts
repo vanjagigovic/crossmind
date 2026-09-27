@@ -1,5 +1,5 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { WordPlacement } from "../domain/word-placement.js";
+import { CrosswordGrid } from '../domain/grid.js';
+import { WordPlacement } from '../domain/word-placement.js';
 
 export function placeWord(
   grid: CrosswordGrid,

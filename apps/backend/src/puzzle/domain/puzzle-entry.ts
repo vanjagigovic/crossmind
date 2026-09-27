@@ -1,11 +1,11 @@
-import type { Puzzle } from "./puzzle.js";
+import type { Puzzle } from './puzzle.js';
 
-export type PuzzleEntryDirection = "across" | "down";
+export type PuzzleEntryDirection = 'across' | 'down';
 
 export type PuzzleEntry = {
   id: string;
   // Currently it's a string, but if we change the ID model one day, this type will automatically match.
-  puzzleId: Puzzle["id"];
+  puzzleId: Puzzle['id'];
   word: string;
   clue: string;
   direction: PuzzleEntryDirection;
@@ -15,4 +15,4 @@ export type PuzzleEntry = {
   number: number;
 };
 
-export type CreatePuzzleEntryData = Omit<PuzzleEntry, "id">;
+export type CreatePuzzleEntryData = Omit<PuzzleEntry, 'id'>;

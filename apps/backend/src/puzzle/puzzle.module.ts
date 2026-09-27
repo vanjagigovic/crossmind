@@ -1,21 +1,21 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 
-import { CrosswordGenerator } from "../crossword/generator/crossword-generator.js";
-import { CROSSWORD_CONTENT_PROVIDER } from "../crossword/content/crossword-content-provider.js";
-import { OpenAiCrosswordContentProvider } from "../crossword/content/openai/openai-crossword-content-provider.js";
+import { CrosswordGenerator } from '../crossword/generator/crossword-generator.js';
+import { CROSSWORD_CONTENT_PROVIDER } from '../crossword/content/crossword-content-provider.js';
+import { OpenAiCrosswordContentProvider } from '../crossword/content/openai/openai-crossword-content-provider.js';
 import {
   OPENAI_CLIENT_FACTORY,
   defaultOpenAiClientFactory,
-} from "../crossword/content/openai/openai-client.js";
-import { DrizzlePuzzleRepository } from "./repository/drizzle-puzzle.repository.js";
-import { DrizzlePuzzleEntryRepository } from "./repository/drizzle-puzzle-entry.repository.js";
+} from '../crossword/content/openai/openai-client.js';
+import { DrizzlePuzzleRepository } from './repository/drizzle-puzzle.repository.js';
+import { DrizzlePuzzleEntryRepository } from './repository/drizzle-puzzle-entry.repository.js';
 import {
   CROSSWORD_GENERATOR_FACTORY,
   PUZZLE_ENTRY_REPOSITORY,
   PUZZLE_REPOSITORY,
   PuzzleService,
-} from "./service/puzzle.service.js";
-import { PuzzleController } from "./controller/puzzle.controller.js";
+} from './service/puzzle.service.js';
+import { PuzzleController } from './controller/puzzle.controller.js';
 
 @Module({
   controllers: [PuzzleController],

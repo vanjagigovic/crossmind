@@ -1,8 +1,8 @@
-import { ConflictException, UnauthorizedException } from "@nestjs/common";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { AuthService } from "./auth.service.js";
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { AuthService } from './auth.service.js';
 
-describe("AuthService", () => {
+describe('AuthService', () => {
   let authService: AuthService;
 
   const userService = {
@@ -50,7 +50,7 @@ describe("AuthService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    tokenHashService.hash.mockReturnValue("hashed-refresh-token");
+    tokenHashService.hash.mockReturnValue('hashed-refresh-token');
 
     authService = new AuthService(
       userService as any,
@@ -63,64 +63,60 @@ describe("AuthService", () => {
     );
   });
 
-  it("should register a new user", async () => {
+  it('should register a new user', async () => {
     userService.findByEmail.mockResolvedValue(null);
 
-    passwordService.hash.mockResolvedValue("hashed-password");
+    passwordService.hash.mockResolvedValue('hashed-password');
 
     userService.create.mockResolvedValue({
-      id: "user-1",
-      email: "vanja@test.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
     const result = await authService.register({
-      email: " Vanja@Test.com ",
-      password: "password123",
-      displayName: " Vanja ",
+      email: ' Vanja@Test.com ',
+      password: 'password123',
+      displayName: ' Vanja ',
     });
 
-    expect(userService.findByEmail).toHaveBeenCalledWith(
-      "vanja@test.com",
-    );
+    expect(userService.findByEmail).toHaveBeenCalledWith('vanja@test.com');
 
-    expect(passwordService.hash).toHaveBeenCalledWith(
-      "password123",
-    );
+    expect(passwordService.hash).toHaveBeenCalledWith('password123');
 
     expect(userService.create).toHaveBeenCalledWith({
-      email: "vanja@test.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
     expect(result).toEqual({
-      id: "user-1",
-      email: "vanja@test.com",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@test.com',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
-    expect(result).not.toHaveProperty("passwordHash");
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
-  it("should reject an already registered email", async () => {
+  it('should reject an already registered email', async () => {
     userService.findByEmail.mockResolvedValue({
-      id: "existing-user",
-      email: "vanja@test.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      id: 'existing-user',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
     await expect(
       authService.register({
-        email: "vanja@test.com",
-        password: "password123",
-        displayName: "Vanja",
+        email: 'vanja@test.com',
+        password: 'password123',
+        displayName: 'Vanja',
       }),
     ).rejects.toThrow(ConflictException);
 
@@ -128,79 +124,71 @@ describe("AuthService", () => {
 
     expect(userService.create).not.toHaveBeenCalled();
   });
-  it("should login an existing user", async () => {
+  it('should login an existing user', async () => {
     userService.findByEmail.mockResolvedValue({
-      id: "user-1",
-      email: "vanja@test.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
     passwordService.verify.mockResolvedValue(true);
 
-    jwtTokenService.generateAccessToken.mockResolvedValue(
-      "access-token",
-    );
+    jwtTokenService.generateAccessToken.mockResolvedValue('access-token');
 
-    jwtTokenService.generateRefreshToken.mockResolvedValue(
-      "refresh-token",
-    );
+    jwtTokenService.generateRefreshToken.mockResolvedValue('refresh-token');
 
     const result = await authService.login({
-      email: " Vanja@Test.com ",
-      password: "password123",
+      email: ' Vanja@Test.com ',
+      password: 'password123',
     });
 
-    expect(userService.findByEmail).toHaveBeenCalledWith(
-      "vanja@test.com",
-    );
+    expect(userService.findByEmail).toHaveBeenCalledWith('vanja@test.com');
 
     expect(passwordService.verify).toHaveBeenCalledWith(
-      "password123",
-      "hashed-password",
+      'password123',
+      'hashed-password',
     );
 
     expect(jwtTokenService.generateAccessToken).toHaveBeenCalledWith({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
     });
 
     expect(jwtTokenService.generateRefreshToken).toHaveBeenCalledWith({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
       sid: expect.any(String),
     });
 
-    expect(tokenHashService.hash).toHaveBeenCalledWith(
-      "refresh-token",
-    );
+    expect(tokenHashService.hash).toHaveBeenCalledWith('refresh-token');
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
-      userId: "user-1",
+      userId: 'user-1',
       familyId: expect.any(String),
-      tokenHash: "hashed-refresh-token",
+      tokenHash: 'hashed-refresh-token',
       expiresAt: expect.any(Date),
     });
 
     expect(result).toEqual({
-      accessToken: "access-token",
-      refreshToken: "refresh-token",
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
       user: {
-        id: "user-1",
-        email: "vanja@test.com",
-        displayName: "Vanja",
+        id: 'user-1',
+        email: 'vanja@test.com',
+        displayName: 'Vanja',
         isGuest: false,
       },
     });
   });
 
-  it("should reject invalid credentials", async () => {
+  it('should reject invalid credentials', async () => {
     userService.findByEmail.mockResolvedValue({
-      id: "user-1",
-      email: "vanja@test.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
@@ -208,8 +196,8 @@ describe("AuthService", () => {
 
     await expect(
       authService.login({
-        email: "vanja@test.com",
-        password: "wrong-password",
+        email: 'vanja@test.com',
+        password: 'wrong-password',
       }),
     ).rejects.toThrow(UnauthorizedException);
 
@@ -217,76 +205,70 @@ describe("AuthService", () => {
     expect(jwtTokenService.generateRefreshToken).not.toHaveBeenCalled();
   });
 
-  it("should create and login a guest user", async () => {
+  it('should create and login a guest user', async () => {
     userService.create.mockResolvedValue({
-      id: "guest-1",
+      id: 'guest-1',
       email: null,
       passwordHash: null,
-      displayName: "Guest",
+      displayName: 'Guest',
       isGuest: true,
     });
 
-    jwtTokenService.generateAccessToken.mockResolvedValue(
-      "access-token",
-    );
+    jwtTokenService.generateAccessToken.mockResolvedValue('access-token');
 
-    jwtTokenService.generateRefreshToken.mockResolvedValue(
-      "refresh-token",
-    );
+    jwtTokenService.generateRefreshToken.mockResolvedValue('refresh-token');
 
     const result = await authService.guest();
 
     expect(userService.create).toHaveBeenCalledWith({
-      displayName: "Guest",
+      displayName: 'Guest',
       isGuest: true,
     });
 
     expect(jwtTokenService.generateAccessToken).toHaveBeenCalledWith({
-      sub: "guest-1",
+      sub: 'guest-1',
       isGuest: true,
     });
 
     expect(jwtTokenService.generateRefreshToken).toHaveBeenCalledWith({
-      sub: "guest-1",
+      sub: 'guest-1',
       isGuest: true,
       sid: expect.any(String),
     });
 
-    expect(tokenHashService.hash).toHaveBeenCalledWith(
-      "refresh-token",
-    );
+    expect(tokenHashService.hash).toHaveBeenCalledWith('refresh-token');
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
-      userId: "guest-1",
+      userId: 'guest-1',
       familyId: expect.any(String),
-      tokenHash: "hashed-refresh-token",
+      tokenHash: 'hashed-refresh-token',
       expiresAt: expect.any(Date),
     });
 
     expect(result).toEqual({
-      accessToken: "access-token",
-      refreshToken: "refresh-token",
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
       user: {
-        id: "guest-1",
+        id: 'guest-1',
         email: null,
-        displayName: "Guest",
+        displayName: 'Guest',
         isGuest: true,
       },
     });
   });
 
-  it("should refresh tokens for a valid refresh session", async () => {
+  it('should refresh tokens for a valid refresh session', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
+      id: 'session-1',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
       revokedAt: null,
@@ -295,100 +277,115 @@ describe("AuthService", () => {
     tokenHashService.matches.mockReturnValue(true);
 
     userService.findById.mockResolvedValue({
-      id: "user-1",
-      email: "vanja@test.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     });
 
-    jwtTokenService.generateAccessToken.mockResolvedValue(
-      "new-access-token",
-    );
+    jwtTokenService.generateAccessToken.mockResolvedValue('new-access-token');
 
-    jwtTokenService.generateRefreshToken.mockResolvedValue(
-      "new-refresh-token",
-    );
+    jwtTokenService.generateRefreshToken.mockResolvedValue('new-refresh-token');
 
     refreshSessionRepository.create.mockResolvedValue({
-      id: "session-2",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-new-refresh-token",
+      id: 'session-2',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-new-refresh-token',
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       createdAt: new Date(),
       revokedAt: null,
     });
 
+    tokenHashService.hash.mockReturnValueOnce('hashed-new-refresh-token');
 
-    tokenHashService.hash.mockReturnValueOnce("hashed-new-refresh-token");
-
-    const result = await authService.refresh("refresh-token");
+    const result = await authService.refresh('refresh-token');
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-new-refresh-token",
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-new-refresh-token',
       expiresAt: expect.any(Date),
     });
 
     expect(jwtTokenService.verifyRefreshToken).toHaveBeenCalledWith(
-      "refresh-token",
+      'refresh-token',
     );
 
-    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
-      "session-1",
-    );
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith('session-1');
 
     expect(tokenHashService.matches).toHaveBeenCalledWith(
-      "refresh-token",
-      "hashed-refresh-token",
+      'refresh-token',
+      'hashed-refresh-token',
     );
 
-    expect(userService.findById).toHaveBeenCalledWith("user-1");
+    expect(userService.findById).toHaveBeenCalledWith('user-1');
 
-    expect(refreshSessionRepository.revoke).toHaveBeenCalledWith(
-      "session-1",
-    );
+    expect(refreshSessionRepository.revoke).toHaveBeenCalledWith('session-1');
 
     expect(jwtTokenService.generateAccessToken).toHaveBeenCalledWith({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
     });
 
     expect(jwtTokenService.generateRefreshToken).toHaveBeenCalledWith({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
       sid: expect.any(String),
     });
 
     expect(result).toEqual({
-      accessToken: "new-access-token",
-      refreshToken: "new-refresh-token",
+      accessToken: 'new-access-token',
+      refreshToken: 'new-refresh-token',
       user: {
-        id: "user-1",
-        email: "vanja@test.com",
-        displayName: "Vanja",
+        id: 'user-1',
+        email: 'vanja@test.com',
+        displayName: 'Vanja',
         isGuest: false,
       },
     });
   });
 
-  it("should reject refresh when session does not exist", async () => {
+  it('should reject refresh when session does not exist', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue(null);
 
-    await expect(
-      authService.refresh("refresh-token"),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.refresh('refresh-token')).rejects.toThrow(
+      UnauthorizedException,
+    );
 
-    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
-      "session-1",
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith('session-1');
+
+    expect(tokenHashService.matches).not.toHaveBeenCalled();
+    expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
+    expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
+  });
+
+  it('should reject refresh when session is revoked', async () => {
+    jwtTokenService.verifyRefreshToken.mockResolvedValue({
+      sub: 'user-1',
+      isGuest: false,
+      sid: 'session-1',
+    });
+
+    refreshSessionRepository.findById.mockResolvedValue({
+      id: 'session-1',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
+      expiresAt: new Date(Date.now() + 60_000),
+      createdAt: new Date(),
+      revokedAt: new Date(),
+    });
+
+    await expect(authService.refresh('refresh-token')).rejects.toThrow(
+      UnauthorizedException,
     );
 
     expect(tokenHashService.matches).not.toHaveBeenCalled();
@@ -396,56 +393,30 @@ describe("AuthService", () => {
     expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
   });
 
-  it("should reject refresh when session is revoked", async () => {
+  it('should revoke the entire refresh token family when a revoked token is reused', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
+      id: 'session-1',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
       revokedAt: new Date(),
     });
 
-    await expect(
-      authService.refresh("refresh-token"),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.refresh('refresh-token')).rejects.toThrow(
+      UnauthorizedException,
+    );
 
-    expect(tokenHashService.matches).not.toHaveBeenCalled();
-    expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
-    expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
-  });
-
-  it("should revoke the entire refresh token family when a revoked token is reused", async () => {
-    jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
-      isGuest: false,
-      sid: "session-1",
-    });
-
-    refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
-      expiresAt: new Date(Date.now() + 60_000),
-      createdAt: new Date(),
-      revokedAt: new Date(),
-    });
-
-    await expect(
-      authService.refresh("refresh-token"),
-    ).rejects.toThrow(UnauthorizedException);
-
-    expect(
-      refreshSessionRepository.revokeByFamilyId,
-    ).toHaveBeenCalledWith("family-1");
+    expect(refreshSessionRepository.revokeByFamilyId).toHaveBeenCalledWith(
+      'family-1',
+    );
 
     expect(tokenHashService.matches).not.toHaveBeenCalled();
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
@@ -453,44 +424,44 @@ describe("AuthService", () => {
     expect(jwtTokenService.generateRefreshToken).not.toHaveBeenCalled();
   });
 
-  it("should reject refresh when session is expired", async () => {
+  it('should reject refresh when session is expired', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
+      id: 'session-1',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
       expiresAt: new Date(Date.now() - 60_000),
       createdAt: new Date(),
       revokedAt: null,
     });
 
-    await expect(
-      authService.refresh("refresh-token"),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.refresh('refresh-token')).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(tokenHashService.matches).not.toHaveBeenCalled();
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
     expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
   });
 
-  it("should reject refresh when token hash does not match", async () => {
+  it('should reject refresh when token hash does not match', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
+      id: 'session-1',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
       revokedAt: null,
@@ -498,31 +469,31 @@ describe("AuthService", () => {
 
     tokenHashService.matches.mockReturnValue(false);
 
-    await expect(
-      authService.refresh("refresh-token"),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.refresh('refresh-token')).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(tokenHashService.matches).toHaveBeenCalledWith(
-      "refresh-token",
-      "hashed-refresh-token",
+      'refresh-token',
+      'hashed-refresh-token',
     );
 
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
     expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
   });
 
-  it("should reject refresh when session belongs to another user", async () => {
+  it('should reject refresh when session belongs to another user', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-2",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
+      id: 'session-1',
+      userId: 'user-2',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
       revokedAt: null,
@@ -530,13 +501,13 @@ describe("AuthService", () => {
 
     tokenHashService.matches.mockReturnValue(true);
 
-    await expect(
-      authService.refresh("refresh-token"),
-    ).rejects.toThrow(UnauthorizedException);
+    await expect(authService.refresh('refresh-token')).rejects.toThrow(
+      UnauthorizedException,
+    );
 
     expect(tokenHashService.matches).toHaveBeenCalledWith(
-      "refresh-token",
-      "hashed-refresh-token",
+      'refresh-token',
+      'hashed-refresh-token',
     );
 
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
@@ -544,243 +515,230 @@ describe("AuthService", () => {
     expect(jwtTokenService.generateAccessToken).not.toHaveBeenCalled();
   });
 
-  it("should revoke the refresh session on logout", async () => {
+  it('should revoke the refresh session on logout', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue({
-      id: "session-1",
-      userId: "user-1",
-      familyId: "family-1",
-      tokenHash: "hashed-refresh-token",
+      id: 'session-1',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
       expiresAt: new Date(Date.now() + 60_000),
       createdAt: new Date(),
       revokedAt: null,
     });
 
-    await authService.logout("refresh-token");
+    await authService.logout('refresh-token');
 
     expect(jwtTokenService.verifyRefreshToken).toHaveBeenCalledWith(
-      "refresh-token",
+      'refresh-token',
     );
 
-    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
-      "session-1",
-    );
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith('session-1');
 
-    expect(refreshSessionRepository.revoke).toHaveBeenCalledWith(
-      "session-1",
-    );
+    expect(refreshSessionRepository.revoke).toHaveBeenCalledWith('session-1');
   });
 
-  it("should do nothing on logout when the refresh token is invalid", async () => {
+  it('should do nothing on logout when the refresh token is invalid', async () => {
     jwtTokenService.verifyRefreshToken.mockRejectedValue(
-      new Error("Invalid token"),
+      new Error('Invalid token'),
     );
 
-    await authService.logout("invalid-refresh-token");
+    await authService.logout('invalid-refresh-token');
 
     expect(refreshSessionRepository.findById).not.toHaveBeenCalled();
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
   });
 
-  it("should do nothing on logout when the session does not exist", async () => {
+  it('should do nothing on logout when the session does not exist', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
-      sid: "session-1",
+      sid: 'session-1',
     });
 
     refreshSessionRepository.findById.mockResolvedValue(null);
 
-    await authService.logout("refresh-token");
+    await authService.logout('refresh-token');
 
-    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
-      "session-1",
-    );
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith('session-1');
 
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
   });
 
-  it("should do nothing on logout when the token has no session id", async () => {
+  it('should do nothing on logout when the token has no session id', async () => {
     jwtTokenService.verifyRefreshToken.mockResolvedValue({
-      sub: "user-1",
+      sub: 'user-1',
       isGuest: false,
     });
 
-    await authService.logout("refresh-token");
+    await authService.logout('refresh-token');
 
     expect(refreshSessionRepository.findById).not.toHaveBeenCalled();
     expect(refreshSessionRepository.revoke).not.toHaveBeenCalled();
   });
 
-  it("should create a password reset token for an existing user", async () => {
+  it('should create a password reset token for an existing user', async () => {
     const user = {
-      id: "user-1",
-      email: "vanja@example.com",
-      passwordHash: "hashed-password",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@example.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
       isGuest: false,
     };
 
     userService.findByEmail.mockResolvedValue(user);
 
     const result = await authService.forgotPassword({
-      email: "vanja@example.com",
+      email: 'vanja@example.com',
     });
 
     expect(result).toEqual({
-      message: "If an account with that email exists, a password reset link has been sent",
+      message:
+        'If an account with that email exists, a password reset link has been sent',
     });
 
     expect(passwordResetTokenRepository.create).toHaveBeenCalledTimes(1);
 
     expect(passwordResetTokenRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        userId: "user-1",
+        userId: 'user-1',
         tokenHash: expect.any(String),
         expiresAt: expect.any(Date),
       }),
     );
   });
 
-  it("should return the same response when the user does not exist", async () => {
+  it('should return the same response when the user does not exist', async () => {
     userService.findByEmail.mockResolvedValue(null);
 
     const result = await authService.forgotPassword({
-      email: "unknown@example.com",
+      email: 'unknown@example.com',
     });
 
     expect(result).toEqual({
-      message: "If an account with that email exists, a password reset link has been sent",
+      message:
+        'If an account with that email exists, a password reset link has been sent',
     });
 
     expect(passwordResetTokenRepository.create).not.toHaveBeenCalled();
   });
 
-  it("should normalize the email before looking up the user", async () => {
+  it('should normalize the email before looking up the user', async () => {
     userService.findByEmail.mockResolvedValue(null);
 
     await authService.forgotPassword({
-      email: "  VANJA@EXAMPLE.COM  ",
+      email: '  VANJA@EXAMPLE.COM  ',
     });
 
-    expect(userService.findByEmail).toHaveBeenCalledWith(
-      "vanja@example.com",
-    );
+    expect(userService.findByEmail).toHaveBeenCalledWith('vanja@example.com');
   });
 
-  it("should reset the password with a valid reset token", async () => {
+  it('should reset the password with a valid reset token', async () => {
     const resetToken = {
-      id: "reset-token-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
+      id: 'reset-token-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
       expiresAt: new Date(Date.now() + 60 * 60 * 1000),
       createdAt: new Date(),
       usedAt: null,
     };
 
     const user = {
-      id: "user-1",
-      email: "vanja@example.com",
-      passwordHash: "old-password-hash",
-      displayName: "Vanja",
+      id: 'user-1',
+      email: 'vanja@example.com',
+      passwordHash: 'old-password-hash',
+      displayName: 'Vanja',
       isGuest: false,
     };
 
-    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(
-      resetToken,
-    );
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(resetToken);
 
-    tokenHashService.hash.mockReturnValue("hashed-token");
+    tokenHashService.hash.mockReturnValue('hashed-token');
 
     userService.findById.mockResolvedValue(user);
 
-    passwordService.hash.mockResolvedValue("new-password-hash");
+    passwordService.hash.mockResolvedValue('new-password-hash');
 
     await authService.resetPassword({
-      token: "raw-reset-token",
-      newPassword: "new-password",
+      token: 'raw-reset-token',
+      newPassword: 'new-password',
     });
 
-    expect(passwordService.hash).toHaveBeenCalledWith("new-password");
+    expect(passwordService.hash).toHaveBeenCalledWith('new-password');
 
     expect(userService.updatePassword).toHaveBeenCalledWith(
-      "user-1",
-      "new-password-hash",
+      'user-1',
+      'new-password-hash',
     );
 
     expect(refreshSessionRepository.revokeByUserId).toHaveBeenCalledWith(
-      "user-1",
+      'user-1',
     );
 
     expect(passwordResetTokenRepository.markAsUsed).toHaveBeenCalledWith(
-      "reset-token-1",
+      'reset-token-1',
     );
   });
 
-  it("should reject an invalid reset token", async () => {
+  it('should reject an invalid reset token', async () => {
     passwordResetTokenRepository.findByTokenHash.mockResolvedValue(null);
 
-    tokenHashService.hash.mockReturnValue("hashed-token");
+    tokenHashService.hash.mockReturnValue('hashed-token');
 
     await expect(
       authService.resetPassword({
-        token: "invalid-token",
-        newPassword: "new-password",
+        token: 'invalid-token',
+        newPassword: 'new-password',
       }),
-    ).rejects.toThrow("Invalid or expired password reset token");
+    ).rejects.toThrow('Invalid or expired password reset token');
   });
 
-  it("should reject an expired reset token", async () => {
+  it('should reject an expired reset token', async () => {
     const resetToken = {
-      id: "reset-token-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
+      id: 'reset-token-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
       expiresAt: new Date(Date.now() - 60 * 60 * 1000),
       createdAt: new Date(),
       usedAt: null,
     };
 
-    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(
-      resetToken,
-    );
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(resetToken);
 
-    tokenHashService.hash.mockReturnValue("hashed-token");
+    tokenHashService.hash.mockReturnValue('hashed-token');
 
     await expect(
       authService.resetPassword({
-        token: "expired-token",
-        newPassword: "new-password",
+        token: 'expired-token',
+        newPassword: 'new-password',
       }),
-    ).rejects.toThrow("Invalid or expired password reset token");
+    ).rejects.toThrow('Invalid or expired password reset token');
   });
 
-  it("should reject an already used reset token", async () => {
+  it('should reject an already used reset token', async () => {
     const resetToken = {
-      id: "reset-token-1",
-      userId: "user-1",
-      tokenHash: "hashed-token",
+      id: 'reset-token-1',
+      userId: 'user-1',
+      tokenHash: 'hashed-token',
       expiresAt: new Date(Date.now() + 60 * 60 * 1000),
       createdAt: new Date(),
       usedAt: new Date(),
     };
 
-    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(
-      resetToken,
-    );
+    passwordResetTokenRepository.findByTokenHash.mockResolvedValue(resetToken);
 
-    tokenHashService.hash.mockReturnValue("hashed-token");
+    tokenHashService.hash.mockReturnValue('hashed-token');
 
     await expect(
       authService.resetPassword({
-        token: "used-token",
-        newPassword: "new-password",
+        token: 'used-token',
+        newPassword: 'new-password',
       }),
-    ).rejects.toThrow("Invalid or expired password reset token");
+    ).rejects.toThrow('Invalid or expired password reset token');
   });
-
 });

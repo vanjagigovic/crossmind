@@ -1,6 +1,6 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { WordPlacement } from "../domain/word-placement.js";
-import { countCrossings } from "./count-crossings.js";
+import { CrosswordGrid } from '../domain/grid.js';
+import { WordPlacement } from '../domain/word-placement.js';
+import { countCrossings } from './count-crossings.js';
 
 export function selectBestPlacement(
   grid: CrosswordGrid,

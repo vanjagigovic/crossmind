@@ -1,9 +1,9 @@
-import { CrosswordGrid } from "../domain/grid.js";
-import { CrosswordWord } from "../domain/word.js";
-import { Direction, WordPlacement } from "../domain/word-placement.js";
-import { canPlaceWord } from "./can-place-word.js";
+import { CrosswordGrid } from '../domain/grid.js';
+import { CrosswordWord } from '../domain/word.js';
+import { Direction, WordPlacement } from '../domain/word-placement.js';
+import { canPlaceWord } from './can-place-word.js';
 
-const directions: Direction[] = ["across", "down"];
+const directions: Direction[] = ['across', 'down'];
 
 export function findCrossingPlacements(
   grid: CrosswordGrid,
@@ -26,8 +26,8 @@ export function findCrossingPlacements(
         for (const direction of directions) {
           const placement: WordPlacement = {
             word,
-            row: direction === "across" ? cell.row : cell.row - index,
-            col: direction === "across" ? cell.col - index : cell.col,
+            row: direction === 'across' ? cell.row : cell.row - index,
+            col: direction === 'across' ? cell.col - index : cell.col,
             direction,
           };
           const key = `${placement.row}:${placement.col}:${placement.direction}`;

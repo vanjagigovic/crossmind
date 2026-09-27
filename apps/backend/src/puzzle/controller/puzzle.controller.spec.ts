@@ -1,25 +1,25 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
-import { plainToInstance } from "class-transformer";
-import { validate } from "class-validator";
-import { describe, expect, it, vi } from "vitest";
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+import { describe, expect, it, vi } from 'vitest';
 
-import { createCrosswordGrid } from "../../crossword/helpers/grid-helper.js";
-import type { Puzzle } from "../domain/puzzle.js";
-import { CreatePuzzleDto } from "./dto/create-puzzle.dto.js";
-import { GeneratePuzzleDto } from "./dto/generate-puzzle.dto.js";
-import { PuzzleController } from "./puzzle.controller.js";
-import type { PuzzleService } from "../service/puzzle.service.js";
-import { UpdatePuzzleDto } from "./dto/update-puzzle.dto.js";
+import { createCrosswordGrid } from '../../crossword/helpers/grid-helper.js';
+import type { Puzzle } from '../domain/puzzle.js';
+import { CreatePuzzleDto } from './dto/create-puzzle.dto.js';
+import { GeneratePuzzleDto } from './dto/generate-puzzle.dto.js';
+import { PuzzleController } from './puzzle.controller.js';
+import type { PuzzleService } from '../service/puzzle.service.js';
+import { UpdatePuzzleDto } from './dto/update-puzzle.dto.js';
 
-describe("PuzzleController", () => {
+describe('PuzzleController', () => {
   const puzzle: Puzzle = {
-    id: "puzzle-1",
-    title: "Test Puzzle",
-    theme: "Testing",
-    difficulty: "easy",
-    language: "en" as const,
-    status: "draft",
+    id: 'puzzle-1',
+    title: 'Test Puzzle',
+    theme: 'Testing',
+    difficulty: 'easy',
+    language: 'en' as const,
+    status: 'draft',
     rows: 5,
     columns: 5,
     grid: createCrosswordGrid(5, 5),
@@ -38,7 +38,7 @@ describe("PuzzleController", () => {
     puzzleService as unknown as PuzzleService,
   );
 
-  it("should return all puzzles", async () => {
+  it('should return all puzzles', async () => {
     puzzleService.findAll.mockResolvedValue([puzzle]);
 
     const result = await controller.findAll();
@@ -47,25 +47,25 @@ describe("PuzzleController", () => {
     expect(puzzleService.findAll).toHaveBeenCalledOnce();
   });
 
-  it("should return a puzzle by id", async () => {
+  it('should return a puzzle by id', async () => {
     puzzleService.findById.mockResolvedValue(puzzle);
 
-    const result = await controller.findById("puzzle-1");
+    const result = await controller.findById('puzzle-1');
 
     expect(result).toEqual(puzzle);
-    expect(puzzleService.findById).toHaveBeenCalledWith("puzzle-1");
+    expect(puzzleService.findById).toHaveBeenCalledWith('puzzle-1');
   });
 
-  it("should return a puzzle with its entries", async () => {
+  it('should return a puzzle with its entries', async () => {
     const puzzleWithEntries = {
       ...puzzle,
       entries: [
         {
-          id: "entry-1",
-          puzzleId: "puzzle-1",
-          word: "CAT",
-          clue: "A small animal",
-          direction: "across" as const,
+          id: 'entry-1',
+          puzzleId: 'puzzle-1',
+          word: 'CAT',
+          clue: 'A small animal',
+          direction: 'across' as const,
           row: 0,
           column: 0,
           length: 3,
@@ -76,13 +76,13 @@ describe("PuzzleController", () => {
 
     puzzleService.findById.mockResolvedValue(puzzleWithEntries);
 
-    const result = await controller.findById("puzzle-1");
+    const result = await controller.findById('puzzle-1');
 
     expect(result).toEqual(puzzleWithEntries);
     expect(result.entries).toHaveLength(1);
     expect(result.entries[0]).toMatchObject({
-      direction: "across",
-      clue: "A small animal",
+      direction: 'across',
+      clue: 'A small animal',
       row: 0,
       column: 0,
       length: 3,
@@ -90,17 +90,17 @@ describe("PuzzleController", () => {
     });
   });
 
-  it("should throw NotFoundException when puzzle does not exist", async () => {
+  it('should throw NotFoundException when puzzle does not exist', async () => {
     puzzleService.findById.mockResolvedValue(null);
 
-    await expect(controller.findById("missing-id")).rejects.toThrow(
+    await expect(controller.findById('missing-id')).rejects.toThrow(
       'Puzzle with id "missing-id" not found',
     );
 
-    expect(puzzleService.findById).toHaveBeenCalledWith("missing-id");
+    expect(puzzleService.findById).toHaveBeenCalledWith('missing-id');
   });
 
-  it("should create a puzzle", async () => {
+  it('should create a puzzle', async () => {
     const data = validCreatePuzzleData();
 
     puzzleService.create.mockResolvedValue(puzzle);
@@ -111,19 +111,22 @@ describe("PuzzleController", () => {
     expect(puzzleService.create).toHaveBeenCalledWith(data);
   });
 
-  it("accepts a valid CrosswordGrid when creating a puzzle", async () => {
+  it('accepts a valid CrosswordGrid when creating a puzzle', async () => {
     await expectValid(CreatePuzzleDto, validCreatePuzzleData());
   });
 
-  it("rejects an old array-shaped grid when creating a puzzle", async () => {
+  it('rejects an old array-shaped grid when creating a puzzle', async () => {
     await expectInvalid(CreatePuzzleDto, validCreatePuzzleData({ grid: [] }));
   });
 
-  it("rejects a missing grid when creating a puzzle", async () => {
-    await expectInvalid(CreatePuzzleDto, validCreatePuzzleData({ grid: undefined }));
+  it('rejects a missing grid when creating a puzzle', async () => {
+    await expectInvalid(
+      CreatePuzzleDto,
+      validCreatePuzzleData({ grid: undefined }),
+    );
   });
 
-  it("rejects invalid grid rows and columns when creating a puzzle", async () => {
+  it('rejects invalid grid rows and columns when creating a puzzle', async () => {
     await expectInvalid(
       CreatePuzzleDto,
       validCreatePuzzleData({
@@ -132,7 +135,7 @@ describe("PuzzleController", () => {
     );
   });
 
-  it("rejects malformed grid cells when creating a puzzle", async () => {
+  it('rejects malformed grid cells when creating a puzzle', async () => {
     await expectInvalid(
       CreatePuzzleDto,
       validCreatePuzzleData({
@@ -141,19 +144,21 @@ describe("PuzzleController", () => {
     );
   });
 
-  it("rejects malformed placements when creating a puzzle", async () => {
+  it('rejects malformed placements when creating a puzzle', async () => {
     await expectInvalid(
       CreatePuzzleDto,
       validCreatePuzzleData({
         grid: {
           ...createCrosswordGrid(5, 5),
-          placements: [{ word: { answer: "CAT" }, row: 0, col: 0, direction: "across" }],
+          placements: [
+            { word: { answer: 'CAT' }, row: 0, col: 0, direction: 'across' },
+          ],
         },
       }),
     );
   });
 
-  it("rejects placements with an invalid direction when creating a puzzle", async () => {
+  it('rejects placements with an invalid direction when creating a puzzle', async () => {
     await expectInvalid(
       CreatePuzzleDto,
       validCreatePuzzleData({
@@ -161,10 +166,10 @@ describe("PuzzleController", () => {
           ...createCrosswordGrid(5, 5),
           placements: [
             {
-              word: { answer: "CAT", clue: "A small animal" },
+              word: { answer: 'CAT', clue: 'A small animal' },
               row: 0,
               col: 0,
-              direction: "diagonal",
+              direction: 'diagonal',
             },
           ],
         },
@@ -172,31 +177,31 @@ describe("PuzzleController", () => {
     );
   });
 
-  it("accepts a valid CrosswordGrid when updating a puzzle", async () => {
+  it('accepts a valid CrosswordGrid when updating a puzzle', async () => {
     await expectValid(UpdatePuzzleDto, { grid: createCrosswordGrid(5, 5) });
   });
 
-  it("rejects an old array-shaped grid when updating a puzzle", async () => {
+  it('rejects an old array-shaped grid when updating a puzzle', async () => {
     await expectInvalid(UpdatePuzzleDto, { grid: [] });
   });
 
-  it("rejects a malformed grid when updating a puzzle", async () => {
+  it('rejects a malformed grid when updating a puzzle', async () => {
     await expectInvalid(UpdatePuzzleDto, {
-      grid: { ...createCrosswordGrid(5, 5), cells: "not-an-array" },
+      grid: { ...createCrosswordGrid(5, 5), cells: 'not-an-array' },
     });
   });
 
-  it("should generate a puzzle", async () => {
+  it('should generate a puzzle', async () => {
     const data = {
-      title: "Animal Puzzle",
-      theme: "Animals",
-      difficulty: "medium" as const,
-      language: "en" as const,
+      title: 'Animal Puzzle',
+      theme: 'Animals',
+      difficulty: 'medium' as const,
+      language: 'en' as const,
       rows: 5,
       columns: 5,
       wordCount: 5,
     };
-    const generatedPuzzle = { ...puzzle, ...data, status: "ready" as const };
+    const generatedPuzzle = { ...puzzle, ...data, status: 'ready' as const };
 
     puzzleService.generate.mockResolvedValue(generatedPuzzle);
 
@@ -206,86 +211,94 @@ describe("PuzzleController", () => {
     expect(puzzleService.generate).toHaveBeenCalledWith(data);
   });
 
-  it("rejects a missing title", async () => {
+  it('rejects a missing title', async () => {
     const errors = await validate(
-      plainToInstance(GeneratePuzzleDto, validGeneratePuzzleData({ title: undefined })),
+      plainToInstance(
+        GeneratePuzzleDto,
+        validGeneratePuzzleData({ title: undefined }),
+      ),
     );
 
     expect(errors).not.toEqual([]);
   });
 
-  it("rejects an invalid difficulty", async () => {
+  it('rejects an invalid difficulty', async () => {
     const errors = await validate(
-      plainToInstance(GeneratePuzzleDto, validGeneratePuzzleData({ difficulty: "expert" })),
+      plainToInstance(
+        GeneratePuzzleDto,
+        validGeneratePuzzleData({ difficulty: 'expert' }),
+      ),
     );
 
     expect(errors).not.toEqual([]);
   });
 
-  it("rejects non-positive dimensions", async () => {
+  it('rejects non-positive dimensions', async () => {
     const errors = await validate(
-      plainToInstance(GeneratePuzzleDto, validGeneratePuzzleData({ rows: 0, columns: -1 })),
+      plainToInstance(
+        GeneratePuzzleDto,
+        validGeneratePuzzleData({ rows: 0, columns: -1 }),
+      ),
     );
 
     expect(errors).not.toEqual([]);
   });
 
-  it("rejects a non-positive word count", async () => {
+  it('rejects a non-positive word count', async () => {
     const errors = await validate(
-      plainToInstance(GeneratePuzzleDto, validGeneratePuzzleData({ wordCount: 0 })),
+      plainToInstance(
+        GeneratePuzzleDto,
+        validGeneratePuzzleData({ wordCount: 0 }),
+      ),
     );
 
     expect(errors).not.toEqual([]);
   });
 
-  it("should update a puzzle", async () => {
+  it('should update a puzzle', async () => {
     const data = {
-      title: "Updated Puzzle",
+      title: 'Updated Puzzle',
     };
 
     const updatedPuzzle = {
       ...puzzle,
-      title: "Updated Puzzle",
+      title: 'Updated Puzzle',
     };
 
     puzzleService.update.mockResolvedValue(updatedPuzzle);
 
-    const result = await controller.update("puzzle-1", data);
+    const result = await controller.update('puzzle-1', data);
 
     expect(result).toEqual(updatedPuzzle);
-    expect(puzzleService.update).toHaveBeenCalledWith(
-      "puzzle-1",
-      data,
-    );
+    expect(puzzleService.update).toHaveBeenCalledWith('puzzle-1', data);
   });
 
-  it("should throw NotFoundException when updating a non-existent puzzle", async () => {
+  it('should throw NotFoundException when updating a non-existent puzzle', async () => {
     puzzleService.update.mockResolvedValue(null);
 
     await expect(
-      controller.update("missing-id", { title: "Updated Puzzle" }),
+      controller.update('missing-id', { title: 'Updated Puzzle' }),
     ).rejects.toThrow('Puzzle with id "missing-id" not found');
 
-    expect(puzzleService.update).toHaveBeenCalledWith(
-      "missing-id",
-      { title: "Updated Puzzle" },
-    );
+    expect(puzzleService.update).toHaveBeenCalledWith('missing-id', {
+      title: 'Updated Puzzle',
+    });
   });
 
-  it("should delete a puzzle", async () => {
+  it('should delete a puzzle', async () => {
     puzzleService.delete.mockResolvedValue(undefined);
 
-    await controller.delete("puzzle-1");
+    await controller.delete('puzzle-1');
 
-    expect(puzzleService.delete).toHaveBeenCalledWith("puzzle-1");
+    expect(puzzleService.delete).toHaveBeenCalledWith('puzzle-1');
   });
 });
 
 function validGeneratePuzzleData(overrides: Record<string, unknown> = {}) {
   return {
-    title: "Animal Puzzle",
-    theme: "Animals",
-    difficulty: "easy",
+    title: 'Animal Puzzle',
+    theme: 'Animals',
+    difficulty: 'easy',
     rows: 5,
     columns: 5,
     wordCount: 5,
@@ -295,11 +308,11 @@ function validGeneratePuzzleData(overrides: Record<string, unknown> = {}) {
 
 function validCreatePuzzleData(overrides: Record<string, unknown> = {}) {
   return {
-    title: "New Puzzle",
-    theme: "Testing",
-    difficulty: "medium" as const,
-    language: "en" as const,
-    status: "draft" as const,
+    title: 'New Puzzle',
+    theme: 'Testing',
+    difficulty: 'medium' as const,
+    language: 'en' as const,
+    status: 'draft' as const,
     rows: 5,
     columns: 5,
     grid: createCrosswordGrid(5, 5),

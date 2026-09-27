@@ -1,1 +1,1 @@
-export type CrosswordDifficulty = "easy" | "medium" | "hard";
+export type CrosswordDifficulty = 'easy' | 'medium' | 'hard';

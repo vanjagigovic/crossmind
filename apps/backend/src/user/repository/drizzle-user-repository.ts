@@ -1,13 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
-import { DatabaseService } from "../../db/database.service.js";
-import { users } from "../../db/schema/index.js";
-import type { UserRepository, CreateUserData } from "./user.repository.js";
-import type { User } from "../domain/user.js";
+import { Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
+import { DatabaseService } from '../../db/database.service.js';
+import { users } from '../../db/schema/index.js';
+import type { UserRepository, CreateUserData } from './user.repository.js';
+import type { User } from '../domain/user.js';
 
 @Injectable()
 export class DrizzleUserRepository implements UserRepository {
-  constructor(private readonly database: DatabaseService) { }
+  constructor(private readonly database: DatabaseService) {}
 
   async findById(id: string): Promise<User | null> {
     const result = await this.database.client
@@ -60,10 +60,7 @@ export class DrizzleUserRepository implements UserRepository {
     };
   }
 
-  async updatePassword(
-    userId: string,
-    passwordHash: string,
-  ): Promise<void> {
+  async updatePassword(userId: string, passwordHash: string): Promise<void> {
     await this.database.client
       .update(users)
       .set({

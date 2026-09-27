@@ -1,4 +1,4 @@
-import type { CrosswordWord } from "../domain/word.js";
+import type { CrosswordWord } from '../domain/word.js';
 
 const VALID_ANSWER_PATTERN = /^[A-Z]+$/;
 
@@ -14,7 +14,9 @@ function normalizeCrosswordWord(word: CrosswordWord): CrosswordWord | null {
 }
 
 // Provider-agnostic safety net: drops any word that can't be placed by CrosswordGenerator.
-export function normalizeCrosswordWords(words: CrosswordWord[]): CrosswordWord[] {
+export function normalizeCrosswordWords(
+  words: CrosswordWord[],
+): CrosswordWord[] {
   return words.reduce<CrosswordWord[]>((normalized, word) => {
     const result = normalizeCrosswordWord(word);
 
