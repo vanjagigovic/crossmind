@@ -1,19 +1,19 @@
-import type { KeyboardEvent } from 'react'
-import type { GridCell } from '../../../types/puzzle'
-import { useTranslation } from 'react-i18next'
+import type { KeyboardEvent } from 'react';
+import type { GridCell } from '../../../types/puzzle';
+import { useTranslation } from 'react-i18next';
 
 type CrosswordCellProps = {
-  cell: GridCell
-  number?: number
-  value?: string
-  selected: boolean
-  active: boolean
-  incorrect: boolean
-  completed: boolean
-  tabbable: boolean
-  onSelect: () => void
-  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void
-}
+  cell: GridCell;
+  number?: number;
+  value?: string;
+  selected: boolean;
+  active: boolean;
+  incorrect: boolean;
+  completed: boolean;
+  tabbable: boolean;
+  onSelect: () => void;
+  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
+};
 
 export function CrosswordCell({
   cell,
@@ -27,8 +27,8 @@ export function CrosswordCell({
   onSelect,
   onKeyDown,
 }: CrosswordCellProps) {
-  const { t } = useTranslation()
-  const isBlocked = cell.isBlocked || cell.letter === null
+  const { t } = useTranslation();
+  const isBlocked = cell.isBlocked || cell.letter === null;
 
   if (isBlocked) {
     return (
@@ -37,21 +37,23 @@ export function CrosswordCell({
         role="gridcell"
         aria-label={t('accessibility.blockedCell')}
       />
-    )
+    );
   }
 
   const label = number
     ? t('accessibility.entry', {
-      number,
-      row: cell.row + 1,
-      column: cell.col + 1,
-    })
+        number,
+        row: cell.row + 1,
+        column: cell.col + 1,
+      })
     : t('accessibility.cell', {
-      row: cell.row + 1,
-      column: cell.col + 1,
-    })
-  const stateLabel = value ? t('accessibility.contains', { value }) : t('accessibility.empty')
-  const validationLabel = incorrect ? `, ${t('accessibility.incorrect')}` : ''
+        row: cell.row + 1,
+        column: cell.col + 1,
+      });
+  const stateLabel = value
+    ? t('accessibility.contains', { value })
+    : t('accessibility.empty');
+  const validationLabel = incorrect ? `, ${t('accessibility.incorrect')}` : '';
 
   return (
     <div
@@ -64,12 +66,8 @@ export function CrosswordCell({
       onClick={onSelect}
       onKeyDown={onKeyDown}
     >
-      {number && (
-        <span className="crossword-cell-number">
-          {number}
-        </span>
-      )}
+      {number && <span className="crossword-cell-number">{number}</span>}
       {value && <span>{value}</span>}
     </div>
-  )
+  );
 }

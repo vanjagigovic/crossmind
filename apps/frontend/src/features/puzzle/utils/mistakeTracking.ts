@@ -9,12 +9,12 @@ export function trackMistake(
   isIncorrect: boolean,
 ): ReadonlySet<string> {
   if (!isIncorrect || mistakenCells.has(cellKey)) {
-    return mistakenCells
+    return mistakenCells;
   }
 
-  return new Set(mistakenCells).add(cellKey)
+  return new Set(mistakenCells).add(cellKey);
 }
 
 export function countMistakes(mistakenCells: ReadonlySet<string>): number {
-  return mistakenCells.size
+  return mistakenCells.size;
 }

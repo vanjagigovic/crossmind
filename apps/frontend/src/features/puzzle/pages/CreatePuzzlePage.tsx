@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { generatePuzzle } from '../../../api/puzzles'
-import type { PuzzleDifficulty, PuzzleLanguage } from '../../../types/puzzle'
+import { generatePuzzle } from '../../../api/puzzles';
+import type { PuzzleDifficulty, PuzzleLanguage } from '../../../types/puzzle';
 
 const TOPICS = [
   'programming',
@@ -13,7 +13,7 @@ const TOPICS = [
   'history',
   'sports',
   'food',
-] as const
+] as const;
 
 const SIZES = {
   small: {
@@ -34,40 +34,38 @@ const SIZES = {
     columns: 15,
     wordCount: 9,
   },
-} as const
+} as const;
 
-type Topic = (typeof TOPICS)[number] | 'custom'
-type PuzzleSize = keyof typeof SIZES
+type Topic = (typeof TOPICS)[number] | 'custom';
+type PuzzleSize = keyof typeof SIZES;
 
 export function CreatePuzzlePage() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const [selectedTopic, setSelectedTopic] = useState<Topic>(TOPICS[0])
-  const [customTopic, setCustomTopic] = useState('')
-  const [difficulty, setDifficulty] =
-    useState<PuzzleDifficulty>('medium')
-  const [size, setSize] = useState<PuzzleSize>('medium')
-  const [error, setError] = useState<string | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [language, setLanguage] = useState<PuzzleLanguage>('en')
+  const [selectedTopic, setSelectedTopic] = useState<Topic>(TOPICS[0]);
+  const [customTopic, setCustomTopic] = useState('');
+  const [difficulty, setDifficulty] = useState<PuzzleDifficulty>('medium');
+  const [size, setSize] = useState<PuzzleSize>('medium');
+  const [error, setError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [language, setLanguage] = useState<PuzzleLanguage>('en');
 
-  const isCustomTopic = selectedTopic === 'custom'
+  const isCustomTopic = selectedTopic === 'custom';
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-
-    event.preventDefault()
-    const theme = isCustomTopic ? customTopic.trim() : selectedTopic
+    event.preventDefault();
+    const theme = isCustomTopic ? customTopic.trim() : selectedTopic;
 
     if (!theme) {
-      setError(t('createPuzzle.topic.error'))
-      return
+      setError(t('createPuzzle.topic.error'));
+      return;
     }
 
-    setError(null)
-    setIsGenerating(true)
+    setError(null);
+    setIsGenerating(true);
 
     try {
-      const selectedSize = SIZES[size]
+      const selectedSize = SIZES[size];
 
       const puzzle = await generatePuzzle({
         title: `${theme} Crossword`,
@@ -77,12 +75,12 @@ export function CreatePuzzlePage() {
         columns: selectedSize.columns,
         wordCount: selectedSize.wordCount,
         language,
-      })
+      });
 
-      window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`)
+      window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`);
     } catch {
-      setError(t('createPuzzle.error'))
-      setIsGenerating(false)
+      setError(t('createPuzzle.error'));
+      setIsGenerating(false);
     }
   }
 
@@ -103,18 +101,15 @@ export function CreatePuzzlePage() {
             {t('createPuzzle.topic.title')}
           </legend>
 
-          <p className="fieldset-hint">
-            {t('createPuzzle.topic.hint')}
-          </p>
+          <p className="fieldset-hint">{t('createPuzzle.topic.hint')}</p>
 
           <div className="choice-grid">
             {TOPICS.map((topic) => (
               <label
                 key={topic}
-                className={`choice-control${selectedTopic === topic
-                  ? ' choice-control--selected'
-                  : ''
-                  }`}
+                className={`choice-control${
+                  selectedTopic === topic ? ' choice-control--selected' : ''
+                }`}
               >
                 <input
                   type="radio"
@@ -129,10 +124,9 @@ export function CreatePuzzlePage() {
             ))}
 
             <label
-              className={`choice-control${isCustomTopic
-                ? ' choice-control--selected'
-                : ''
-                }`}
+              className={`choice-control${
+                isCustomTopic ? ' choice-control--selected' : ''
+              }`}
             >
               <input
                 type="radio"
@@ -156,17 +150,12 @@ export function CreatePuzzlePage() {
                 id="custom-topic"
                 type="text"
                 value={customTopic}
-                onChange={(event) =>
-                  setCustomTopic(event.target.value)
-                }
+                onChange={(event) => setCustomTopic(event.target.value)}
                 placeholder={t('createPuzzle.topic.placeholder')}
                 autoFocus
               />
 
-              <span
-                className="input-hint"
-                id="custom-topic-help"
-              >
+              <span className="input-hint" id="custom-topic-help">
                 {t('createPuzzle.topic.inputHint')}
               </span>
             </label>
@@ -175,13 +164,10 @@ export function CreatePuzzlePage() {
 
         <fieldset>
           <legend>
-            <span className="form-step">02</span>{' '}
-            {t('language.title')}
+            <span className="form-step">02</span> {t('language.title')}
           </legend>
 
-          <p className="fieldset-hint">
-            {t('language.hint')}
-          </p>
+          <p className="fieldset-hint">{t('language.hint')}</p>
 
           <div className="choice-grid choice-grid--compact">
             {(
@@ -193,10 +179,9 @@ export function CreatePuzzlePage() {
             ).map((option) => (
               <label
                 key={option.value}
-                className={`choice-control${language === option.value
-                  ? ' choice-control--selected'
-                  : ''
-                  }`}
+                className={`choice-control${
+                  language === option.value ? ' choice-control--selected' : ''
+                }`}
               >
                 <input
                   type="radio"
@@ -217,46 +202,36 @@ export function CreatePuzzlePage() {
             {t('createPuzzle.difficulty.title')}
           </legend>
 
-          <p className="fieldset-hint">
-            {t('createPuzzle.difficulty.hint')}
-          </p>
+          <p className="fieldset-hint">{t('createPuzzle.difficulty.hint')}</p>
 
           <div className="choice-grid choice-grid--compact">
-            {(['easy', 'medium', 'hard'] as const).map(
-              (option) => (
-                <label
-                  key={option}
-                  className={`choice-control${difficulty === option
-                    ? ' choice-control--selected'
-                    : ''
-                    }`}
-                >
-                  <input
-                    type="radio"
-                    name="difficulty"
-                    value={option}
-                    checked={difficulty === option}
-                    onChange={() => setDifficulty(option)}
-                  />
+            {(['easy', 'medium', 'hard'] as const).map((option) => (
+              <label
+                key={option}
+                className={`choice-control${
+                  difficulty === option ? ' choice-control--selected' : ''
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="difficulty"
+                  value={option}
+                  checked={difficulty === option}
+                  onChange={() => setDifficulty(option)}
+                />
 
-                  <span>
-                    {t(`createPuzzle.difficulty.${option}`)}
-                  </span>
-                </label>
-              ),
-            )}
+                <span>{t(`createPuzzle.difficulty.${option}`)}</span>
+              </label>
+            ))}
           </div>
         </fieldset>
 
         <fieldset>
           <legend>
-            <span className="form-step">04</span>{' '}
-            {t('createPuzzle.size.title')}
+            <span className="form-step">04</span> {t('createPuzzle.size.title')}
           </legend>
 
-          <p className="fieldset-hint">
-            {t('createPuzzle.size.hint')}
-          </p>
+          <p className="fieldset-hint">{t('createPuzzle.size.hint')}</p>
 
           <div className="choice-grid choice-grid--compact">
             {(
@@ -267,10 +242,9 @@ export function CreatePuzzlePage() {
             ).map(([value]) => (
               <label
                 key={value}
-                className={`choice-control${size === value
-                  ? ' choice-control--selected'
-                  : ''
-                  }`}
+                className={`choice-control${
+                  size === value ? ' choice-control--selected' : ''
+                }`}
               >
                 <input
                   type="radio"
@@ -287,10 +261,7 @@ export function CreatePuzzlePage() {
         </fieldset>
 
         {error && (
-          <p
-            className="puzzle-state puzzle-state--error"
-            role="alert"
-          >
+          <p className="puzzle-state puzzle-state--error" role="alert">
             {error}
           </p>
         )}
@@ -306,11 +277,9 @@ export function CreatePuzzlePage() {
           type="submit"
           disabled={isGenerating}
         >
-          {isGenerating
-            ? t('common.generating')
-            : t('common.generatePuzzle')}
+          {isGenerating ? t('common.generating') : t('common.generatePuzzle')}
         </button>
       </form>
     </main>
-  )
+  );
 }

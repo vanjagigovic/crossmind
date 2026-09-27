@@ -1,63 +1,59 @@
-export type Direction = 'across' | 'down'
+export type Direction = 'across' | 'down';
 
 export type CrosswordWord = {
-  answer: string
-  clue: string
-}
+  answer: string;
+  clue: string;
+};
 
 export type GridCell = {
-  row: number
-  col: number
-  letter: string | null
-  isBlocked: boolean
-}
+  row: number;
+  col: number;
+  letter: string | null;
+  isBlocked: boolean;
+};
 
 export type CrosswordGrid = {
-  rows: number
-  cols: number
-  cells: GridCell[][]
-  placements: WordPlacement[]
-}
+  rows: number;
+  cols: number;
+  cells: GridCell[][];
+  placements: WordPlacement[];
+};
 
 export type WordPlacement = {
-  word: CrosswordWord
-  row: number
-  col: number
-  direction: Direction
-}
+  word: CrosswordWord;
+  row: number;
+  col: number;
+  direction: Direction;
+};
 
-export type PuzzleDifficulty = 'easy' | 'medium' | 'hard'
+export type PuzzleDifficulty = 'easy' | 'medium' | 'hard';
 
-export type PuzzleLanguage = 'en' | 'sr' | 'es'
+export type PuzzleLanguage = 'en' | 'sr' | 'es';
 
 export type PuzzleStatus =
-  | 'draft'
-  | 'generating'
-  | 'ready'
-  | 'published'
-  | 'archived'
+  'draft' | 'generating' | 'ready' | 'published' | 'archived';
 
 export type Puzzle = {
-  id: string
-  title: string
-  theme: string
-  difficulty: PuzzleDifficulty
-  language: PuzzleLanguage
-  status: PuzzleStatus
-  rows: number
-  columns: number
-  grid: CrosswordGrid
-  entries: PuzzleEntry[]
-}
+  id: string;
+  title: string;
+  theme: string;
+  difficulty: PuzzleDifficulty;
+  language: PuzzleLanguage;
+  status: PuzzleStatus;
+  rows: number;
+  columns: number;
+  grid: CrosswordGrid;
+  entries: PuzzleEntry[];
+};
 
 export type PuzzleEntry = {
-  id: string
-  puzzleId: string
-  word: string
-  clue: string
-  direction: Direction
-  row: number
-  column: number
-  length: number
-  number: number
-}
+  id: string;
+  puzzleId: string;
+  word: string;
+  clue: string;
+  direction: Direction;
+  row: number;
+  column: number;
+  length: number;
+  number: number;
+};
