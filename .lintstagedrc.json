@@ -1,0 +1,5 @@
+{
+  "*.{js,jsx,ts,tsx}": "prettier --write",
+  "apps/frontend/**/*.{js,jsx,ts,tsx}": "eslint",
+  "apps/backend/**/*.{js,jsx,ts,tsx}": "oxlint"
+}
