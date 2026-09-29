@@ -152,11 +152,14 @@ export class CrosswordGenerator {
       unplacedWords: [...remainingWords],
     };
 
+    let candidateNodesVisited = 0;
+
     const visitNode = (): boolean => {
-      if (stats.nodesVisited >= this.searchNodeLimit) {
+      if (candidateNodesVisited >= this.searchNodeLimit) {
         return false;
       }
 
+      candidateNodesVisited++;
       stats.nodesVisited++;
       return true;
     };
@@ -217,6 +220,11 @@ export class CrosswordGenerator {
     }
 
     const nextWord = this.selectNextWord(grid, remainingWords);
+
+    if (!nextWord) {
+      return;
+    }
+
     const { word, placements } = nextWord;
 
     const rest = remainingWords.filter(
