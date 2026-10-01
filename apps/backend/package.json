@@ -22,6 +22,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "seed:puzzle": "npm run build && node dist/scripts/seed-puzzle.js",
+    "admin:create": "npm run build && node dist/scripts/promote-admin.js",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "benchmark:crossword": "npm run build && node dist/crossword/benchmark/crossword-benchmark.js"
   },
