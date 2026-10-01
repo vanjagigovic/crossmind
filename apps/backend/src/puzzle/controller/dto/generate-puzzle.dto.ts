@@ -1,7 +1,18 @@
 import { IsEnum, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 
 import type { PuzzleDifficulty, PuzzleLanguage } from '../../domain/puzzle.js';
-import { PuzzleDifficultyDto, PuzzleLanguageDto } from './create-puzzle.dto.js';
+
+export enum PuzzleDifficultyDto {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+}
+
+export enum PuzzleLanguageDto {
+  English = 'en',
+  Serbian = 'sr',
+  Spanish = 'es',
+}
 
 export class GeneratePuzzleDto {
   @IsString()
