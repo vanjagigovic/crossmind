@@ -41,6 +41,18 @@ export class DrizzleUserRepository implements UserRepository {
     return this.toDomain(user);
   }
 
+  async promoteToAdminByEmail(email: string): Promise<User | null> {
+    const result = await this.database.client
+      .update(users)
+      .set({ role: 'ADMIN' })
+      .where(eq(users.email, email))
+      .returning();
+
+    const user = result[0];
+
+    return user ? this.toDomain(user) : null;
+  }
+
   async create(data: CreateUserData): Promise<User> {
     const result = await this.database.client
       .insert(users)
@@ -56,6 +68,7 @@ export class DrizzleUserRepository implements UserRepository {
       email: user.email,
       passwordHash: user.passwordHash,
       displayName: user.displayName,
+      role: user.role,
       isGuest: user.isGuest,
     };
   }

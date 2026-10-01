@@ -21,4 +21,23 @@ describe('DrizzleUserRepository', () => {
     expect(updatedUser).not.toBeNull();
     expect(updatedUser?.passwordHash).toBe('new-password-hash');
   });
+
+  it('defaults newly created users to USER and supports operator promotion', async () => {
+    const database = new DatabaseService();
+    const repository = new DrizzleUserRepository(database);
+    const email = `role-test-${Date.now()}@example.com`;
+
+    const user = await repository.create({
+      email,
+      passwordHash: 'password-hash',
+      displayName: 'Role Test',
+      isGuest: false,
+    });
+
+    expect(user.role).toBe('USER');
+
+    const promoted = await repository.promoteToAdminByEmail(email);
+
+    expect(promoted?.role).toBe('ADMIN');
+  });
 });
