@@ -100,4 +100,20 @@ describe('JwtTokenService', () => {
       sid: 'session-1',
     });
   });
+
+  it('should verify an access token using the configured access secret', async () => {
+    jwtService.verifyAsync.mockResolvedValue({
+      sub: 'user-1',
+      isGuest: false,
+    });
+
+    await expect(
+      jwtTokenService.verifyAccessToken('access-token'),
+    ).resolves.toEqual({
+      sub: 'user-1',
+      isGuest: false,
+    });
+
+    expect(jwtService.verifyAsync).toHaveBeenCalledWith('access-token');
+  });
 });
