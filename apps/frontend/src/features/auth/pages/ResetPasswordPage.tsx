@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../../api/client';
 import { resetPassword } from '../api/auth';
 
 export function ResetPasswordPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -21,12 +23,12 @@ export function ResetPasswordPage() {
     setError('');
 
     if (!token) {
-      setError('Invalid or missing reset token.');
+      setError(t('auth.resetPassword.invalidToken'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t('auth.resetPassword.passwordMismatch'));
       return;
     }
 
@@ -41,9 +43,9 @@ export function ResetPasswordPage() {
       navigate('/login');
     } catch (error) {
       if (error instanceof ApiError && error.status === 400) {
-        setError('This reset link is invalid or has expired.');
+        setError(t('auth.resetPassword.expiredLink'));
       } else {
-        setError('Something went wrong. Please try again.');
+        setError(t('auth.genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -55,13 +57,15 @@ export function ResetPasswordPage() {
       <section className="auth-card">
         <header className="auth-header">
           <p>CrossMind</p>
-          <h1>Reset password</h1>
-          <p>Enter your new password below.</p>
+          <h1>{t('auth.resetPassword.title')}</h1>
+          <p>{t('auth.resetPassword.description')}</p>
         </header>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
-            <label htmlFor="password">New password</label>
+            <label htmlFor="password">
+              {t('auth.resetPassword.newPassword')}
+            </label>
 
             <input
               id="password"
@@ -74,7 +78,9 @@ export function ResetPasswordPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="confirmPassword">Confirm password</label>
+            <label htmlFor="confirmPassword">
+              {t('auth.resetPassword.confirmPassword')}
+            </label>
 
             <input
               id="confirmPassword"
@@ -97,13 +103,15 @@ export function ResetPasswordPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? 'Resetting...' : 'Reset password'}
+            {isLoading
+              ? t('auth.resetPassword.resetting')
+              : t('auth.resetPassword.resetPassword')}
           </button>
         </form>
 
         <footer className="auth-footer">
           <p>
-            <Link to="/login">Back to login</Link>
+            <Link to="/login">{t('auth.resetPassword.backToLogin')}</Link>
           </p>
         </footer>
       </section>

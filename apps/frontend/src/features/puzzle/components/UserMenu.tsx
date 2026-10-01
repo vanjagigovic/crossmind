@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { getRefreshToken } from '../../auth/auth-storage';
 import { logout } from '../../auth/api/auth';
 import { useAuth } from '../../auth/useAuth';
 
 export function UserMenu() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -72,7 +74,7 @@ export function UserMenu() {
             role="menuitem"
             disabled
           >
-            Account settings
+            {t('userMenu.accountSettings')}
           </button>
 
           <button
@@ -81,7 +83,7 @@ export function UserMenu() {
             role="menuitem"
             onClick={handleLogout}
           >
-            Log out
+            {t('userMenu.logOut')}
           </button>
         </div>
       )}

@@ -17,6 +17,57 @@
     "puzzleCompleted": "¡Crucigrama completado!",
     "language": "Idioma"
   },
+  "auth": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "genericError": "Se ha producido un error. Inténtalo de nuevo.",
+    "forgotPassword": {
+      "title": "¿Has olvidado tu contraseña?",
+      "description": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer la contraseña.",
+      "sendError": "No se ha podido enviar el correo para restablecer la contraseña. Inténtalo de nuevo.",
+      "sending": "Enviando...",
+      "sendResetLink": "Enviar enlace de restablecimiento",
+      "backToLogin": "Volver al inicio de sesión"
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "description": "Inicia sesión para seguir jugando a CrossMind.",
+      "invalidCredentials": "El correo electrónico o la contraseña no son válidos",
+      "guestError": "No se ha podido continuar como invitado. Inténtalo de nuevo.",
+      "loggingIn": "Iniciando sesión...",
+      "forgotPassword": "¿Has olvidado tu contraseña?",
+      "or": "o",
+      "continueAsGuest": "Continuar como invitado",
+      "noAccount": "¿No tienes una cuenta?",
+      "register": "Registrarse"
+    },
+    "register": {
+      "title": "Crear una cuenta",
+      "description": "Crea tu cuenta de CrossMind para seguir tu progreso.",
+      "displayName": "Nombre visible",
+      "accountExists": "Ya existe una cuenta con este correo electrónico.",
+      "creating": "Creando cuenta...",
+      "createAccount": "Crear cuenta",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "logIn": "Iniciar sesión"
+    },
+    "resetPassword": {
+      "title": "Restablecer contraseña",
+      "description": "Introduce tu nueva contraseña a continuación.",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "invalidToken": "El token de restablecimiento no es válido o falta.",
+      "passwordMismatch": "Las contraseñas no coinciden.",
+      "expiredLink": "El enlace de restablecimiento no es válido o ha caducado.",
+      "resetting": "Restableciendo...",
+      "resetPassword": "Restablecer contraseña",
+      "backToLogin": "Volver al inicio de sesión"
+    }
+  },
+  "userMenu": {
+    "accountSettings": "Configuración de la cuenta",
+    "logOut": "Cerrar sesión"
+  },
   "language": {
     "title": "Idioma del crucigrama",
     "hint": "¿En qué idioma se debe generar el contenido del crucigrama?"
@@ -93,7 +144,8 @@
     "title": "¡Buen trabajo!",
     "noSession": "No se ha encontrado ninguna sesión de crucigrama completada.",
     "playAgain": "Jugar de nuevo",
-    "createNewPuzzle": "Crear nuevo crucigrama"
+    "createNewPuzzle": "Crear nuevo crucigrama",
+    "playAgainError": "No hemos podido generar el crucigrama de nuevo. Inténtalo otra vez."
   },
   "accessibility": {
     "crosswordGrid": "Cuadrícula del crucigrama",

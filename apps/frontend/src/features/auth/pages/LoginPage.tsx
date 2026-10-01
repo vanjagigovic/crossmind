@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../../api/client';
 import { guest, login } from '../api/auth';
 import { useAuth } from '../useAuth';
 
 export function LoginPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { setAuth } = useAuth();
 
@@ -25,9 +27,9 @@ export function LoginPage() {
       navigate('/');
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {
-        setError('Invalid email or password');
+        setError(t('auth.login.invalidCredentials'));
       } else {
-        setError('Something went wrong. Please try again.');
+        setError(t('auth.genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -43,7 +45,7 @@ export function LoginPage() {
       setAuth(response.accessToken, response.refreshToken, response.user);
       navigate('/');
     } catch {
-      setError('Unable to continue as guest. Please try again.');
+      setError(t('auth.login.guestError'));
     } finally {
       setIsLoading(false);
     }
@@ -54,13 +56,13 @@ export function LoginPage() {
       <section className="auth-card">
         <header className="auth-header">
           <p>CrossMind</p>
-          <h1>Log in</h1>
-          <p>Log in to continue playing CrossMind.</p>
+          <h1>{t('auth.login.title')}</h1>
+          <p>{t('auth.login.description')}</p>
         </header>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.email')}</label>
             <input
               id="email"
               type="email"
@@ -72,7 +74,7 @@ export function LoginPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('auth.password')}</label>
             <input
               id="password"
               type="password"
@@ -94,16 +96,16 @@ export function LoginPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? 'Logging in...' : 'Log in'}
+            {isLoading ? t('auth.login.loggingIn') : t('auth.login.title')}
           </button>
         </form>
 
         <div className="auth-links">
-          <Link to="/forgot-password">Forgot password?</Link>
+          <Link to="/forgot-password">{t('auth.login.forgotPassword')}</Link>
         </div>
 
         <div className="auth-divider">
-          <span>or</span>
+          <span>{t('auth.login.or')}</span>
         </div>
 
         <button
@@ -112,12 +114,13 @@ export function LoginPage() {
           onClick={handleGuestLogin}
           disabled={isLoading}
         >
-          Continue as guest
+          {t('auth.login.continueAsGuest')}
         </button>
 
         <footer className="auth-footer">
           <p>
-            Don&apos;t have an account? <Link to="/register">Register</Link>
+            {t('auth.login.noAccount')}{' '}
+            <Link to="/register">{t('auth.login.register')}</Link>
           </p>
         </footer>
       </section>

@@ -17,6 +17,57 @@
         "puzzleCompleted": "Puzzle completed!",
         "language": "Language"
     },
+    "auth": {
+        "email": "Email",
+        "password": "Password",
+        "genericError": "Something went wrong. Please try again.",
+        "forgotPassword": {
+            "title": "Forgot password?",
+            "description": "Enter your email address and we'll send you a password reset link.",
+            "sendError": "Unable to send password reset email. Please try again.",
+            "sending": "Sending...",
+            "sendResetLink": "Send reset link",
+            "backToLogin": "Back to login"
+        },
+        "login": {
+            "title": "Log in",
+            "description": "Log in to continue playing CrossMind.",
+            "invalidCredentials": "Invalid email or password",
+            "guestError": "Unable to continue as guest. Please try again.",
+            "loggingIn": "Logging in...",
+            "forgotPassword": "Forgot password?",
+            "or": "or",
+            "continueAsGuest": "Continue as guest",
+            "noAccount": "Don't have an account?",
+            "register": "Register"
+        },
+        "register": {
+            "title": "Create an account",
+            "description": "Create your CrossMind account to keep track of your progress.",
+            "displayName": "Display name",
+            "accountExists": "An account with this email already exists.",
+            "creating": "Creating account...",
+            "createAccount": "Create account",
+            "hasAccount": "Already have an account?",
+            "logIn": "Log in"
+        },
+        "resetPassword": {
+            "title": "Reset password",
+            "description": "Enter your new password below.",
+            "newPassword": "New password",
+            "confirmPassword": "Confirm password",
+            "invalidToken": "Invalid or missing reset token.",
+            "passwordMismatch": "Passwords do not match.",
+            "expiredLink": "This reset link is invalid or has expired.",
+            "resetting": "Resetting...",
+            "resetPassword": "Reset password",
+            "backToLogin": "Back to login"
+        }
+    },
+    "userMenu": {
+        "accountSettings": "Account settings",
+        "logOut": "Log out"
+    },
     "language": {
         "title": "Puzzle language",
         "hint": "Which language should the crossword content be generated in?"
@@ -93,7 +144,8 @@
         "title": "Great work",
         "noSession": "No completed puzzle session was found.",
         "playAgain": "Play Again",
-        "createNewPuzzle": "Create New Puzzle"
+        "createNewPuzzle": "Create New Puzzle",
+        "playAgainError": "We could not generate the puzzle again. Please try again."
     },
     "accessibility": {
         "crosswordGrid": "Crossword grid",

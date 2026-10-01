@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../../api/client';
 import { register } from '../api/auth';
 
 export function RegisterPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const [displayName, setDisplayName] = useState('');
@@ -28,9 +30,9 @@ export function RegisterPage() {
       navigate('/login');
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
-        setError('An account with this email already exists.');
+        setError(t('auth.register.accountExists'));
       } else {
-        setError('Something went wrong. Please try again.');
+        setError(t('auth.genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -42,13 +44,15 @@ export function RegisterPage() {
       <section className="auth-card">
         <header className="auth-header">
           <p>CrossMind</p>
-          <h1>Create an account</h1>
-          <p>Create your CrossMind account to keep track of your progress.</p>
+          <h1>{t('auth.register.title')}</h1>
+          <p>{t('auth.register.description')}</p>
         </header>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
-            <label htmlFor="displayName">Display name</label>
+            <label htmlFor="displayName">
+              {t('auth.register.displayName')}
+            </label>
             <input
               id="displayName"
               type="text"
@@ -60,7 +64,7 @@ export function RegisterPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.email')}</label>
             <input
               id="email"
               type="email"
@@ -72,7 +76,7 @@ export function RegisterPage() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('auth.password')}</label>
             <input
               id="password"
               type="password"
@@ -94,13 +98,16 @@ export function RegisterPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? 'Creating account...' : 'Create account'}
+            {isLoading
+              ? t('auth.register.creating')
+              : t('auth.register.createAccount')}
           </button>
         </form>
 
         <footer className="auth-footer">
           <p>
-            Already have an account? <Link to="/login">Log in</Link>
+            {t('auth.register.hasAccount')}{' '}
+            <Link to="/login">{t('auth.register.logIn')}</Link>
           </p>
         </footer>
       </section>
