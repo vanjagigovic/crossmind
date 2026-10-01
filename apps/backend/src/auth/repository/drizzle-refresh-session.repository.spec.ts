@@ -38,7 +38,9 @@ describe('DrizzleRefreshSessionRepository', () => {
     });
 
     const result = await repository.create({
+      id: 'session-1',
       userId: 'user-1',
+      familyId: 'family-1',
       tokenHash: 'hashed-token',
       expiresAt: session.expiresAt,
     });
