@@ -1,5 +1,9 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+
 import { AuthController } from './auth.controller.js';
+import { RegisterDto } from './dto/register.dto.js';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -46,6 +50,24 @@ describe('AuthController', () => {
       displayName: 'Vanja',
       isGuest: false,
     });
+  });
+
+  it('rejects client-supplied role fields during registration validation', async () => {
+    const dto = plainToInstance(RegisterDto, {
+      email: 'attacker@example.com',
+      password: 'password123',
+      displayName: 'Attacker',
+      role: 'ADMIN',
+      isAdmin: true,
+    });
+
+    const errors = await validate(dto, {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    });
+
+    expect(errors.map((error) => error.property)).toContain('role');
+    expect(errors.map((error) => error.property)).toContain('isAdmin');
   });
 
   it('should login a user', async () => {
