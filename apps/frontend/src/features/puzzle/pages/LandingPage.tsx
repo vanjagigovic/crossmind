@@ -21,7 +21,7 @@ export function LandingPage() {
       </div>
       <div
         className="landing-page__preview"
-        aria-label="A crossword puzzle preview"
+        aria-label={t('landing.previewAriaLabel')}
         role="img"
       >
         <div className="crossword-preview__label">

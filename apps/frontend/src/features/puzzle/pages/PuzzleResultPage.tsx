@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { generatePuzzle, getPuzzle } from '../../../api/puzzles';
 import { getPuzzleSessionResult } from '../utils/puzzleSessionResult';
@@ -10,6 +11,7 @@ type PuzzleResultPageProps = {
 };
 
 export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const result = getPuzzleSessionResult(puzzleId);
   const [isPlayingAgain, setIsPlayingAgain] = useState(false);
@@ -34,7 +36,7 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
 
       navigate(`/puzzle/${encodeURIComponent(puzzle.id)}`);
     } catch {
-      setError('We could not generate the puzzle again. Please try again.');
+      setError(t('result.playAgainError'));
       setIsPlayingAgain(false);
     }
   }
@@ -43,10 +45,10 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
     return (
       <main className="puzzle-result-page">
         <p className="puzzle-state puzzle-state--error">
-          No completed puzzle session was found.
+          {t('result.noSession')}
         </p>
         <Link className="primary-action" to="/create">
-          Create New Puzzle
+          {t('result.createNewPuzzle')}
         </Link>
       </main>
     );
@@ -54,22 +56,22 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
 
   return (
     <main className="puzzle-result-page">
-      <p className="puzzle-theme">Puzzle completed!</p>
-      <h1>Great work</h1>
+      <p className="puzzle-theme">{t('result.completed')}</p>
+      <h1>{t('result.title')}</h1>
 
       <dl className="puzzle-result">
         <div>
-          <dt>Score</dt>
+          <dt>{t('common.score')}</dt>
           <dd>{result.score.toLocaleString()}</dd>
         </div>
 
         <div>
-          <dt>Time</dt>
+          <dt>{t('common.time')}</dt>
           <dd>{formatElapsedTime(result.elapsedSeconds)}</dd>
         </div>
 
         <div>
-          <dt>Mistakes</dt>
+          <dt>{t('common.mistakes')}</dt>
           <dd>{result.mistakes}</dd>
         </div>
       </dl>
@@ -87,11 +89,11 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
           onClick={handlePlayAgain}
           disabled={isPlayingAgain}
         >
-          {isPlayingAgain ? 'Generating...' : 'Play Again'}
+          {isPlayingAgain ? t('common.generating') : t('result.playAgain')}
         </button>
 
         <Link className="secondary-action" to="/create">
-          Create New Puzzle
+          {t('result.createNewPuzzle')}
         </Link>
       </div>
     </main>

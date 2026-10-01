@@ -59,7 +59,7 @@ export function CrosswordCell({
     <div
       className={`crossword-cell${active ? ' crossword-cell--active' : ''}${selected ? ' crossword-cell--selected' : ''}${incorrect ? ' crossword-cell--incorrect' : ''}`}
       role="gridcell"
-      aria-label={`${label}, ${stateLabel}${validationLabel}${selected ? ', selected' : ''}`}
+      aria-label={`${label}, ${stateLabel}${validationLabel}${selected ? `, ${t('accessibility.selected')}` : ''}`}
       aria-selected={selected}
       aria-disabled={completed}
       tabIndex={completed ? -1 : tabbable ? 0 : -1}

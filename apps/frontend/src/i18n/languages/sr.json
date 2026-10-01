@@ -17,6 +17,57 @@
     "puzzleCompleted": "Ukrštenica je završena!",
     "language": "Jezik"
   },
+  "auth": {
+    "email": "Imejl",
+    "password": "Lozinka",
+    "genericError": "Došlo je do greške. Pokušaj ponovo.",
+    "forgotPassword": {
+      "title": "Zaboravljena lozinka?",
+      "description": "Unesi svoju imejl adresu i poslaćemo ti link za resetovanje lozinke.",
+      "sendError": "Nije moguće poslati imejl za resetovanje lozinke. Pokušaj ponovo.",
+      "sending": "Slanje...",
+      "sendResetLink": "Pošalji link za resetovanje",
+      "backToLogin": "Nazad na prijavu"
+    },
+    "login": {
+      "title": "Prijava",
+      "description": "Prijavi se da nastaviš da igraš CrossMind.",
+      "invalidCredentials": "Neispravna imejl adresa ili lozinka",
+      "guestError": "Nije moguće nastaviti kao gost. Pokušaj ponovo.",
+      "loggingIn": "Prijavljivanje...",
+      "forgotPassword": "Zaboravljena lozinka?",
+      "or": "ili",
+      "continueAsGuest": "Nastavi kao gost",
+      "noAccount": "Nemaš nalog?",
+      "register": "Registruj se"
+    },
+    "register": {
+      "title": "Kreiraj nalog",
+      "description": "Kreiraj CrossMind nalog da pratiš svoj napredak.",
+      "displayName": "Ime za prikaz",
+      "accountExists": "Nalog sa ovom imejl adresom već postoji.",
+      "creating": "Kreiranje naloga...",
+      "createAccount": "Kreiraj nalog",
+      "hasAccount": "Već imaš nalog?",
+      "logIn": "Prijavi se"
+    },
+    "resetPassword": {
+      "title": "Resetovanje lozinke",
+      "description": "Unesi novu lozinku ispod.",
+      "newPassword": "Nova lozinka",
+      "confirmPassword": "Potvrdi lozinku",
+      "invalidToken": "Token za resetovanje lozinke nije ispravan ili nedostaje.",
+      "passwordMismatch": "Lozinke se ne poklapaju.",
+      "expiredLink": "Link za resetovanje nije ispravan ili je istekao.",
+      "resetting": "Resetovanje...",
+      "resetPassword": "Resetuj lozinku",
+      "backToLogin": "Nazad na prijavu"
+    }
+  },
+  "userMenu": {
+    "accountSettings": "Podešavanja naloga",
+    "logOut": "Odjavi se"
+  },
   "language": {
     "title": "Jezik ukrštenice",
     "hint": "Na kom jeziku treba generisati sadržaj ukrštenice?"
@@ -93,7 +144,8 @@
     "title": "Odlično!",
     "noSession": "Nije pronađena završena sesija ukrštenice.",
     "playAgain": "Igraj ponovo",
-    "createNewPuzzle": "Kreiraj novu ukrštenicu"
+    "createNewPuzzle": "Kreiraj novu ukrštenicu",
+    "playAgainError": "Nismo mogli ponovo da generišemo ukrštenicu. Pokušaj ponovo."
   },
   "accessibility": {
     "crosswordGrid": "Mreža ukrštenice",

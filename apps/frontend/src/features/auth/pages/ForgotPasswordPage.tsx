@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ApiError } from '../../../api/client';
 import { forgotPassword } from '../api/auth';
 
 export function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -22,9 +24,9 @@ export function ForgotPasswordPage() {
       setMessage(response.message);
     } catch (error) {
       if (error instanceof ApiError) {
-        setError('Unable to send password reset email. Please try again.');
+        setError(t('auth.forgotPassword.sendError'));
       } else {
-        setError('Something went wrong. Please try again.');
+        setError(t('auth.genericError'));
       }
     } finally {
       setIsLoading(false);
@@ -36,16 +38,13 @@ export function ForgotPasswordPage() {
       <section className="auth-card">
         <header className="auth-header">
           <p>CrossMind</p>
-          <h1>Forgot password?</h1>
-          <p>
-            Enter your email address and we&apos;ll send you a password reset
-            link.
-          </p>
+          <h1>{t('auth.forgotPassword.title')}</h1>
+          <p>{t('auth.forgotPassword.description')}</p>
         </header>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.email')}</label>
 
             <input
               id="email"
@@ -74,13 +73,15 @@ export function ForgotPasswordPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? 'Sending...' : 'Send reset link'}
+            {isLoading
+              ? t('auth.forgotPassword.sending')
+              : t('auth.forgotPassword.sendResetLink')}
           </button>
         </form>
 
         <footer className="auth-footer">
           <p>
-            <Link to="/login">Back to login</Link>
+            <Link to="/login">{t('auth.forgotPassword.backToLogin')}</Link>
           </p>
         </footer>
       </section>
