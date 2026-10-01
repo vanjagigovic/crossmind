@@ -295,6 +295,7 @@ export class AuthService {
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     await this.refreshSessionRepository.create({
+      id: sessionId,
       userId,
       familyId: sessionFamilyId,
       tokenHash,

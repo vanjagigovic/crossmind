@@ -165,6 +165,7 @@ describe('AuthService', () => {
     expect(tokenHashService.hash).toHaveBeenCalledWith('refresh-token');
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
+      id: expect.any(String),
       userId: 'user-1',
       familyId: expect.any(String),
       tokenHash: 'hashed-refresh-token',
@@ -181,6 +182,34 @@ describe('AuthService', () => {
         isGuest: false,
       },
     });
+  });
+
+  it('should use the same session id for the JWT sid and the stored session', async () => {
+    userService.findByEmail.mockResolvedValue({
+      id: 'user-1',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
+      isGuest: false,
+    });
+
+    passwordService.verify.mockResolvedValue(true);
+
+    jwtTokenService.generateAccessToken.mockResolvedValue('access-token');
+
+    jwtTokenService.generateRefreshToken.mockResolvedValue('refresh-token');
+
+    await authService.login({
+      email: 'vanja@test.com',
+      password: 'password123',
+    });
+
+    const refreshPayload =
+      jwtTokenService.generateRefreshToken.mock.calls[0][0];
+
+    const createData = refreshSessionRepository.create.mock.calls[0][0];
+
+    expect(createData.id).toBe(refreshPayload.sid);
   });
 
   it('should reject invalid credentials', async () => {
@@ -239,6 +268,7 @@ describe('AuthService', () => {
     expect(tokenHashService.hash).toHaveBeenCalledWith('refresh-token');
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
+      id: expect.any(String),
       userId: 'guest-1',
       familyId: expect.any(String),
       tokenHash: 'hashed-refresh-token',
@@ -303,6 +333,7 @@ describe('AuthService', () => {
     const result = await authService.refresh('refresh-token');
 
     expect(refreshSessionRepository.create).toHaveBeenCalledWith({
+      id: expect.any(String),
       userId: 'user-1',
       familyId: 'family-1',
       tokenHash: 'hashed-new-refresh-token',
@@ -541,6 +572,34 @@ describe('AuthService', () => {
     expect(refreshSessionRepository.findById).toHaveBeenCalledWith('session-1');
 
     expect(refreshSessionRepository.revoke).toHaveBeenCalledWith('session-1');
+  });
+
+  it('should look up the refresh session by the JWT sid on logout', async () => {
+    jwtTokenService.verifyRefreshToken.mockResolvedValue({
+      sub: 'user-1',
+      isGuest: false,
+      sid: 'session-from-jwt',
+    });
+
+    refreshSessionRepository.findById.mockResolvedValue({
+      id: 'session-from-jwt',
+      userId: 'user-1',
+      familyId: 'family-1',
+      tokenHash: 'hashed-refresh-token',
+      expiresAt: new Date(Date.now() + 60_000),
+      createdAt: new Date(),
+      revokedAt: null,
+    });
+
+    await authService.logout('refresh-token');
+
+    expect(refreshSessionRepository.findById).toHaveBeenCalledWith(
+      'session-from-jwt',
+    );
+
+    expect(refreshSessionRepository.revoke).toHaveBeenCalledWith(
+      'session-from-jwt',
+    );
   });
 
   it('should do nothing on logout when the refresh token is invalid', async () => {
