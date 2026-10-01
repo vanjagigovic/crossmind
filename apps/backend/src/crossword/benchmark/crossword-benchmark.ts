@@ -161,8 +161,7 @@ function runBenchmark(
     averageFillPercentage: accumulator.totalFillPercentage / RUNS,
     averageNodesVisited: accumulator.totalNodesVisited / RUNS,
     averageBacktracks: accumulator.totalBacktracks / RUNS,
-    averagePlacementEvaluations:
-      accumulator.totalPlacementEvaluations / RUNS,
+    averagePlacementEvaluations: accumulator.totalPlacementEvaluations / RUNS,
     averageGenerationTimeMs: accumulator.totalGenerationTimeMs / RUNS,
     uniqueLayouts: accumulator.layouts.size,
   };
@@ -173,7 +172,9 @@ function printMetrics(
   metrics: BenchmarkMetrics,
 ): void {
   console.log(`  ${strategy.toUpperCase()}`);
-  console.log(`    success rate:              ${metrics.successRate.toFixed(1)}%`);
+  console.log(
+    `    success rate:              ${metrics.successRate.toFixed(1)}%`,
+  );
   console.log(
     `    average placed words:      ${metrics.averagePlacedWords.toFixed(2)}`,
   );
@@ -192,7 +193,9 @@ function printMetrics(
   console.log(
     `    average generation time:   ${metrics.averageGenerationTimeMs.toFixed(2)} ms`,
   );
-  console.log(`    unique layouts:             ${metrics.uniqueLayouts}/${RUNS}`);
+  console.log(
+    `    unique layouts:             ${metrics.uniqueLayouts}/${RUNS}`,
+  );
 }
 
 function main(): void {
