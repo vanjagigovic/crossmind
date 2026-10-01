@@ -131,48 +131,6 @@ describe('DrizzlePuzzleRepository', () => {
     });
   });
 
-  it('updates a puzzle', async () => {
-    const [createdPuzzle] = await db
-      .insert(puzzles)
-      .values({
-        title: 'Original Title',
-        theme: 'Original Theme',
-        difficulty: 'easy',
-        language: 'en',
-        status: 'draft',
-        rows: 3,
-        columns: 3,
-        grid: createGrid(3, 3),
-      })
-      .returning();
-
-    const updatedPuzzle = await repository.update(createdPuzzle.id, {
-      title: 'Updated Title',
-      status: 'ready',
-    });
-
-    expect(updatedPuzzle).toMatchObject({
-      id: createdPuzzle.id,
-      title: 'Updated Title',
-      theme: 'Original Theme',
-      difficulty: 'easy',
-      language: 'en',
-      status: 'ready',
-      rows: 3,
-      columns: 3,
-    });
-  });
-  it('returns null when updating a puzzle that does not exist', async () => {
-    const result = await repository.update(
-      '00000000-0000-0000-0000-000000000000',
-      {
-        title: 'Updated Title',
-      },
-    );
-
-    expect(result).toBeNull();
-  });
-
   it('deletes a puzzle', async () => {
     const [createdPuzzle] = await db
       .insert(puzzles)

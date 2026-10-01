@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { generatePuzzle } from '../../../api/puzzles';
 import type { PuzzleDifficulty, PuzzleLanguage } from '../../../types/puzzle';
+import { useNavigate } from 'react-router-dom';
 
 const TOPICS = [
   'programming',
@@ -20,19 +21,19 @@ const SIZES = {
     label: 'createPuzzle.size.small',
     rows: 11,
     columns: 11,
-    wordCount: 5,
+    wordCount: 7,
   },
   medium: {
     label: 'createPuzzle.size.medium',
     rows: 13,
     columns: 13,
-    wordCount: 7,
+    wordCount: 10,
   },
   large: {
     label: 'createPuzzle.size.large',
     rows: 15,
     columns: 15,
-    wordCount: 9,
+    wordCount: 14,
   },
 } as const;
 
@@ -41,6 +42,7 @@ type PuzzleSize = keyof typeof SIZES;
 
 export function CreatePuzzlePage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [selectedTopic, setSelectedTopic] = useState<Topic>(TOPICS[0]);
   const [customTopic, setCustomTopic] = useState('');
@@ -77,7 +79,7 @@ export function CreatePuzzlePage() {
         language,
       });
 
-      window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`);
+      navigate(`/puzzle/${encodeURIComponent(puzzle.id)}`);
     } catch {
       setError(t('createPuzzle.error'));
       setIsGenerating(false);

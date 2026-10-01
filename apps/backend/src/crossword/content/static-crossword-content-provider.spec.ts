@@ -9,7 +9,8 @@ describe('StaticCrosswordContentProvider', () => {
     const words = await provider.generateWords({
       theme: 'Animals',
       difficulty: 'easy',
-      wordCount: 3,
+      candidateCount: 3,
+      language: 'en',
     });
 
     expect(words).toHaveLength(3);
@@ -19,7 +20,8 @@ describe('StaticCrosswordContentProvider', () => {
     const request = {
       theme: 'Animals',
       difficulty: 'easy' as const,
-      wordCount: 4,
+      language: 'en' as const,
+      candidateCount: 4,
     };
 
     const first = await provider.generateWords(request);
@@ -32,18 +34,20 @@ describe('StaticCrosswordContentProvider', () => {
     const words = await provider.generateWords({
       theme: 'Animals',
       difficulty: 'hard',
-      wordCount: 12,
+      language: 'en',
+      candidateCount: 27,
     });
 
-    expect(words).toHaveLength(12);
-    expect(words[10]).toEqual(words[0]);
+    expect(words).toHaveLength(27);
+    expect(words[26]).toEqual(words[0]);
   });
 
   it('returns every word with an answer and a clue', async () => {
     const words = await provider.generateWords({
       theme: 'Animals',
       difficulty: 'medium',
-      wordCount: 5,
+      language: 'en',
+      candidateCount: 5,
     });
 
     for (const word of words) {

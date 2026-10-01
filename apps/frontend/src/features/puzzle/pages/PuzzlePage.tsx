@@ -9,6 +9,7 @@ import {
 import { savePuzzleSessionResult } from '../utils/puzzleSessionResult';
 import { calculateScore } from '../utils/scoreUtils';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 type PuzzlePageProps = {
   puzzleId?: string;
@@ -35,6 +36,7 @@ type LoadedPuzzlePageProps = {
 
 function LoadedPuzzlePage({ puzzleId }: LoadedPuzzlePageProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
 
   const [error, setError] = useState<string | null>(null);
@@ -160,9 +162,7 @@ function LoadedPuzzlePage({ puzzleId }: LoadedPuzzlePageProps) {
 
     savePuzzleSessionResult(loadedPuzzle.id, result);
 
-    window.location.assign(
-      `/puzzle/${encodeURIComponent(loadedPuzzle.id)}/result`,
-    );
+    navigate(`/puzzle/${encodeURIComponent(loadedPuzzle.id)}/result`);
   }
 
   const activeEntryId = getActiveEntryId();

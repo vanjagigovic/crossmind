@@ -8,7 +8,7 @@ export type CrosswordContentRequest = {
   theme: string;
   difficulty: CrosswordDifficulty;
   language: CrosswordLanguage;
-  wordCount: number;
+  candidateCount: number;
 };
 
 export interface CrosswordContentProvider {

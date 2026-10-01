@@ -29,6 +29,43 @@ describe('normalizeCrosswordWords', () => {
     expect(result).toEqual([{ answer: 'CAT', clue: 'Valid answer' }]);
   });
 
+  it('preserves Serbian and Spanish letters and normalizes Unicode composition', () => {
+    const result = normalizeCrosswordWords([
+      { answer: 'čaj', clue: 'Serbian tea' },
+      { answer: 'niño', clue: 'Spanish child' },
+      { answer: ' cafe\u0301 ', clue: 'Coffee' },
+    ]);
+
+    expect(result).toEqual([
+      { answer: 'ČAJ', clue: 'Serbian tea' },
+      { answer: 'NIÑO', clue: 'Spanish child' },
+      { answer: 'CAFÉ', clue: 'Coffee' },
+    ]);
+  });
+
+  it('rejects answers whose uppercase conversion expands their character count', () => {
+    expect(
+      normalizeCrosswordWords([{ answer: 'straße', clue: 'A street' }]),
+    ).toEqual([]);
+  });
+
+  it('keeps only the first clue for duplicate normalized answers', () => {
+    const result = normalizeCrosswordWords([
+      { answer: 'niño', clue: 'A child' },
+      { answer: ' NIÑO ', clue: 'Another clue' },
+    ]);
+
+    expect(result).toEqual([{ answer: 'NIÑO', clue: 'A child' }]);
+  });
+
+  it('rejects letters that cannot fit in one grid cell', () => {
+    expect(
+      normalizeCrosswordWords([
+        { answer: '𐐨', clue: 'A supplementary letter' },
+      ]),
+    ).toEqual([]);
+  });
+
   it('filters out words with an empty or whitespace-only clue', () => {
     const result = normalizeCrosswordWords([
       { answer: 'CAT', clue: '' },

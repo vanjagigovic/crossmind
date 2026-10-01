@@ -24,6 +24,34 @@ export function canPlaceWord(
     return false;
   }
 
+  if (
+    grid.placements.some((existingPlacement) => {
+      if (existingPlacement.direction !== direction) {
+        return false;
+      }
+
+      if (direction === 'across') {
+        const existingEnd =
+          existingPlacement.col + existingPlacement.word.answer.length - 1;
+        return (
+          existingPlacement.row === row &&
+          col <= existingEnd &&
+          existingPlacement.col <= endCol
+        );
+      }
+
+      const existingEnd =
+        existingPlacement.row + existingPlacement.word.answer.length - 1;
+      return (
+        existingPlacement.col === col &&
+        row <= existingEnd &&
+        existingPlacement.row <= endRow
+      );
+    })
+  ) {
+    return false;
+  }
+
   // There must not be another letter immediately before the word.
   const beforeRow = row - rowStep;
   const beforeCol = col - colStep;

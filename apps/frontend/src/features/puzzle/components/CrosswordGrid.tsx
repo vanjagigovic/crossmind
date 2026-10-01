@@ -257,7 +257,7 @@ export function CrosswordGrid({
 
       return;
     }
-    if (/^[a-z]$/i.test(event.key)) {
+    if (/^\p{L}$/u.test(event.key) && event.key.length === 1) {
       event.preventDefault();
       enterLetter(event.key);
       return;
@@ -290,8 +290,8 @@ export function CrosswordGrid({
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    const letter = event.target.value.match(/[a-z]/i)?.[0];
-    if (letter) {
+    const letter = event.target.value.normalize('NFC').match(/\p{L}/u)?.[0];
+    if (letter && letter.length === 1) {
       enterLetter(letter);
     }
   }

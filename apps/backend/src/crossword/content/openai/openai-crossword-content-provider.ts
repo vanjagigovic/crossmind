@@ -127,7 +127,7 @@ export class OpenAiCrosswordContentProvider implements CrosswordContentProvider 
       {
         role: 'user',
         content:
-          `Generate exactly ${request.wordCount} crossword entries in the ${request.language} ` +
+          `Generate exactly ${request.candidateCount} crossword entries in the ${request.language} ` +
           `language for the theme "${request.theme}" at ${request.difficulty} difficulty. ` +
           'Before returning the result, check EVERY entry individually: ' +
           '1. Is the answer a real word in the requested language? ' +

@@ -32,8 +32,6 @@ export type CreatePuzzleData = {
   grid: CrosswordGrid;
 };
 
-export type UpdatePuzzleData = Partial<CreatePuzzleData>;
-
 export type GeneratePuzzleData = {
   title: string;
   theme: string;

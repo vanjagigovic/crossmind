@@ -28,7 +28,7 @@ async function main() {
   const { grid, unplacedWords } = new CrosswordGenerator({
     rows: 11,
     cols: 11,
-  }).generate(SEED_WORDS);
+  }).generate(SEED_WORDS, SEED_WORDS.length);
 
   if (unplacedWords.length > 0) {
     throw new Error(
