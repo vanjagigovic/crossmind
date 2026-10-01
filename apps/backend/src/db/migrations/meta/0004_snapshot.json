@@ -78,12 +78,8 @@
           "name": "puzzle_entries_puzzle_id_puzzles_id_fk",
           "tableFrom": "puzzle_entries",
           "tableTo": "puzzles",
-          "columnsFrom": [
-            "puzzle_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["puzzle_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -237,9 +233,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -251,39 +245,22 @@
     "public.difficulty": {
       "name": "difficulty",
       "schema": "public",
-      "values": [
-        "easy",
-        "medium",
-        "hard"
-      ]
+      "values": ["easy", "medium", "hard"]
     },
     "public.direction": {
       "name": "direction",
       "schema": "public",
-      "values": [
-        "across",
-        "down"
-      ]
+      "values": ["across", "down"]
     },
     "public.puzzle_language": {
       "name": "puzzle_language",
       "schema": "public",
-      "values": [
-        "en",
-        "sr",
-        "es"
-      ]
+      "values": ["en", "sr", "es"]
     },
     "public.puzzle_status": {
       "name": "puzzle_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "generating",
-        "ready",
-        "published",
-        "archived"
-      ]
+      "values": ["draft", "generating", "ready", "published", "archived"]
     }
   },
   "schemas": {},
