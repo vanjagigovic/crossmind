@@ -11,7 +11,7 @@ describe('OpenAiCrosswordContentProvider', () => {
     theme: 'Animals',
     difficulty: 'medium',
     language: 'en' as const,
-    wordCount: 2,
+    candidateCount: 2,
   };
 
   function createFakeClient(create: ReturnType<typeof vi.fn>) {

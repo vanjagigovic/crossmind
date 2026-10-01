@@ -70,6 +70,24 @@ export class CrosswordGenerator {
       };
     }
 
+    const maxGridDimension = Math.max(this.options.rows, this.options.cols);
+    const searchableWords = uniqueWords.filter(
+      (word) => word.answer.length <= maxGridDimension,
+    );
+    const unsearchableWords = uniqueWords.filter(
+      (word) => word.answer.length > maxGridDimension,
+    );
+
+    if (searchableWords.length < targetWordCount) {
+      const grid = createCrosswordGrid(this.options.rows, this.options.cols);
+
+      return {
+        grid,
+        placedWords: [],
+        unplacedWords: [...uniqueWords],
+      };
+    }
+
     let bestResult: CrosswordGenerationResult | null = null;
     const stats: CrosswordGenerationStats = {
       nodesVisited: 0,
@@ -90,8 +108,10 @@ export class CrosswordGenerator {
       candidateIndex++
     ) {
       const candidate = this.generateCandidate(
-        uniqueWords,
+        searchableWords,
         targetWordCount,
+        candidateIndex,
+        unsearchableWords,
         stats,
       );
 
@@ -116,18 +136,24 @@ export class CrosswordGenerator {
   private generateCandidate(
     words: CrosswordWord[],
     targetWordCount: number,
+    candidateIndex: number,
+    unsearchableWords: CrosswordWord[],
     stats: CrosswordGenerationStats,
   ): CrosswordGenerationResult {
     const grid = createCrosswordGrid(this.options.rows, this.options.cols);
 
     const sortedWords = this.shuffleWords(words);
-    const firstWord = sortedWords[0];
+    const seedableWords = sortedWords.filter(
+      (word) =>
+        word.answer.length <= Math.max(this.options.rows, this.options.cols),
+    );
+    const firstWord = seedableWords[candidateIndex % seedableWords.length];
 
     if (!firstWord) {
       return {
         grid,
         placedWords: [],
-        unplacedWords: [],
+        unplacedWords: [...sortedWords, ...unsearchableWords],
       };
     }
 
@@ -137,19 +163,19 @@ export class CrosswordGenerator {
       return {
         grid,
         placedWords: [],
-        unplacedWords: sortedWords,
+        unplacedWords: [...sortedWords, ...unsearchableWords],
       };
     }
 
     placeWord(grid, firstPlacement);
 
-    const remainingWords = sortedWords.slice(1);
+    const remainingWords = sortedWords.filter((word) => word !== firstWord);
     const placedWords = [firstWord];
 
     let bestResult: CrosswordGenerationResult = {
       grid: this.cloneGrid(grid),
       placedWords: [...placedWords],
-      unplacedWords: [...remainingWords],
+      unplacedWords: [...remainingWords, ...unsearchableWords],
     };
 
     let candidateNodesVisited = 0;
@@ -178,6 +204,7 @@ export class CrosswordGenerator {
       remainingWords,
       placedWords,
       [],
+      unsearchableWords,
       targetWordCount,
       visitNode,
       updateBest,
@@ -192,6 +219,7 @@ export class CrosswordGenerator {
     remainingWords: CrosswordWord[],
     placedWords: CrosswordWord[],
     unplacedWords: CrosswordWord[],
+    unsearchableWords: CrosswordWord[],
     targetWordCount: number,
     visitNode: () => boolean,
     updateBest: (candidate: CrosswordGenerationResult) => void,
@@ -204,7 +232,11 @@ export class CrosswordGenerator {
     updateBest({
       grid: this.cloneGrid(grid),
       placedWords: [...placedWords],
-      unplacedWords: [...unplacedWords, ...remainingWords],
+      unplacedWords: [
+        ...unplacedWords,
+        ...remainingWords,
+        ...unsearchableWords,
+      ],
     });
 
     if (placedWords.length === targetWordCount) {
@@ -237,6 +269,7 @@ export class CrosswordGenerator {
         rest,
         placedWords,
         [...unplacedWords, word],
+        unsearchableWords,
         targetWordCount,
         visitNode,
         updateBest,
@@ -262,6 +295,7 @@ export class CrosswordGenerator {
         rest,
         [...placedWords, word],
         unplacedWords,
+        unsearchableWords,
         targetWordCount,
         visitNode,
         updateBest,
@@ -282,6 +316,7 @@ export class CrosswordGenerator {
         rest,
         placedWords,
         [...unplacedWords, word],
+        unsearchableWords,
         targetWordCount,
         visitNode,
         updateBest,
@@ -311,7 +346,11 @@ export class CrosswordGenerator {
     const uniqueWords: CrosswordWord[] = [];
 
     for (const word of words) {
-      const key = word.answer.trim().toUpperCase();
+      const key = word.answer
+        .trim()
+        .normalize('NFC')
+        .toUpperCase()
+        .normalize('NFC');
 
       if (seen.has(key)) {
         continue;
@@ -356,7 +395,22 @@ export class CrosswordGenerator {
   }
 
   private createFirstPlacement(word: CrosswordWord) {
-    const direction: StartDirection = this.random() < 0.5 ? 'across' : 'down';
+    const possibleDirections: StartDirection[] = [];
+
+    if (word.answer.length <= this.options.cols) {
+      possibleDirections.push('across');
+    }
+
+    if (word.answer.length <= this.options.rows) {
+      possibleDirections.push('down');
+    }
+
+    const direction =
+      possibleDirections.length === 1
+        ? possibleDirections[0]
+        : this.random() < 0.5
+          ? possibleDirections[0]
+          : possibleDirections[1];
 
     if (direction === 'across') {
       return {
