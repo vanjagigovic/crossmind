@@ -4,11 +4,7 @@ import { eq } from 'drizzle-orm';
 import { DatabaseService } from '../../db/database.service.js';
 import type { DatabaseTransaction } from '../../db/database.service.js';
 import { puzzles } from '../../db/schema/index.js';
-import type {
-  CreatePuzzleData,
-  Puzzle,
-  UpdatePuzzleData,
-} from '../domain/puzzle.js';
+import type { CreatePuzzleData, Puzzle } from '../domain/puzzle.js';
 import type { PuzzleRepository } from './puzzle.repository.js';
 
 @Injectable()
@@ -47,25 +43,6 @@ export class DrizzlePuzzleRepository implements PuzzleRepository {
       .returning();
 
     return this.toDomain(result[0]);
-  }
-
-  async update(id: string, data: UpdatePuzzleData): Promise<Puzzle | null> {
-    const result = await this.database.client
-      .update(puzzles)
-      .set({
-        ...data,
-        updatedAt: new Date(),
-      })
-      .where(eq(puzzles.id, id))
-      .returning();
-
-    const puzzle = result[0];
-
-    if (!puzzle) {
-      return null;
-    }
-
-    return this.toDomain(puzzle);
   }
 
   async delete(id: string): Promise<void> {

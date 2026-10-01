@@ -1,15 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type {
-  CreatePuzzleData,
-  GeneratePuzzleData,
-  Puzzle,
-  UpdatePuzzleData,
-} from '../domain/puzzle.js';
+import type { GeneratePuzzleData, Puzzle } from '../domain/puzzle.js';
 
 import type { PuzzleRepository } from '../repository/puzzle.repository.js';
 import type { PuzzleEntryRepository } from '../repository/puzzle-entry.repository.js';
 import type { CrosswordContentProvider } from '../../crossword/content/crossword-content-provider.js';
+import { createCrosswordGrid } from '../../crossword/helpers/grid-helper.js';
+import { placeWord } from '../../crossword/helpers/place-word.js';
 import type {
   DatabaseService,
   DatabaseTransaction,
@@ -26,7 +23,6 @@ describe('PuzzleService', () => {
     findById: vi.fn(),
     findAll: vi.fn(),
     create: vi.fn(),
-    update: vi.fn(),
     delete: vi.fn(),
   };
   const puzzleEntryRepository: PuzzleEntryRepository = {
@@ -115,24 +111,6 @@ describe('PuzzleService', () => {
     expect(result).toEqual(puzzles);
   });
 
-  it('should create a puzzle', async () => {
-    const data = {
-      title: 'Test Puzzle',
-    } as CreatePuzzleData;
-
-    const puzzle = {
-      id: 'puzzle-1',
-      ...data,
-    } as Puzzle;
-
-    vi.mocked(puzzleRepository.create).mockResolvedValue(puzzle);
-
-    const result = await service.create(data);
-
-    expect(puzzleRepository.create).toHaveBeenCalledWith(data);
-    expect(result).toEqual(puzzle);
-  });
-
   it('generates and persists a ready puzzle', async () => {
     const data: GeneratePuzzleData = {
       title: 'Animal Puzzle',
@@ -144,19 +122,13 @@ describe('PuzzleService', () => {
       language: 'en',
     };
     const words = [{ answer: 'CAT', clue: 'A small animal' }];
-    const grid = {
-      rows: 5,
-      cols: 5,
-      cells: [],
-      placements: [
-        {
-          word: words[0],
-          row: 2,
-          col: 1,
-          direction: 'across' as const,
-        },
-      ],
-    };
+    const grid = createCrosswordGrid(5, 5);
+    placeWord(grid, {
+      word: words[0],
+      row: 2,
+      col: 1,
+      direction: 'across',
+    });
     const persistedPuzzle = {
       id: 'puzzle-1',
       ...data,
@@ -230,12 +202,13 @@ describe('PuzzleService', () => {
       wordCount: 1,
       language: 'en',
     };
-    const grid = {
-      rows: 5,
-      cols: 5,
-      cells: [],
-      placements: [],
-    };
+    const grid = createCrosswordGrid(5, 5);
+    placeWord(grid, {
+      word: { answer: 'CAT', clue: 'A small animal' },
+      row: 2,
+      col: 1,
+      direction: 'across',
+    });
 
     vi.mocked(crosswordContentProvider.generateWords).mockResolvedValue([
       {
@@ -306,6 +279,32 @@ describe('PuzzleService', () => {
     expect(databaseService.transaction).not.toHaveBeenCalled();
   });
 
+  it('fails when duplicate normalized answers leave too few candidates', async () => {
+    const data: GeneratePuzzleData = {
+      title: 'Animal Puzzle',
+      theme: 'Animals',
+      difficulty: 'medium',
+      rows: 5,
+      columns: 5,
+      wordCount: 2,
+      language: 'en',
+    };
+
+    vi.mocked(crosswordContentProvider.generateWords).mockResolvedValue([
+      { answer: 'CAT', clue: 'A small animal' },
+      { answer: ' cat ', clue: 'Another clue for a cat' },
+    ]);
+
+    await expect(service.generate(data)).rejects.toThrow(
+      'Could not generate enough valid crossword candidates. ' +
+        'Required at least 2, got 1.',
+    );
+
+    expect(generatorGenerate).not.toHaveBeenCalled();
+    expect(puzzleRepository.create).not.toHaveBeenCalled();
+    expect(databaseService.transaction).not.toHaveBeenCalled();
+  });
+
   it('fails when the generator cannot place all requested words', async () => {
     const data: GeneratePuzzleData = {
       title: 'Animal Puzzle',
@@ -317,12 +316,7 @@ describe('PuzzleService', () => {
       language: 'en',
     };
 
-    const grid = {
-      rows: 5,
-      cols: 5,
-      cells: [],
-      placements: [],
-    };
+    const grid = createCrosswordGrid(5, 5);
 
     const words = [
       {
@@ -340,13 +334,48 @@ describe('PuzzleService', () => {
     });
 
     await expect(service.generate(data)).rejects.toThrow(
-      'Could not place all 1 words in the crossword.',
+      /could not place all 1 requested words/,
     );
 
     expect(puzzleRepository.create).not.toHaveBeenCalled();
 
     expect(puzzleEntryRepository.createMany).not.toHaveBeenCalled();
 
+    expect(databaseService.transaction).not.toHaveBeenCalled();
+  });
+
+  it('does not persist a generated crossword that fails final validation', async () => {
+    const data: GeneratePuzzleData = {
+      title: 'Animal Puzzle',
+      theme: 'Animals',
+      difficulty: 'medium',
+      rows: 5,
+      columns: 5,
+      wordCount: 1,
+      language: 'en',
+    };
+    const grid = createCrosswordGrid(4, 5);
+    const words = [{ answer: 'CAT', clue: 'A small animal' }];
+    placeWord(grid, {
+      word: words[0],
+      row: 1,
+      col: 1,
+      direction: 'across',
+    });
+
+    vi.mocked(crosswordContentProvider.generateWords).mockResolvedValue(words);
+    generatorGenerate.mockReturnValue({
+      grid,
+      placedWords: words,
+      unplacedWords: [],
+    });
+
+    await expect(service.generate(data)).rejects.toThrow(
+      /grid dimensions do not match/,
+    );
+
+    expect(puzzleRepository.create).not.toHaveBeenCalled();
+    expect(puzzleEntryRepository.createMany).not.toHaveBeenCalled();
     expect(databaseService.transaction).not.toHaveBeenCalled();
   });
 
@@ -361,22 +390,16 @@ describe('PuzzleService', () => {
       language: 'en',
     };
 
-    const grid = {
-      rows: 5,
-      cols: 5,
-      cells: [],
-      placements: [
-        {
-          word: {
-            answer: 'CAT',
-            clue: 'A small animal',
-          },
-          row: 0,
-          col: 0,
-          direction: 'across' as const,
-        },
-      ],
-    };
+    const grid = createCrosswordGrid(5, 5);
+    placeWord(grid, {
+      word: {
+        answer: 'CAT',
+        clue: 'A small animal',
+      },
+      row: 0,
+      col: 0,
+      direction: 'across',
+    });
 
     vi.mocked(crosswordContentProvider.generateWords).mockResolvedValue([
       {
@@ -405,25 +428,6 @@ describe('PuzzleService', () => {
     );
 
     await expect(service.generate(data)).rejects.toThrow('insert failed');
-  });
-
-  it('should update a puzzle', async () => {
-    const data = {
-      title: 'Updated Puzzle',
-    } as UpdatePuzzleData;
-
-    const puzzle = {
-      id: 'puzzle-1',
-      ...data,
-    } as Puzzle;
-
-    vi.mocked(puzzleRepository.update).mockResolvedValue(puzzle);
-
-    const result = await service.update('puzzle-1', data);
-
-    expect(puzzleRepository.update).toHaveBeenCalledWith('puzzle-1', data);
-
-    expect(result).toEqual(puzzle);
   });
 
   it('should delete a puzzle', async () => {

@@ -4,16 +4,15 @@ import {
   CrosswordGenerator,
   CrosswordGeneratorOptions,
 } from '../../crossword/generator/crossword-generator.js';
+import { validateGeneratedCrossword } from '../../crossword/generator/validate-generated-crossword.js';
 import { CROSSWORD_CONTENT_PROVIDER } from '../../crossword/content/crossword-content-provider.js';
 import type { CrosswordContentProvider } from '../../crossword/content/crossword-content-provider.js';
 import { normalizeCrosswordWords } from '../../crossword/content/normalize-crossword-word.js';
 import { DatabaseService } from '../../db/database.service.js';
 import type {
-  CreatePuzzleData,
   GeneratePuzzleData,
   Puzzle,
   PuzzleWithEntries,
-  UpdatePuzzleData,
 } from '../domain/puzzle.js';
 
 import type { PuzzleRepository } from '../repository/puzzle.repository.js';
@@ -60,10 +59,6 @@ export class PuzzleService {
     return this.puzzleRepository.findAll();
   }
 
-  async create(data: CreatePuzzleData): Promise<Puzzle> {
-    return this.puzzleRepository.create(data);
-  }
-
   async generate(data: GeneratePuzzleData): Promise<Puzzle> {
     const candidateCount = Math.max(data.wordCount * 2, 24);
 
@@ -88,16 +83,18 @@ export class PuzzleService {
       cols: data.columns,
     });
 
-    const { grid, placedWords } = generator.generate(
+    const generatedCrossword = generator.generate(
       normalizedWords,
       data.wordCount,
     );
 
-    if (placedWords.length !== data.wordCount) {
-      throw new Error(
-        `Could not place all ${data.wordCount} words in the crossword.`,
-      );
-    }
+    validateGeneratedCrossword(generatedCrossword, {
+      rows: data.rows,
+      cols: data.columns,
+      targetWordCount: data.wordCount,
+      candidateWords: normalizedWords,
+    });
+    const { grid } = generatedCrossword;
 
     return this.databaseService.transaction(async (tx) => {
       const puzzle = await this.puzzleRepository.create(
@@ -120,10 +117,6 @@ export class PuzzleService {
 
       return puzzle;
     });
-  }
-
-  async update(id: string, data: UpdatePuzzleData): Promise<Puzzle | null> {
-    return this.puzzleRepository.update(id, data);
   }
 
   async delete(id: string): Promise<void> {
