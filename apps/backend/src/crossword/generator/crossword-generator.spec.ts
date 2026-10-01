@@ -133,6 +133,26 @@ describe('CrosswordGenerator', () => {
     expectGridMatchesPlacements(result, 7, 7);
   });
 
+  it('does not complete a crossword using same-direction CAT and CATAA overlap', () => {
+    const result = new CrosswordGenerator({
+      rows: 7,
+      cols: 7,
+      candidateCount: 1,
+      random: () => 0.9,
+    }).generate(
+      [
+        { answer: 'ABDEFGH', clue: 'Seed' },
+        { answer: 'CAT', clue: 'Animal' },
+        { answer: 'CATAA', clue: 'Word' },
+      ],
+      3,
+    );
+
+    expect(result.placedWords).toHaveLength(2);
+    const placedAnswers = result.placedWords.map((word) => word.answer);
+    expect(placedAnswers).not.toEqual(expect.arrayContaining(['CAT', 'CATAA']));
+  });
+
   it('does not count canonically equivalent answers as separate words', () => {
     const words = [
       { answer: 'niño', clue: 'A child' },

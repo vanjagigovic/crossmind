@@ -82,6 +82,36 @@ describe('validateGeneratedCrossword', () => {
     expect(() => validate(result)).toThrow(/does not match its grid cells/);
   });
 
+  it('rejects overlapping CAT and CATAA entries with a separate valid crossing', () => {
+    const words: CrosswordWord[] = [
+      { answer: 'CAT', clue: 'A feline' },
+      { answer: 'ART', clue: 'A creative work' },
+      { answer: 'CATAA', clue: 'A word' },
+    ];
+    const grid = createCrosswordGrid(7, 7);
+    const placements = [
+      { word: words[0], row: 0, col: 2, direction: 'across' as const },
+      { word: words[1], row: 0, col: 3, direction: 'down' as const },
+      { word: words[2], row: 0, col: 2, direction: 'across' as const },
+    ];
+
+    for (const placement of placements) {
+      placeWord(grid, placement);
+    }
+
+    expect(() =>
+      validateGeneratedCrossword(
+        { grid, placedWords: words },
+        {
+          rows: 7,
+          cols: 7,
+          targetWordCount: 3,
+          candidateWords: words,
+        },
+      ),
+    ).toThrow(/conflicts with the crossword rules/);
+  });
+
   it('derives puzzle entries from the validated placements', () => {
     const result = createValidCrossword();
     validate(result);
