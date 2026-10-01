@@ -1,12 +1,18 @@
 import type { CrosswordWord } from '../domain/word.js';
 
-const VALID_ANSWER_PATTERN = /^[A-Z]+$/;
+const VALID_ANSWER_PATTERN = /^\p{L}+$/u;
 
 function normalizeCrosswordWord(word: CrosswordWord): CrosswordWord | null {
-  const answer = word.answer.trim().toUpperCase();
+  const normalizedAnswer = word.answer.trim().normalize('NFC');
+  const answer = normalizedAnswer.toUpperCase().normalize('NFC');
   const clue = word.clue.trim();
 
-  if (!VALID_ANSWER_PATTERN.test(answer) || clue.length === 0) {
+  if (
+    !VALID_ANSWER_PATTERN.test(answer) ||
+    answer.length !== Array.from(answer).length ||
+    Array.from(answer).length !== Array.from(normalizedAnswer).length ||
+    clue.length === 0
+  ) {
     return null;
   }
 
@@ -17,10 +23,13 @@ function normalizeCrosswordWord(word: CrosswordWord): CrosswordWord | null {
 export function normalizeCrosswordWords(
   words: CrosswordWord[],
 ): CrosswordWord[] {
+  const seenAnswers = new Set<string>();
+
   return words.reduce<CrosswordWord[]>((normalized, word) => {
     const result = normalizeCrosswordWord(word);
 
-    if (result) {
+    if (result && !seenAnswers.has(result.answer)) {
+      seenAnswers.add(result.answer);
       normalized.push(result);
     }
 
