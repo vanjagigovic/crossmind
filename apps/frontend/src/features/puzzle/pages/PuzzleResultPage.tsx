@@ -3,12 +3,14 @@ import { useState } from 'react';
 import { generatePuzzle, getPuzzle } from '../../../api/puzzles';
 import { getPuzzleSessionResult } from '../utils/puzzleSessionResult';
 import { formatElapsedTime } from '../utils/timerUtils';
+import { Link, useNavigate } from 'react-router-dom';
 
 type PuzzleResultPageProps = {
   puzzleId: string;
 };
 
 export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
+  const navigate = useNavigate();
   const result = getPuzzleSessionResult(puzzleId);
   const [isPlayingAgain, setIsPlayingAgain] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
         wordCount: currentPuzzle.entries.length,
       });
 
-      window.location.assign(`/puzzle/${encodeURIComponent(puzzle.id)}`);
+      navigate(`/puzzle/${encodeURIComponent(puzzle.id)}`);
     } catch {
       setError('We could not generate the puzzle again. Please try again.');
       setIsPlayingAgain(false);
@@ -43,9 +45,9 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
         <p className="puzzle-state puzzle-state--error">
           No completed puzzle session was found.
         </p>
-        <a className="primary-action" href="/create">
+        <Link className="primary-action" to="/create">
           Create New Puzzle
-        </a>
+        </Link>
       </main>
     );
   }
@@ -88,9 +90,9 @@ export function PuzzleResultPage({ puzzleId }: PuzzleResultPageProps) {
           {isPlayingAgain ? 'Generating...' : 'Play Again'}
         </button>
 
-        <a className="secondary-action" href="/create">
+        <Link className="secondary-action" to="/create">
           Create New Puzzle
-        </a>
+        </Link>
       </div>
     </main>
   );
