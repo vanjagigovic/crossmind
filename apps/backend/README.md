@@ -57,6 +57,16 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Create an administrator
+
+Register the account normally, apply database migrations, then run this operator-only command from `apps/backend`:
+
+```powershell
+$env:ADMIN_EMAIL = 'admin@example.com'; npm run admin:create
+```
+
+The command promotes the existing account with that email. It is a local/server-side script, not an HTTP endpoint. New and existing accounts otherwise have the `USER` role.
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.

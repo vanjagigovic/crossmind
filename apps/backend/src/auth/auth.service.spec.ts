@@ -103,6 +103,34 @@ describe('AuthService', () => {
     expect(result).not.toHaveProperty('passwordHash');
   });
 
+  it('does not pass client-supplied role fields to user creation', async () => {
+    userService.findByEmail.mockResolvedValue(null);
+    passwordService.hash.mockResolvedValue('hashed-password');
+    userService.create.mockResolvedValue({
+      id: 'user-1',
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
+      role: 'USER',
+      isGuest: false,
+    });
+
+    await authService.register({
+      email: 'vanja@test.com',
+      password: 'password123',
+      displayName: 'Vanja',
+      role: 'ADMIN',
+      isAdmin: true,
+    } as any);
+
+    expect(userService.create).toHaveBeenCalledWith({
+      email: 'vanja@test.com',
+      passwordHash: 'hashed-password',
+      displayName: 'Vanja',
+      isGuest: false,
+    });
+  });
+
   it('should reject an already registered email', async () => {
     userService.findByEmail.mockResolvedValue({
       id: 'existing-user',

@@ -34,6 +34,10 @@ export class JwtTokenService {
     });
   }
 
+  async verifyAccessToken(token: string): Promise<JwtPayload> {
+    return this.jwtService.verifyAsync<JwtPayload>(token);
+  }
+
   async verifyRefreshToken(token: string): Promise<JwtPayload> {
     const secret = this.configService.getOrThrow<string>('JWT_REFRESH_SECRET');
 

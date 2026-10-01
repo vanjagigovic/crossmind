@@ -12,6 +12,8 @@ import { TokenHashService } from './security/token-hash.service.js';
 import { DrizzlePasswordResetTokenRepository } from './repository/drizzle-password-reset-token.repository.js';
 import { PASSWORD_RESET_TOKEN_REPOSITORY } from './repository/password-reset-token.repository.js';
 import { PasswordResetEmailService } from './email/password-reset-email.service.js';
+import { AccessTokenGuard } from './guards/access-token.guard.js';
+import { AdminGuard } from './guards/admin.guard.js';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { PasswordResetEmailService } from './email/password-reset-email.service.
     AuthService,
     PasswordService,
     JwtTokenService,
+    AccessTokenGuard,
+    AdminGuard,
     TokenHashService,
     DrizzleRefreshSessionRepository,
     PasswordResetEmailService,
@@ -42,6 +46,12 @@ import { PasswordResetEmailService } from './email/password-reset-email.service.
       useExisting: DrizzlePasswordResetTokenRepository,
     },
   ],
-  exports: [AuthService, PasswordService, JwtTokenService],
+  exports: [
+    AuthService,
+    PasswordService,
+    JwtTokenService,
+    AccessTokenGuard,
+    AdminGuard,
+  ],
 })
 export class AuthModule {}

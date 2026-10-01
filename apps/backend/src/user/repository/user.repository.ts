@@ -14,6 +14,8 @@ export interface UserRepository {
 
   findByEmail(email: string): Promise<User | null>;
 
+  promoteToAdminByEmail(email: string): Promise<User | null>;
+
   create(data: CreateUserData): Promise<User>;
 
   updatePassword(userId: string, passwordHash: string): Promise<void>;

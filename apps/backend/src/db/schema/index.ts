@@ -14,6 +14,8 @@ export const difficultyEnum = pgEnum('difficulty', ['easy', 'medium', 'hard']);
 
 export const languageEnum = pgEnum('puzzle_language', ['en', 'sr', 'es']);
 
+export const userRoleEnum = pgEnum('user_role', ['USER', 'ADMIN']);
+
 export const puzzleStatusEnum = pgEnum('puzzle_status', [
   'draft',
   'generating',
@@ -29,6 +31,7 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 255 }).unique(),
   passwordHash: varchar('password_hash', { length: 255 }),
   displayName: varchar('display_name', { length: 100 }),
+  role: userRoleEnum('role').notNull().default('USER'),
   isGuest: boolean('is_guest').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
