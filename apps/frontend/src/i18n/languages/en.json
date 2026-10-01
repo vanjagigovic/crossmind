@@ -1,162 +1,162 @@
 {
-    "common": {
-        "createPuzzle": "Create Puzzle",
-        "generatePuzzle": "Generate Puzzle",
-        "generating": "Generating...",
-        "newPuzzle": "New puzzle",
-        "customTopic": "Custom topic",
-        "custom": "Custom",
-        "difficulty": "Difficulty",
-        "size": "Size",
-        "status": "Status",
-        "time": "Time",
-        "score": "Score",
-        "mistakes": "Mistakes",
-        "across": "Across",
-        "down": "Down",
-        "puzzleCompleted": "Puzzle completed!",
-        "language": "Language"
+  "common": {
+    "createPuzzle": "Create Puzzle",
+    "generatePuzzle": "Generate Puzzle",
+    "generating": "Generating...",
+    "newPuzzle": "New puzzle",
+    "customTopic": "Custom topic",
+    "custom": "Custom",
+    "difficulty": "Difficulty",
+    "size": "Size",
+    "status": "Status",
+    "time": "Time",
+    "score": "Score",
+    "mistakes": "Mistakes",
+    "across": "Across",
+    "down": "Down",
+    "puzzleCompleted": "Puzzle completed!",
+    "language": "Language"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "genericError": "Something went wrong. Please try again.",
+    "forgotPassword": {
+      "title": "Forgot password?",
+      "description": "Enter your email address and we'll send you a password reset link.",
+      "sendError": "Unable to send password reset email. Please try again.",
+      "sending": "Sending...",
+      "sendResetLink": "Send reset link",
+      "backToLogin": "Back to login"
     },
-    "auth": {
-        "email": "Email",
-        "password": "Password",
-        "genericError": "Something went wrong. Please try again.",
-        "forgotPassword": {
-            "title": "Forgot password?",
-            "description": "Enter your email address and we'll send you a password reset link.",
-            "sendError": "Unable to send password reset email. Please try again.",
-            "sending": "Sending...",
-            "sendResetLink": "Send reset link",
-            "backToLogin": "Back to login"
-        },
-        "login": {
-            "title": "Log in",
-            "description": "Log in to continue playing CrossMind.",
-            "invalidCredentials": "Invalid email or password",
-            "guestError": "Unable to continue as guest. Please try again.",
-            "loggingIn": "Logging in...",
-            "forgotPassword": "Forgot password?",
-            "or": "or",
-            "continueAsGuest": "Continue as guest",
-            "noAccount": "Don't have an account?",
-            "register": "Register"
-        },
-        "register": {
-            "title": "Create an account",
-            "description": "Create your CrossMind account to keep track of your progress.",
-            "displayName": "Display name",
-            "accountExists": "An account with this email already exists.",
-            "creating": "Creating account...",
-            "createAccount": "Create account",
-            "hasAccount": "Already have an account?",
-            "logIn": "Log in"
-        },
-        "resetPassword": {
-            "title": "Reset password",
-            "description": "Enter your new password below.",
-            "newPassword": "New password",
-            "confirmPassword": "Confirm password",
-            "invalidToken": "Invalid or missing reset token.",
-            "passwordMismatch": "Passwords do not match.",
-            "expiredLink": "This reset link is invalid or has expired.",
-            "resetting": "Resetting...",
-            "resetPassword": "Reset password",
-            "backToLogin": "Back to login"
-        }
+    "login": {
+      "title": "Log in",
+      "description": "Log in to continue playing CrossMind.",
+      "invalidCredentials": "Invalid email or password",
+      "guestError": "Unable to continue as guest. Please try again.",
+      "loggingIn": "Logging in...",
+      "forgotPassword": "Forgot password?",
+      "or": "or",
+      "continueAsGuest": "Continue as guest",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
     },
-    "userMenu": {
-        "accountSettings": "Account settings",
-        "logOut": "Log out"
+    "register": {
+      "title": "Create an account",
+      "description": "Create your CrossMind account to keep track of your progress.",
+      "displayName": "Display name",
+      "accountExists": "An account with this email already exists.",
+      "creating": "Creating account...",
+      "createAccount": "Create account",
+      "hasAccount": "Already have an account?",
+      "logIn": "Log in"
     },
-    "language": {
-        "title": "Puzzle language",
-        "hint": "Which language should the crossword content be generated in?"
-    },
-    "landing": {
-        "eyebrow": "A crossword for your curiosity",
-        "intro": "Choose a topic, pick your challenge, and CrossMind will build a crossword made for you.",
-        "previewLabel": "Your next puzzle",
-        "previewCaption": "A fresh grid, shaped around what you want to explore.",
-        "previewAriaLabel": "A crossword puzzle preview"
-    },
-    "createPuzzle": {
-        "title": "Create Puzzle",
-        "description": "Choose a topic, difficulty, and size. We will handle the rest.",
-        "topic": {
-            "title": "Topic",
-            "hint": "What should your crossword be about?",
-            "customLabel": "Custom topic",
-            "placeholder": "Formula 1 racing",
-            "inputHint": "Keep it specific for a more focused puzzle.",
-            "error": "Enter a custom topic to generate your puzzle."
-        },
-        "difficulty": {
-            "title": "Difficulty",
-            "hint": "How much of a challenge are you after?",
-            "easy": "Easy",
-            "medium": "Medium",
-            "hard": "Hard"
-        },
-        "size": {
-            "title": "Puzzle size",
-            "hint": "How much grid do you want to tackle?",
-            "small": "Small",
-            "medium": "Medium",
-            "large": "Large"
-        },
-        "error": "We could not generate that puzzle. Check your selections and try again.",
-        "generating": "Generating your puzzle..."
-    },
-    "topics": {
-        "programming": "Programming",
-        "travel": "Travel",
-        "animals": "Animals",
-        "movies": "Movies",
-        "science": "Science",
-        "history": "History",
-        "sports": "Sports",
-        "food": "Food"
-    },
-    "puzzlePage": {
-        "error": {
-            "noPuzzleId": "A puzzle ID is required.",
-            "unableToLoad": "Unable to load the puzzle."
-        },
-        "loading": "Loading puzzle...",
-        "difficulty": "Difficulty",
-        "statusLabel": "Status",
-        "status": {
-            "draft": "Draft",
-            "generating": "Generating",
-            "ready": "Ready",
-            "published": "Published",
-            "archived": "Archived"
-        },
-        "size": "Size"
-    },
-    "gameplay": {
-        "correct": "Correct",
-        "incorrect": "{{count}} incorrect",
-        "inProgress": "In progress"
-    },
-    "result": {
-        "completed": "Puzzle completed!",
-        "title": "Great work",
-        "noSession": "No completed puzzle session was found.",
-        "playAgain": "Play Again",
-        "createNewPuzzle": "Create New Puzzle",
-        "playAgainError": "We could not generate the puzzle again. Please try again."
-    },
-    "accessibility": {
-        "crosswordGrid": "Crossword grid",
-        "enterLetter": "Enter a letter for the selected crossword cell",
-        "blockedCell": "Blocked cell",
-        "entry": "Entry {{number}}, row {{row}}, column {{column}}",
-        "cell": "Row {{row}}, column {{column}}",
-        "contains": "contains {{value}}",
-        "empty": "empty",
-        "incorrect": "incorrect",
-        "selected": "selected",
-        "elapsedTime": "Elapsed time {{time}}"
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Enter your new password below.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "invalidToken": "Invalid or missing reset token.",
+      "passwordMismatch": "Passwords do not match.",
+      "expiredLink": "This reset link is invalid or has expired.",
+      "resetting": "Resetting...",
+      "resetPassword": "Reset password",
+      "backToLogin": "Back to login"
     }
+  },
+  "userMenu": {
+    "accountSettings": "Account settings",
+    "logOut": "Log out"
+  },
+  "language": {
+    "title": "Puzzle language",
+    "hint": "Which language should the crossword content be generated in?"
+  },
+  "landing": {
+    "eyebrow": "A crossword for your curiosity",
+    "intro": "Choose a topic, pick your challenge, and CrossMind will build a crossword made for you.",
+    "previewLabel": "Your next puzzle",
+    "previewCaption": "A fresh grid, shaped around what you want to explore.",
+    "previewAriaLabel": "A crossword puzzle preview"
+  },
+  "createPuzzle": {
+    "title": "Create Puzzle",
+    "description": "Choose a topic, difficulty, and size. We will handle the rest.",
+    "topic": {
+      "title": "Topic",
+      "hint": "What should your crossword be about?",
+      "customLabel": "Custom topic",
+      "placeholder": "Formula 1 racing",
+      "inputHint": "Keep it specific for a more focused puzzle.",
+      "error": "Enter a custom topic to generate your puzzle."
+    },
+    "difficulty": {
+      "title": "Difficulty",
+      "hint": "How much of a challenge are you after?",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "size": {
+      "title": "Puzzle size",
+      "hint": "How much grid do you want to tackle?",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "error": "We could not generate that puzzle. Check your selections and try again.",
+    "generating": "Generating your puzzle..."
+  },
+  "topics": {
+    "programming": "Programming",
+    "travel": "Travel",
+    "animals": "Animals",
+    "movies": "Movies",
+    "science": "Science",
+    "history": "History",
+    "sports": "Sports",
+    "food": "Food"
+  },
+  "puzzlePage": {
+    "error": {
+      "noPuzzleId": "A puzzle ID is required.",
+      "unableToLoad": "Unable to load the puzzle."
+    },
+    "loading": "Loading puzzle...",
+    "difficulty": "Difficulty",
+    "statusLabel": "Status",
+    "status": {
+      "draft": "Draft",
+      "generating": "Generating",
+      "ready": "Ready",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "size": "Size"
+  },
+  "gameplay": {
+    "correct": "Correct",
+    "incorrect": "{{count}} incorrect",
+    "inProgress": "In progress"
+  },
+  "result": {
+    "completed": "Puzzle completed!",
+    "title": "Great work",
+    "noSession": "No completed puzzle session was found.",
+    "playAgain": "Play Again",
+    "createNewPuzzle": "Create New Puzzle",
+    "playAgainError": "We could not generate the puzzle again. Please try again."
+  },
+  "accessibility": {
+    "crosswordGrid": "Crossword grid",
+    "enterLetter": "Enter a letter for the selected crossword cell",
+    "blockedCell": "Blocked cell",
+    "entry": "Entry {{number}}, row {{row}}, column {{column}}",
+    "cell": "Row {{row}}, column {{column}}",
+    "contains": "contains {{value}}",
+    "empty": "empty",
+    "incorrect": "incorrect",
+    "selected": "selected",
+    "elapsedTime": "Elapsed time {{time}}"
+  }
 }

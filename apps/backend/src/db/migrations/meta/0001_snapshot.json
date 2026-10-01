@@ -87,22 +87,12 @@
     "public.difficulty": {
       "name": "difficulty",
       "schema": "public",
-      "values": [
-        "easy",
-        "medium",
-        "hard"
-      ]
+      "values": ["easy", "medium", "hard"]
     },
     "public.puzzle_status": {
       "name": "puzzle_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "generating",
-        "ready",
-        "published",
-        "archived"
-      ]
+      "values": ["draft", "generating", "ready", "published", "archived"]
     }
   },
   "schemas": {},
